@@ -28,6 +28,7 @@ public class FrmConexao extends javax.swing.JDialog {
     public Controle controle;
     
     private void LimparTela(){
+        
         cbxSGDB.setSelectedIndex(-1);
         txtDescricao.setText("");
         txtNome.setText("");

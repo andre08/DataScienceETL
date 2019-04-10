@@ -3,7 +3,7 @@ package datascience;
 import java.util.Objects;
 
 public class Consulta {
-
+    
     /*informações sobre a consulta*/
     private String nome;
     private String descricao;
@@ -55,7 +55,7 @@ public class Consulta {
 
     @Override
     public String toString() {
-        return "Consulta{" + "nome=" + nome + '}';
+        return this.nome;
     }
 
     @Override

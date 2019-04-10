@@ -7,8 +7,70 @@ import javax.swing.JFrame;
 public class ConnectionManager {
 
     public static Connection getConnection(java.awt.Frame parent, Conexao conexao) {
-    
-        return null;
+
+        Connection conn = null;
+        String STR_DRIVER;
+        String STR_CONEX;
+        String USER;
+        String PASSWORD;
+        String DATABASENAME;
+        String SID;
+
+        if(conexao.getSGDB().equals("ORACLE")){
+            
+            STR_DRIVER = "oracle.jdbc.driver.OracleDriver";
+            STR_CONEX = "jdbc:oracle:thin:@" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + ":" + conexao.getSID();
+            USER = conexao.getUsename();
+            PASSWORD = conexao.getPassword();
+            
+            try {
+                Class.forName(STR_DRIVER);
+                conn = DriverManager.getConnection(STR_CONEX, USER, PASSWORD);
+            } catch (Exception ex) {
+                FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+                frmMensagem.Mostrar(ex.toString());
+                frmMensagem.setVisible(true);
+        }
+            
+        }else if(conexao.getSGDB().equals("MySQL")){
+
+            STR_DRIVER = "org.gjt.mm.mysql.Driver";
+            STR_CONEX = "jdbc:mysql://" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + "/" + conexao.getNomeBanco();
+            USER = conexao.getUsename();
+            PASSWORD = conexao.getPassword();
+
+            try {
+                Class.forName(STR_DRIVER);
+                conn = DriverManager.getConnection(STR_CONEX, USER, PASSWORD);
+            } catch (Exception ex) {
+                FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+                frmMensagem.Mostrar(ex.getMessage());
+                frmMensagem.setVisible(true);
+            }
+
+        }else if(conexao.getSGDB().equals("MS SQL Server")){
+
+            STR_DRIVER = "net.sourceforge.jtds.jdbc.Driver";
+            STR_CONEX = "jdbc:jtds:sqlserver://" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + "/" + conexao.getNomeBanco();
+            USER = conexao.getUsename();
+            PASSWORD = conexao.getPassword();
+
+            try {
+                Class.forName(STR_DRIVER);
+                conn = DriverManager.getConnection(STR_CONEX, USER, PASSWORD);
+            } catch (Exception ex) {
+                FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+                frmMensagem.Mostrar(ex.getMessage());
+                frmMensagem.setVisible(true);
+            }
+
+        }else{
+            FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+            frmMensagem.Mostrar("Tipo de conexão não identificada");
+            frmMensagem.setVisible(true);
+        }
+        
+        return conn;
     }
     
     public static void testConnection(java.awt.Frame parent, Conexao conexao) {

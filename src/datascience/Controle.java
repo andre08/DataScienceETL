@@ -29,10 +29,6 @@ public class Controle {
         this.entidades = new ArrayList<Entidade>();        
     }
     
-    public void AddEntidade (Entidade entidade){
-        this.entidades.add(entidade);
-    }
-    
     public void addConexao (Conexao conexaoAnterior, Conexao conexaoNova){
         
         if(conexaoAnterior == null){
@@ -41,6 +37,20 @@ public class Controle {
             this.conexoes.set(conexoes.indexOf(conexaoAnterior), conexaoNova);
         }
         
+    }
+    
+    public void addConsulta (Consulta consultaAnterior, Consulta consultaNova){
+        
+        if(consultaAnterior == null){
+            this.consultas.add(consultaNova);
+        }else{
+            this.consultas.set(consultas.indexOf(consultaAnterior), consultaNova);
+        }
+        
+    }
+    
+    public void AddEntidade (Entidade entidade){
+        this.entidades.add(entidade);
     }
     
     public List<Conexao> getConexoes() {
@@ -91,6 +101,8 @@ public class Controle {
         FileDialog localizarArquivo = new FileDialog(parent, "Localizar arquivo do projeto", FileDialog.LOAD);
         localizarArquivo.setDirectory("c:\\");
         localizarArquivo.setFile("*.json");
+        localizarArquivo.pack();
+        localizarArquivo.setLocationRelativeTo(null);      
         localizarArquivo.setVisible(true);
         String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
         if ((localizarArquivo.getDirectory() != null) && (localizarArquivo.getFile() != null)){
@@ -127,8 +139,29 @@ public class Controle {
             }            
 
             JSONArray JsonArrayConsulta;
+            JSONObject JsonObjConsulta;
             JsonArrayConsulta = projetoJson.getJSONArray("CONSULTA");
 
+            for (int i = 0; i < JsonArrayConsulta.length(); i++) {
+
+                JsonObjConsulta = (JSONObject) JsonArrayConsulta.get(i);
+                Consulta consulta = new Consulta();
+                consulta.setNome(JsonObjConsulta.getString("NOME"));
+                consulta.setDescricao(JsonObjConsulta.getString("DESCRICAO"));
+                consulta.setSql(JsonObjConsulta.getString("CONSULTA"));
+                for (Conexao conexao : conexoes) {
+                    
+                    if (conexao.hashCode() == JsonObjConsulta.getInt("CONEXAO")){
+                        consulta.setConexao(conexao);
+                   }
+                    
+                }
+                
+                addConsulta(null, consulta);
+
+            }
+            
+            
             JSONArray JsonArrayEntidade;
             JSONArray JsonArrayAtributo;
             JSONObject JsonObjEntidade;
@@ -163,6 +196,8 @@ public class Controle {
         FileDialog localizarArquivo = new FileDialog(parent, "Localizar arquivo do projeto", FileDialog.SAVE);
         localizarArquivo.setDirectory("c:\\");
         localizarArquivo.setFile("*.json");
+        localizarArquivo.pack();
+        localizarArquivo.setLocationRelativeTo(null);      
         localizarArquivo.setVisible(true);
         String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
 
@@ -194,6 +229,17 @@ public class Controle {
                 
                 JsonArrayConexao.put(JsonObjConexao);
             }            
+            
+            for (Consulta consulta: this.consultas) {
+
+                JsonObjConsulta = new JSONObject();
+                JsonObjConsulta.put("NOME",consulta.getNome());
+                JsonObjConsulta.put("DESCRICAO",consulta.getDescricao());
+                JsonObjConsulta.put("CONSULTA",consulta.getSql());
+                JsonObjConsulta.put("CONEXAO",consulta.getConexao().hashCode());
+                
+                JsonArrayConsulta.put(JsonObjConsulta);
+            }
 
             for (Entidade entidade: this.entidades) {
 

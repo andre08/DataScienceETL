@@ -35,6 +35,18 @@ public class FrmPrincipal extends javax.swing.JFrame {
             conexaoNode.add(itensNode);
         }
         
+        for (Consulta consulta : controle.getConsultas()) {
+            itensNode = new DefaultMutableTreeNode(consulta.getNome());
+            itensNode.setUserObject(consulta);
+            consultaNode.add(itensNode);
+        }
+
+        for (Entidade entidade : controle.getEntidades()) {
+            itensNode = new DefaultMutableTreeNode(entidade.getNome());
+            itensNode.setUserObject(entidade);
+            entidadeNode.add(itensNode);
+        }
+
         rootNode.add(conexaoNode);
         rootNode.add(consultaNode);
         rootNode.add(entidadeNode);
@@ -54,6 +66,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenu8 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -68,18 +81,24 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniFechar = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         mniDefinicaoProjeto = new javax.swing.JMenuItem();
+        mniGerarSqlStage = new javax.swing.JMenuItem();
+        mniGerarSqlDW = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         mniGerenciarConexao = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        mniGerenciarConsulta = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        mniGerenciarEntidade = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
 
         jMenu8.setText("jMenu8");
 
+        jMenuItem1.setText("jMenuItem1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -164,6 +183,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniDefinicaoProjeto.setText("Definição do Projeto");
         jMenu2.add(mniDefinicaoProjeto);
 
+        mniGerarSqlStage.setText("Gerar SQL StageArea");
+        jMenu2.add(mniGerarSqlStage);
+
+        mniGerarSqlDW.setText("Gerar SQL Data Ware House");
+        jMenu2.add(mniGerarSqlDW);
+
         jMenuBar1.add(jMenu2);
 
         jMenu4.setText("Conexões");
@@ -178,17 +203,22 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu4);
 
-        jMenu5.setText("Origem de Dados");
+        jMenu5.setText("Consultas");
 
-        jMenuItem1.setText("Gerenciar Origem de Dados");
-        jMenu5.add(jMenuItem1);
+        mniGerenciarConsulta.setText("Gerenciar Consultas");
+        mniGerenciarConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerenciarConsultaActionPerformed(evt);
+            }
+        });
+        jMenu5.add(mniGerenciarConsulta);
 
         jMenuBar1.add(jMenu5);
 
-        jMenu6.setText("Destino de Dados");
+        jMenu6.setText("Entidade Destinos");
 
-        jMenuItem2.setText("Gerenciar Destino de Dados");
-        jMenu6.add(jMenuItem2);
+        mniGerenciarEntidade.setText("Gerenciar Entidades de Destino");
+        jMenu6.add(mniGerenciarEntidade);
 
         jMenuBar1.add(jMenu6);
 
@@ -236,11 +266,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
             int resultado = JOptionPane.showConfirmDialog(this,"Deseja salvar os dados antes de criar um novo","Confirmação",JOptionPane.YES_NO_OPTION);
             if(resultado == JOptionPane.YES_OPTION){
                 controle.SalvarJson(this);
+                controle.NovoJson();
                 controle.CarregarJson(this);
             } else{
+                controle.NovoJson();
                 controle.CarregarJson(this);
             }          
-        }else{                    
+        }else{   
+            controle.NovoJson();
             controle.CarregarJson(this);
         }
         AtualizarTela();
@@ -279,6 +312,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         if(this.conexaoSelecionado != null){
             frmConexao.SetConexaoSelecionada(this.conexaoSelecionado);
         }
+        frmConexao.pack();
+        frmConexao.setLocationRelativeTo(null);      
         frmConexao.setVisible(true);
         this.controle = frmConexao.controle;
         AtualizarTela();
@@ -316,6 +351,23 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_lstProjetoMouseClicked
+
+    private void mniGerenciarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarConsultaActionPerformed
+        // TODO add your handling code here:
+        FrmConsulta frmConsulta = new FrmConsulta(this, true);
+        frmConsulta.controle = this.controle;    
+        frmConsulta.AtualizarConexao();
+        if(this.consultaSelecionada != null){
+            frmConsulta.SetConsultaSelecionada(this.consultaSelecionada);
+        }
+        frmConsulta.pack();
+        frmConsulta.setLocationRelativeTo(null);      
+        frmConsulta.setVisible(true);
+        this.controle = frmConsulta.controle;
+        AtualizarTela();
+        
+        
+    }//GEN-LAST:event_mniGerenciarConsultaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -366,7 +418,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -376,7 +427,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem mniAbrir;
     private javax.swing.JMenuItem mniDefinicaoProjeto;
     private javax.swing.JMenuItem mniFechar;
+    private javax.swing.JMenuItem mniGerarSqlDW;
+    private javax.swing.JMenuItem mniGerarSqlStage;
     private javax.swing.JMenuItem mniGerenciarConexao;
+    private javax.swing.JMenuItem mniGerenciarConsulta;
+    private javax.swing.JMenuItem mniGerenciarEntidade;
     private javax.swing.JMenuItem mniNovo;
     private javax.swing.JMenuItem mniSalvar;
     // End of variables declaration//GEN-END:variables
