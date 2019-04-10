@@ -21,6 +21,7 @@ public class FrmConexao extends javax.swing.JDialog {
         initComponents();
         LimparTela();
         this.parent = parent;
+       
     }
     
     public Conexao conexaoSelecionada;
@@ -36,6 +37,23 @@ public class FrmConexao extends javax.swing.JDialog {
         txtSenha.setText("");
         txtURL.setText("");
         txtUsuario.setText("");
+    }
+    
+    public void SetConexaoSelecionada(Conexao conexao){
+        
+        this.conexaoSelecionada = conexao;
+        
+        if(this.conexaoSelecionada != null){
+            cbxSGDB.setSelectedItem(conexaoSelecionada.getSGDB());
+            txtDescricao.setText(conexaoSelecionada.getDescricao());
+            txtNome.setText(conexaoSelecionada.getNome());
+            txtNomeBase.setText(conexaoSelecionada.getNomeBanco());
+            txtPorta.setText(Integer.toString(conexaoSelecionada.getPorta()));
+            txtSID.setText(conexaoSelecionada.getSID());
+            txtSenha.setText(conexaoSelecionada.getPassword());
+            txtURL.setText(conexaoSelecionada.getUrl());
+            txtUsuario.setText(conexaoSelecionada.getUsename());            
+        }        
     }
 
     /**
@@ -208,6 +226,11 @@ public class FrmConexao extends javax.swing.JDialog {
         });
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -268,25 +291,20 @@ public class FrmConexao extends javax.swing.JDialog {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
-        boolean novo = (conexaoSelecionada == null);
         
-        if(novo){
-            conexaoSelecionada = new Conexao();
-        }    
+        Conexao conexao = new Conexao();
+        conexao.setNome(txtNome.getText());
+        conexao.setDescricao(txtDescricao.getText());
+        conexao.setNomeBanco(txtNomeBase.getText());
+        conexao.setUrl(txtURL.getText());
+        conexao.setPorta(Integer.parseInt(txtPorta.getText()));
+        conexao.setUsename(txtUsuario.getText());
+        conexao.setPassword(txtSenha.getText());
+        conexao.setSID(txtSID.getText());
+        conexao.setSGDB(cbxSGDB.getSelectedItem().toString());
         
-        conexaoSelecionada.setDescricao(txtDescricao.getText());
-        conexaoSelecionada.setNome(txtNome.getText());
-        conexaoSelecionada.setNomeBanco(txtNomeBase.getText());
-        conexaoSelecionada.setUrl(txtURL.getText());
-        conexaoSelecionada.setPorta(Integer.parseInt(txtPorta.getText()));
-        conexaoSelecionada.setUsename(txtUsuario.getText());
-        conexaoSelecionada.setPassword(txtSenha.getName());
-        conexaoSelecionada.setSID(txtSID.getText());
-        conexaoSelecionada.setSGDB(cbxSGDB.getSelectedItem().toString());
-        
-        if(novo){
-            controle.addConexao(conexaoSelecionada);
-        }
+        controle.addConexao(conexaoSelecionada, conexao);
+        dispose();
             
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -304,6 +322,15 @@ public class FrmConexao extends javax.swing.JDialog {
         }
         
     }//GEN-LAST:event_btnTesteActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        
+        controle.getConexoes().remove(conexaoSelecionada);
+        this.conexaoSelecionada = null;
+        dispose();
+        
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments

@@ -17,6 +17,8 @@ public class DataScienceETL {
     public static void main(String[] args) {
         // TODO code application logic here
         FrmPrincipal frmPrincipal = new FrmPrincipal();
+        frmPrincipal.pack();
+        frmPrincipal.setLocationRelativeTo(null);      
         frmPrincipal.setVisible(true);
         
     }

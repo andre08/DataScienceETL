@@ -16,7 +16,6 @@ import org.json.JSONObject;
 public class Controle {
     
     //arquivos de controles
-    private String ArquivoAtual;
     private String Pendente;
 
     //itens 
@@ -34,8 +33,14 @@ public class Controle {
         this.entidades.add(entidade);
     }
     
-    public void addConexao (Conexao conexao){
-        this.conexoes.add(conexao);
+    public void addConexao (Conexao conexaoAnterior, Conexao conexaoNova){
+        
+        if(conexaoAnterior == null){
+            this.conexoes.add(conexaoNova);
+        }else{
+            this.conexoes.set(conexoes.indexOf(conexaoAnterior), conexaoNova);
+        }
+        
     }
     
     public List<Conexao> getConexoes() {
@@ -77,7 +82,6 @@ public class Controle {
         this.entidades = new ArrayList<Entidade>();        
         
         /*inicializando variaveis de controle*/
-        ArquivoAtual = "";
         Pendente = "N";        
         
     }
@@ -89,7 +93,7 @@ public class Controle {
         localizarArquivo.setFile("*.json");
         localizarArquivo.setVisible(true);
         String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
-        if (nomearquivo != null){
+        if ((localizarArquivo.getDirectory() != null) && (localizarArquivo.getFile() != null)){
 
             String conteudoJson = "";
             try {
@@ -103,50 +107,53 @@ public class Controle {
             JSONArray JsonArrayConexao;
             JSONObject JsonObjConexao;
 
-            JsonArrayConexao = projetoJson.getJSONArray("conexao");
+            JsonArrayConexao = projetoJson.getJSONArray("CONEXAO");
             for (int i = 0; i < JsonArrayConexao.length(); i++) {
+
                 JsonObjConexao = (JSONObject) JsonArrayConexao.get(i);
-                System.out.println(JsonObjConexao.getString("SGDB"));
                 Conexao conexao = new Conexao();
-                conexao.setId(JsonObjConexao.getInt("id"));
-                conexao.setPorta(JsonObjConexao.getInt("porta"));
+                conexao.setNome(JsonObjConexao.getString("NOME"));
+                conexao.setDescricao(JsonObjConexao.getString("DESCRICAO"));
+                conexao.setUrl(JsonObjConexao.getString("URL"));
+                conexao.setPorta(JsonObjConexao.getInt("PORTA"));
+                conexao.setNomeBanco(JsonObjConexao.getString("NOMEBANCO"));
+                conexao.setSID(JsonObjConexao.getString("SID"));
+                conexao.setUsename(JsonObjConexao.getString("USUARIO"));
+                conexao.setPassword(JsonObjConexao.getString("SENHA"));
                 conexao.setSGDB(JsonObjConexao.getString("SGDB"));
                 
-                addConexao(conexao);
+                addConexao(null, conexao);
 
             }            
 
             JSONArray JsonArrayConsulta;
-            JsonArrayConsulta = projetoJson.getJSONArray("consulta");
+            JsonArrayConsulta = projetoJson.getJSONArray("CONSULTA");
 
             JSONArray JsonArrayEntidade;
             JSONArray JsonArrayAtributo;
             JSONObject JsonObjEntidade;
             JSONObject JsonObjAtrinbuto;
 
-            JsonArrayEntidade = projetoJson.getJSONArray("entidade");
+            JsonArrayEntidade = projetoJson.getJSONArray("ENTIDADE");
             for (int i = 0; i < JsonArrayEntidade.length(); i++) {
                 JsonObjEntidade = (JSONObject) JsonArrayEntidade.get(i);
 
-                System.out.println(JsonObjEntidade.getInt("id"));
-                System.out.println(JsonObjEntidade.getString("nome"));
+                System.out.println(JsonObjEntidade.getString("NOME"));
 
 
-                JsonArrayAtributo = JsonObjEntidade.getJSONArray("atributos");
+                JsonArrayAtributo = JsonObjEntidade.getJSONArray("ATRIBUTOS");
                 for (int j = 0; j < JsonArrayAtributo.length(); j++) {
                     JsonObjAtrinbuto = (JSONObject) JsonArrayAtributo.get(i);
 
-                    System.out.println(JsonObjAtrinbuto.getInt("id"));
-                    System.out.println(JsonObjAtrinbuto.getString("nome"));
-                    System.out.println(JsonObjAtrinbuto.getString("tipo"));
+                    System.out.println(JsonObjAtrinbuto.getString("NOME"));
+                    System.out.println(JsonObjAtrinbuto.getString("TIPO"));
 
                 }
 
             }
             
             this.Pendente = "N";   
-            this.ArquivoAtual = nomearquivo;
-            
+
         }
         
     }
@@ -159,9 +166,7 @@ public class Controle {
         localizarArquivo.setVisible(true);
         String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
 
-        System.out.println(nomearquivo);
-        
-        if (nomearquivo != null){
+        if ((localizarArquivo.getDirectory() != null) && (localizarArquivo.getFile() != null)){
             JSONObject arquivoJson = new JSONObject();
             JSONObject JsonObjConexao;
             JSONObject JsonObjConsulta;
@@ -177,15 +182,14 @@ public class Controle {
             for (Conexao conexao: this.conexoes) {
 
                 JsonObjConexao = new JSONObject();
-                JsonObjConexao.put("id",conexao.getId());
-                JsonObjConexao.put("nome",conexao.getNome());
-                JsonObjConexao.put("descricao",conexao.getDescricao());
-                JsonObjConexao.put("url",conexao.getUrl());
-                JsonObjConexao.put("porta",conexao.getPorta());
-                JsonObjConexao.put("nomeBanco",conexao.getNomeBanco());
+                JsonObjConexao.put("NOME",conexao.getNome());
+                JsonObjConexao.put("DESCRICAO",conexao.getDescricao());
+                JsonObjConexao.put("URL",conexao.getUrl());
+                JsonObjConexao.put("PORTA",conexao.getPorta());
+                JsonObjConexao.put("NOMEBANCO",conexao.getNomeBanco());
                 JsonObjConexao.put("SID",conexao.getSID());
-                JsonObjConexao.put("usename",conexao.getUsename());
-                JsonObjConexao.put("password",conexao.getPassword());
+                JsonObjConexao.put("USUARIO",conexao.getUsename());
+                JsonObjConexao.put("SENHA",conexao.getPassword());
                 JsonObjConexao.put("SGDB",conexao.getSGDB());
                 
                 JsonArrayConexao.put(JsonObjConexao);
@@ -194,9 +198,8 @@ public class Controle {
             for (Entidade entidade: this.entidades) {
 
                 JsonObjEntidade = new JSONObject();
-                JsonObjEntidade.put("id",entidade.getId());
-                JsonObjEntidade.put("nome",entidade.getNome());
-                JsonObjEntidade.put("descricao",entidade.getDescricao());
+                JsonObjEntidade.put("NOME",entidade.getNome());
+                JsonObjEntidade.put("DESCRICAO",entidade.getDescricao());
 
                 JsonArrayAtributo = new JSONArray();
                 
@@ -205,25 +208,24 @@ public class Controle {
                     for (Atributo atributo : entidade.getAtributos()) {
 
                         JsonObjAtrinbuto = new JSONObject();
-                        JsonObjAtrinbuto.put("id", atributo.getId());
-                        JsonObjAtrinbuto.put("nome", atributo.getNome());
-                        JsonObjAtrinbuto.put("tipo", atributo.getTipo());
-                        JsonObjAtrinbuto.put("tamanho", atributo.getTamanho());
-                        JsonObjAtrinbuto.put("precisao", atributo.getPrecisao());
-                        JsonObjAtrinbuto.put("observacao", atributo.getObservacao());
+                        JsonObjAtrinbuto.put("NOME", atributo.getNome());
+                        JsonObjAtrinbuto.put("TIPO", atributo.getTipo());
+                        JsonObjAtrinbuto.put("TAMANHO", atributo.getTamanho());
+                        JsonObjAtrinbuto.put("PRECISAO", atributo.getPrecisao());
+                        JsonObjAtrinbuto.put("OBSERVACAO", atributo.getObservacao());
 
                         JsonArrayAtributo.put(JsonObjAtrinbuto);
                     }
                 }
-                JsonObjEntidade.put("atributos", JsonArrayAtributo);
+                JsonObjEntidade.put("ATRIBUTOS", JsonArrayAtributo);
 
                 JsonArrayEntidade.put(JsonObjEntidade);
             }
 
-            arquivoJson.put("projeto", projetoJson);
-            arquivoJson.put("conexao", JsonArrayConexao);
-            arquivoJson.put("consulta", JsonArrayConsulta);
-            arquivoJson.put("entidade", JsonArrayEntidade);
+            arquivoJson.put("PROJETO", projetoJson);
+            arquivoJson.put("CONEXAO", JsonArrayConexao);
+            arquivoJson.put("CONSULTA", JsonArrayConsulta);
+            arquivoJson.put("ENTIDADE", JsonArrayEntidade);
 
             try {
                 FileWriter arq;
@@ -235,7 +237,6 @@ public class Controle {
             }        
 
             this.Pendente = "N";        
-            this.ArquivoAtual = nomearquivo;
             
         }
     }

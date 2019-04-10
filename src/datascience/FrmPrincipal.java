@@ -1,21 +1,51 @@
 package datascience;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 public class FrmPrincipal extends javax.swing.JFrame {
 
     Controle controle;
-
+    Conexao conexaoSelecionado;
+    Consulta consultaSelecionada;
+    Entidade entidadeSelecionada;
+    
     public FrmPrincipal() {
-        initComponents();        
+        initComponents(); 
         controle = new Controle();
-        controle.NovoJson();        
+        controle.NovoJson();    
+        AtualizarTela();
     }
     
     private void AtualizarTela(){
+      
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Projeto");
+
+        DefaultMutableTreeNode conexaoNode = new DefaultMutableTreeNode("Conexões");
+        DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
+        DefaultMutableTreeNode entidadeNode = new DefaultMutableTreeNode("Entidades");
+        
+        DefaultMutableTreeNode itensNode;
+        
+        for (Conexao conexao : controle.getConexoes()) {
+            itensNode = new DefaultMutableTreeNode(conexao.getNome());
+            itensNode.setUserObject(conexao);
+            conexaoNode.add(itensNode);
+        }
+        
+        rootNode.add(conexaoNode);
+        rootNode.add(consultaNode);
+        rootNode.add(entidadeNode);
+        
+        DefaultTreeModel modelo = new DefaultTreeModel(rootNode);
+        modelo.reload(rootNode);
+        lstProjeto.setModel(modelo); 
+        
+        for(int i=0;i<lstProjeto.getRowCount();++i){
+            lstProjeto.expandRow(i);
+        }        
 
     }
     
@@ -74,6 +104,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 .addGap(0, 11, Short.MAX_VALUE))
         );
 
+        lstProjeto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstProjetoMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(lstProjeto);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -208,6 +243,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }else{                    
             controle.CarregarJson(this);
         }
+        AtualizarTela();
     }//GEN-LAST:event_mniAbrirActionPerformed
 
     private void mniFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniFecharActionPerformed
@@ -216,7 +252,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_mniFecharActionPerformed
 
     private void mniNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniNovoActionPerformed
-        // TODO add your handling code here:
+
         if ((controle.getConexoes().size() > 0)||(controle.getConsultas().size() > 0)||(controle.getEntidades().size() > 0)){
             
             int resultado = JOptionPane.showConfirmDialog(this,"Deseja salvar os dados antes de criar um novo","Confirmação",JOptionPane.YES_NO_OPTION);
@@ -224,28 +260,62 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 controle.SalvarJson(this);
                 controle.NovoJson(); 
                 AtualizarTela();
-            }           
+            }else{
+                controle.NovoJson(); 
+                AtualizarTela();
+            }
             
         }else{                    
           controle.NovoJson();  
           AtualizarTela();
         }
+        
     }//GEN-LAST:event_mniNovoActionPerformed
 
     private void mniGerenciarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarConexaoActionPerformed
-        // TODO add your handling code here:
+
         FrmConexao frmConexao = new FrmConexao(this, true);
         frmConexao.controle = this.controle;    
+        if(this.conexaoSelecionado != null){
+            frmConexao.SetConexaoSelecionada(this.conexaoSelecionado);
+        }
         frmConexao.setVisible(true);
         this.controle = frmConexao.controle;
+        AtualizarTela();
         
     }//GEN-LAST:event_mniGerenciarConexaoActionPerformed
 
     private void mniSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSalvarActionPerformed
-        // TODO add your handling code here:
+
         controle.SalvarJson(this);
         AtualizarTela();
     }//GEN-LAST:event_mniSalvarActionPerformed
+
+    
+    private void lstProjetoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstProjetoMouseClicked
+
+        this.conexaoSelecionado = null;
+        this.consultaSelecionada = null;
+        this.entidadeSelecionada = null;
+        DefaultMutableTreeNode selecao = (DefaultMutableTreeNode)lstProjeto.getLastSelectedPathComponent();        
+        
+        if (selecao != null){
+        
+            if(selecao.getUserObject() instanceof Conexao){
+                this.conexaoSelecionado = (Conexao) selecao.getUserObject();
+            }
+
+            if(selecao.getUserObject() instanceof Consulta){
+                this.consultaSelecionada = (Consulta) selecao.getUserObject();
+            }
+
+            if(selecao.getUserObject() instanceof Entidade){
+                this.entidadeSelecionada = (Entidade) selecao.getUserObject();
+            }
+
+        }
+
+    }//GEN-LAST:event_lstProjetoMouseClicked
 
     /**
      * @param args the command line arguments
