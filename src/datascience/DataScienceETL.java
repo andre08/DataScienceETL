@@ -16,10 +16,18 @@ public class DataScienceETL {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        FrmPrincipal frmPrincipal = new FrmPrincipal();
-        frmPrincipal.pack();
-        frmPrincipal.setLocationRelativeTo(null);      
-        frmPrincipal.setVisible(true);
+        try {
+            FrmPrincipal frmPrincipal = new FrmPrincipal();
+            frmPrincipal.pack();
+            frmPrincipal.setLocationRelativeTo(null);      
+            frmPrincipal.setVisible(true);
+            
+        } catch (Exception ex) {
+            FrmMensagem frmMensagem = new FrmMensagem(null, true);
+            frmMensagem.Mostrar(ex.toString());
+            frmMensagem.setVisible(true);
+            
+        }
         
     }
     

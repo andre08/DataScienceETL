@@ -35,6 +35,14 @@ public class Controle {
             this.conexoes.add(conexaoNova);
         }else{
             this.conexoes.set(conexoes.indexOf(conexaoAnterior), conexaoNova);
+            // atualizando a conexões nas consultas
+            for (Consulta consulta : consultas) {
+                if(consulta.getConexao().equals(conexaoAnterior)){
+                    int indice = consultas.indexOf(consulta);
+                    consulta.setConexao(conexaoNova);
+                    consultas.set(indice, consulta);
+                }
+            }
         }
         
     }
@@ -99,12 +107,13 @@ public class Controle {
     public void CarregarJson(Frame parent){
         
         FileDialog localizarArquivo = new FileDialog(parent, "Localizar arquivo do projeto", FileDialog.LOAD);
-        localizarArquivo.setDirectory("c:\\");
+        localizarArquivo.setDirectory("C:\\Users\\Pessoal\\Documents\\NetBeansProjects\\DataScienceETL\\");
         localizarArquivo.setFile("*.json");
         localizarArquivo.pack();
         localizarArquivo.setLocationRelativeTo(null);      
         localizarArquivo.setVisible(true);
         String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
+        System.out.println(localizarArquivo.getDirectory());
         if ((localizarArquivo.getDirectory() != null) && (localizarArquivo.getFile() != null)){
 
             String conteudoJson = "";
@@ -149,6 +158,31 @@ public class Controle {
                 consulta.setNome(JsonObjConsulta.getString("NOME"));
                 consulta.setDescricao(JsonObjConsulta.getString("DESCRICAO"));
                 consulta.setSql(JsonObjConsulta.getString("CONSULTA"));
+                
+                JSONObject JsonObjEntidadeConsulta = (JSONObject) JsonObjConsulta.getJSONObject("ENTIDADE") ;
+                
+                Entidade entidadeConsulta = new Entidade();
+                entidadeConsulta.setNome(JsonObjEntidadeConsulta.getString("NOME"));
+                entidadeConsulta.setDescricao(JsonObjEntidadeConsulta.getString("DESCRICAO"));
+                
+                JSONArray JsonArrayAtributoConsulta = JsonObjEntidadeConsulta.getJSONArray("ATRIBUTOS");
+                List<Atributo> atributosConsulta = new ArrayList<Atributo>();
+                
+                for (int j = 0; j < JsonArrayAtributoConsulta.length(); j++) {
+                    JSONObject JsonObjAtrinbutoConsulta = (JSONObject) JsonArrayAtributoConsulta.get(j);
+                    Atributo atributoConsulta = new Atributo();
+                    atributoConsulta.setNome(JsonObjAtrinbutoConsulta.getString("NOME"));
+                    atributoConsulta.setDescricao(JsonObjAtrinbutoConsulta.getString("DESCRICAO"));
+                    atributoConsulta.setObservacao(JsonObjAtrinbutoConsulta.getString("OBSERVACAO"));
+                    atributoConsulta.setTipo(JsonObjAtrinbutoConsulta.getString("TIPO"));
+                    atributoConsulta.setTamanho(JsonObjAtrinbutoConsulta.getInt("TAMANHO"));
+                    atributoConsulta.setPrecisao(JsonObjAtrinbutoConsulta.getInt("PRECISAO"));
+                    atributosConsulta.add(atributoConsulta);
+                }
+                entidadeConsulta.setAtributos(atributosConsulta);
+                
+                consulta.setEntidade(entidadeConsulta);
+
                 for (Conexao conexao : conexoes) {
                     
                     if (conexao.hashCode() == JsonObjConsulta.getInt("CONEXAO")){
@@ -160,8 +194,7 @@ public class Controle {
                 addConsulta(null, consulta);
 
             }
-            
-            
+                        
             JSONArray JsonArrayEntidade;
             JSONArray JsonArrayAtributo;
             JSONObject JsonObjEntidade;
@@ -194,7 +227,7 @@ public class Controle {
     public void SalvarJson(Frame parent){
         
         FileDialog localizarArquivo = new FileDialog(parent, "Localizar arquivo do projeto", FileDialog.SAVE);
-        localizarArquivo.setDirectory("c:\\");
+        localizarArquivo.setDirectory("C:\\Users\\Pessoal\\Documents\\NetBeansProjects\\DataScienceETL\\");
         localizarArquivo.setFile("*.json");
         localizarArquivo.pack();
         localizarArquivo.setLocationRelativeTo(null);      
@@ -236,6 +269,27 @@ public class Controle {
                 JsonObjConsulta.put("NOME",consulta.getNome());
                 JsonObjConsulta.put("DESCRICAO",consulta.getDescricao());
                 JsonObjConsulta.put("CONSULTA",consulta.getSql());
+                
+                JsonObjEntidade = new JSONObject();
+                Entidade entidadeConsulta = consulta.getEntidade();
+                JsonObjEntidade.put("NOME",entidadeConsulta.getNome());
+                JsonObjEntidade.put("DESCRICAO",entidadeConsulta.getDescricao());            
+                
+                JsonArrayAtributo = new JSONArray();
+                for (Atributo atributoConsulta : entidadeConsulta.getAtributos()) {
+                    JsonObjAtrinbuto = new JSONObject();
+                    JsonObjAtrinbuto.put("NOME", atributoConsulta.getNome());
+                    JsonObjAtrinbuto.put("DESCRICAO", atributoConsulta.getDescricao());
+                    JsonObjAtrinbuto.put("OBSERVACAO", atributoConsulta.getObservacao());
+                    JsonObjAtrinbuto.put("TIPO", atributoConsulta.getTipo());
+                    JsonObjAtrinbuto.put("TAMANHO", atributoConsulta.getTamanho());
+                    JsonObjAtrinbuto.put("PRECISAO", atributoConsulta.getPrecisao());
+                    JsonArrayAtributo.put(JsonObjAtrinbuto);
+                }
+
+                JsonObjEntidade.put("ATRIBUTOS", JsonArrayAtributo);
+                JsonObjConsulta.put("ENTIDADE",JsonObjEntidade);
+                
                 JsonObjConsulta.put("CONEXAO",consulta.getConexao().hashCode());
                 
                 JsonArrayConsulta.put(JsonObjConsulta);

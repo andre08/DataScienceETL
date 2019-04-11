@@ -3,6 +3,15 @@ package datascience;
 import java.util.Objects;
 
 public class Atributo {
+
+    public Atributo() {
+        this.nome = "";
+        this.descricao = "";
+        this.tipo = "";
+        this.tamanho = 0;
+        this.precisao = 0;
+        this.observacao = "";
+    }
     
     private String nome;
     private String descricao;

@@ -3,7 +3,7 @@ package datascience;
 import java.util.Objects;
 
 public class Consulta {
-    
+
     /*informações sobre a consulta*/
     private String nome;
     private String descricao;
@@ -13,6 +13,12 @@ public class Consulta {
     private Conexao conexao;
     private Entidade entidade;
 
+    public Consulta() {
+        this.nome = "";
+        this.descricao = "";
+        this.sql = "";
+    }
+        
     public String getNome() {
         return nome;
     }

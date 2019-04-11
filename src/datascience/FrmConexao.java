@@ -5,6 +5,8 @@
  */
 package datascience;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author projeto02
@@ -15,6 +17,7 @@ public class FrmConexao extends javax.swing.JDialog {
      * Creates new form FrmConexao
      */
     private java.awt.Frame parent;
+    String alterado = "N";
     
     public FrmConexao(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -38,6 +41,7 @@ public class FrmConexao extends javax.swing.JDialog {
         txtSenha.setText("");
         txtURL.setText("");
         txtUsuario.setText("");
+        this.alterado = "S";
     }
     
     public void SetConexaoSelecionada(Conexao conexao){
@@ -53,7 +57,8 @@ public class FrmConexao extends javax.swing.JDialog {
             txtSID.setText(conexaoSelecionada.getSID());
             txtSenha.setText(conexaoSelecionada.getPassword());
             txtURL.setText(conexaoSelecionada.getUrl());
-            txtUsuario.setText(conexaoSelecionada.getUsename());            
+            txtUsuario.setText(conexaoSelecionada.getUsename()); 
+            this.alterado = "N";
         }        
     }
 
@@ -96,13 +101,61 @@ public class FrmConexao extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
         jLabel1.setText("Nome:");
 
         jLabel2.setText("Descrição:");
 
         txtDescricao.setColumns(20);
+        txtDescricao.setLineWrap(true);
         txtDescricao.setRows(5);
+        txtDescricao.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtDescricao);
+
+        txtURL.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
+        txtPorta.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
+        txtNomeBase.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
+        txtSID.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
+        txtUsuario.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
+        txtSenha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
 
         jLabel3.setText("URL:");
 
@@ -119,6 +172,11 @@ public class FrmConexao extends javax.swing.JDialog {
         jLabel9.setText("SGDB:");
 
         cbxSGDB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ORACLE", "MySQL", "MS SQL Server" }));
+        cbxSGDB.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -165,8 +223,8 @@ public class FrmConexao extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(cbxSGDB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -305,7 +363,8 @@ public class FrmConexao extends javax.swing.JDialog {
         conexao.setSGDB(cbxSGDB.getSelectedItem().toString());
         
         controle.addConexao(conexaoSelecionada, conexao);
-        dispose();
+        this.conexaoSelecionada = conexao;
+        this.alterado = "N";
             
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -316,10 +375,16 @@ public class FrmConexao extends javax.swing.JDialog {
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         // TODO add your handling code here:
-        if(conexaoSelecionada == null){
-                        
+        if (this.alterado.equals("N")){
+            
+            if(conexaoSelecionada == null){
+
+            }else{
+                ConnectionManager.testConnection(this.parent, conexaoSelecionada);
+            }
+
         }else{
-            ConnectionManager.testConnection(this.parent, conexaoSelecionada);
+            JOptionPane.showConfirmDialog(this,"Para testar a conexão você deve salvar as alterações antes","Aviso",JOptionPane.OK_OPTION);
         }
         
     }//GEN-LAST:event_btnTesteActionPerformed
@@ -332,6 +397,11 @@ public class FrmConexao extends javax.swing.JDialog {
         dispose();
         
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void OnChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OnChange
+        // TODO add your handling code here:
+        this.alterado = "S";
+    }//GEN-LAST:event_OnChange
 
     /**
      * @param args the command line arguments

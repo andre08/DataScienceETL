@@ -1,19 +1,22 @@
 package datascience;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Entidade {
 
-    public Entidade() {
-    }
-        
     private String nome;
     private String descricao;
     private Conexao conexaoOrigem;
     private Conexao conexaoDestino;             
     private Consulta consultaOrigem;
     private List<Atributo> atributos;
+
+    public Entidade() {
+        this.nome = "";
+        this.descricao = "";
+    }
 
     public String getNome() {
         return nome;

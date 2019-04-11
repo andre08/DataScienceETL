@@ -5,15 +5,20 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class FrmConsulta extends javax.swing.JDialog {
 
     private java.awt.Frame parent;
+    String alterado = "N";
     
     public FrmConsulta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -31,6 +36,7 @@ public class FrmConsulta extends javax.swing.JDialog {
         txtNome.setText("");
         txtDescricao.setText("");
         txtEntidade.setText("");
+        this.alterado = "S";
         
     }
     
@@ -53,8 +59,21 @@ public class FrmConsulta extends javax.swing.JDialog {
             txtDescricao.setText(consultaSelecionada.getDescricao());
             txtConsulta.setText(consultaSelecionada.getSql());            
             cbxConexão.setSelectedItem(consultaSelecionada.getConexao());
+            Entidade entidade = consultaSelecionada.getEntidade();
+            txtEntidade.setText(entidade.getNome());
+            
+            DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+            for (Atributo atributo : entidade.getAtributos()) {
+                modelAtributo.setRowCount(modelAtributo.getRowCount()+1);
+                modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount()-1, 0);
+                modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount()-1, 1);
+                modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount()-1, 2);
+                modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount()-1, 3);
+            }
+            tblAtributos.setModel(modelAtributo);
             
         } 
+        this.alterado = "N";
         
     }    
 
@@ -88,12 +107,23 @@ public class FrmConsulta extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
         jLabel1.setText("Nome:");
 
         jLabel2.setText("Descrição:");
 
         txtDescricao.setColumns(20);
         txtDescricao.setRows(5);
+        txtDescricao.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtDescricao);
 
         jLabel3.setText("Entidade:");
@@ -101,26 +131,47 @@ public class FrmConsulta extends javax.swing.JDialog {
         jLabel9.setText("Conexão:");
 
         cbxConexão.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ORACLE", "MySQL", "MS SQL Server" }));
+        cbxConexão.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
 
         jLabel4.setText("Atributos:");
 
         tblAtributos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nome", "Tipo", "Tamanho", "Precisão"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tblAtributos);
 
         jLabel5.setText("Consulta:");
 
+        txtEntidade.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
+
         txtConsulta.setColumns(20);
         txtConsulta.setRows(5);
+        txtConsulta.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                OnChange(evt);
+            }
+        });
         jScrollPane4.setViewportView(txtConsulta);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -291,8 +342,7 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
 
-        Consulta consulta = new Consulta();
-       
+        Consulta consulta = new Consulta();       
         consulta.setNome(txtNome.getText());
         consulta.setDescricao(txtDescricao.getText());
         consulta.setSql(txtConsulta.getText());
@@ -304,41 +354,66 @@ public class FrmConsulta extends javax.swing.JDialog {
         /*salvando dados */
         Entidade entidade = new Entidade();
         entidade.setNome(txtEntidade.getText());
+        
+        List<Atributo> atributos = new ArrayList<Atributo>();
+        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+        for (int i = 0; i < modelAtributo.getRowCount(); i++) {
+            Atributo atributo = new Atributo();
+            atributo.setNome(modelAtributo.getValueAt(i, 0).toString());
+            atributo.setTipo(modelAtributo.getValueAt(i, 1).toString());
+            atributo.setTamanho(Integer.parseInt( modelAtributo.getValueAt(i, 2).toString()));
+            atributo.setPrecisao(Integer.parseInt(modelAtributo.getValueAt(i, 3).toString()));
+            
+            atributos.add(atributo);
+        }        
+        
+        entidade.setAtributos(atributos);
         consulta.setEntidade(entidade);
-                
         controle.addConsulta(consultaSelecionada, consulta);
         this.consultaSelecionada = consulta;
+        this.alterado = "N";
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
 
-        if(consultaSelecionada != null){
-            Connection conn = ConnectionManager.getConnection(this.parent, consultaSelecionada.getConexao());
-            Statement statement;
-            try {
-                statement = conn.createStatement();
-                statement.setFetchSize(10);
-                ResultSet resultSet = statement.executeQuery(consultaSelecionada.getSql());
-                
-                ResultSetMetaData metaData = resultSet.getMetaData();
-                // get the column names; column indexes start from 1
-                for (int i = 1; i < metaData.getColumnCount() + 1; i++) {
-                  String columnName = metaData.getColumnName(i);
-                  String tableName = metaData.getTableName(i);
-                  System.out.println(columnName);
+        if (this.alterado.equals("N")){
+            if(consultaSelecionada != null){
+                Connection conn = ConnectionManager.getConnection(this.parent, consultaSelecionada.getConexao());
+                Statement statement;
+                try {
+                    statement = conn.createStatement();
+                    statement.setFetchSize(10);
+                    ResultSet resultSet = statement.executeQuery(consultaSelecionada.getSql());
+
+                    ResultSetMetaData metaData = resultSet.getMetaData();
+                    // get the column names; column indexes start from 1
+                    
+                    DefaultTableModel model = (DefaultTableModel) this.tblAtributos.getModel();
+                    //insere na tabela o número de linhas que a lista tem
+                    model.setRowCount(metaData.getColumnCount());
+
+                    //laço para inserir os dados dos objetos na Tabela
+                    for (int i = 1; i < metaData.getColumnCount() + 1; i++) {
+                        model.setValueAt(metaData.getColumnName(i), i-1, 0);
+                        model.setValueAt(metaData.getColumnTypeName(i), i-1, 1);
+                        model.setValueAt(metaData.getPrecision(i), i-1, 2);
+                        model.setValueAt(metaData.getScale(i), i-1, 3);
+                    }
+
+                    resultSet.close();
+                    statement.close();
+                    conn.close();            
+
+                } catch (SQLException ex) {
+                    FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+                    frmMensagem.Mostrar(ex.toString());
+                    frmMensagem.setVisible(true);
                 }
 
-                resultSet.close();
-                statement.close();
-                conn.close();            
-
-            } catch (SQLException ex) {
-                FrmMensagem frmMensagem = new FrmMensagem(parent, true);
-                frmMensagem.Mostrar(ex.toString());
-                frmMensagem.setVisible(true);
             }
-            
+        }else{
+            JOptionPane.showConfirmDialog(this,"Para testar a consulta você deve salvar as alterações antes","Aviso",JOptionPane.OK_OPTION);
         }
 
     }//GEN-LAST:event_btnTesteActionPerformed
@@ -348,6 +423,11 @@ public class FrmConsulta extends javax.swing.JDialog {
         dispose();
 
     }//GEN-LAST:event_btnFecharActionPerformed
+
+    private void OnChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OnChange
+        // TODO add your handling code here:
+        this.alterado = "S";
+    }//GEN-LAST:event_OnChange
 
     /**
      * @param args the command line arguments

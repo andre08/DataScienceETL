@@ -3,7 +3,7 @@ package datascience;
 import java.util.Objects;
 
 public class Conexao {
-    
+
     private String nome;
     private String descricao;
     private String url;
@@ -14,6 +14,18 @@ public class Conexao {
     private String password;
     private String SGDB;
 
+    public Conexao() {
+        this.nome = "";
+        this.descricao = "";
+        this.url = "";
+        this.porta = 0;
+        this.nomeBanco = "";
+        this.SID = "";
+        this.usename = "";
+        this.password = "";
+        this.SGDB = "";
+    }  
+    
     public String getNome() {
         return nome;
     }
