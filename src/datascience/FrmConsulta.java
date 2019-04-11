@@ -242,7 +242,7 @@ public class FrmConsulta extends javax.swing.JDialog {
             }
         });
 
-        btnTeste.setText("Test");
+        btnTeste.setText("Executar Consulta");
         btnTeste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTesteActionPerformed(evt);
@@ -277,7 +277,7 @@ public class FrmConsulta extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTeste)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
                 .addComponent(btnExcluir)
                 .addGap(18, 18, 18)
                 .addComponent(btnNovo)
