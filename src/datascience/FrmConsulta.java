@@ -19,7 +19,7 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private java.awt.Frame parent;
     String alterado = "N";
-    
+
     public FrmConsulta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -29,53 +29,53 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     public Consulta consultaSelecionada;
     public Controle controle;
-    
-    private void LimparTela(){
+
+    private void LimparTela() {
 
         cbxConexão.setSelectedIndex(-1);
         txtNome.setText("");
         txtDescricao.setText("");
         txtEntidade.setText("");
         this.alterado = "S";
-        
+
     }
-    
-    public void AtualizarConexao(){
-        
+
+    public void AtualizarConexao() {
+
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (Conexao conexao : controle.getConexoes()) {
             model.addElement(conexao);
         }
         cbxConexão.setModel(model);
-        
+
     }
-    
-    public void SetConsultaSelecionada(Consulta consulta){
-        
+
+    public void SetConsultaSelecionada(Consulta consulta) {
+
         this.consultaSelecionada = consulta;
-        
-        if(this.consultaSelecionada != null){
+
+        if (this.consultaSelecionada != null) {
             txtNome.setText(consultaSelecionada.getNome());
             txtDescricao.setText(consultaSelecionada.getDescricao());
-            txtConsulta.setText(consultaSelecionada.getSql());            
+            txtConsulta.setText(consultaSelecionada.getSql());
             cbxConexão.setSelectedItem(consultaSelecionada.getConexao());
             Entidade entidade = consultaSelecionada.getEntidade();
             txtEntidade.setText(entidade.getNome());
-            
+
             DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
             for (Atributo atributo : entidade.getAtributos()) {
-                modelAtributo.setRowCount(modelAtributo.getRowCount()+1);
-                modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount()-1, 0);
-                modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount()-1, 1);
-                modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount()-1, 2);
-                modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount()-1, 3);
+                modelAtributo.setRowCount(modelAtributo.getRowCount() + 1);
+                modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount() - 1, 0);
+                modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount() - 1, 1);
+                modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount() - 1, 2);
+                modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount() - 1, 3);
             }
             tblAtributos.setModel(modelAtributo);
-            
-        } 
+
+        }
         this.alterado = "N";
-        
-    }    
+
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -106,6 +106,7 @@ public class FrmConsulta extends javax.swing.JDialog {
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Gestão de Consultas");
 
         txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -277,9 +278,9 @@ public class FrmConsulta extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTeste)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExcluir)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSalvar)
@@ -342,31 +343,31 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
 
-        Consulta consulta = new Consulta();       
+        Consulta consulta = new Consulta();
         consulta.setNome(txtNome.getText());
         consulta.setDescricao(txtDescricao.getText());
         consulta.setSql(txtConsulta.getText());
         Object[] model = cbxConexão.getSelectedObjects();
-        if(model.length > 0){
+        if (model.length > 0) {
             Conexao conexao = (Conexao) model[0];
             consulta.setConexao(conexao);
         }
         /*salvando dados */
         Entidade entidade = new Entidade();
         entidade.setNome(txtEntidade.getText());
-        
+
         List<Atributo> atributos = new ArrayList<Atributo>();
         DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
         for (int i = 0; i < modelAtributo.getRowCount(); i++) {
             Atributo atributo = new Atributo();
             atributo.setNome(modelAtributo.getValueAt(i, 0).toString());
             atributo.setTipo(modelAtributo.getValueAt(i, 1).toString());
-            atributo.setTamanho(Integer.parseInt( modelAtributo.getValueAt(i, 2).toString()));
+            atributo.setTamanho(Integer.parseInt(modelAtributo.getValueAt(i, 2).toString()));
             atributo.setPrecisao(Integer.parseInt(modelAtributo.getValueAt(i, 3).toString()));
-            
+
             atributos.add(atributo);
-        }        
-        
+        }
+
         entidade.setAtributos(atributos);
         consulta.setEntidade(entidade);
         controle.addConsulta(consultaSelecionada, consulta);
@@ -377,43 +378,57 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
 
-        if (this.alterado.equals("N")){
-            if(consultaSelecionada != null){
-                Connection conn = ConnectionManager.getConnection(this.parent, consultaSelecionada.getConexao());
-                Statement statement;
-                try {
-                    statement = conn.createStatement();
-                    statement.setFetchSize(10);
-                    ResultSet resultSet = statement.executeQuery(consultaSelecionada.getSql());
+        if (this.alterado.equals("N")) {
 
-                    ResultSetMetaData metaData = resultSet.getMetaData();
-                    // get the column names; column indexes start from 1
-                    
-                    DefaultTableModel model = (DefaultTableModel) this.tblAtributos.getModel();
-                    //insere na tabela o número de linhas que a lista tem
-                    model.setRowCount(metaData.getColumnCount());
+            if (consultaSelecionada != null) {
 
-                    //laço para inserir os dados dos objetos na Tabela
-                    for (int i = 1; i < metaData.getColumnCount() + 1; i++) {
-                        model.setValueAt(metaData.getColumnName(i), i-1, 0);
-                        model.setValueAt(metaData.getColumnTypeName(i), i-1, 1);
-                        model.setValueAt(metaData.getPrecision(i), i-1, 2);
-                        model.setValueAt(metaData.getScale(i), i-1, 3);
+                int resultado;
+
+                if (tblAtributos.getRowCount() >= 1) {
+                    resultado = JOptionPane.showConfirmDialog(this, "Deseja relamente executar essa consulta, atributos serão atualizados e as customizações serão perdidas", "Confirmação", JOptionPane.YES_NO_OPTION);
+                } else {
+                    resultado = JOptionPane.YES_OPTION;
+                }
+                if (resultado == JOptionPane.YES_OPTION) {
+
+                    Connection conn = ConnectionManager.getConnection(this.parent, consultaSelecionada.getConexao());
+                    Statement statement;
+                    try {
+                        statement = conn.createStatement();
+                        statement.setFetchSize(10);
+                        ResultSet resultSet = statement.executeQuery(consultaSelecionada.getSql());
+
+                        ResultSetMetaData metaData = resultSet.getMetaData();
+                        // get the column names; column indexes start from 1
+
+                        DefaultTableModel model = (DefaultTableModel) this.tblAtributos.getModel();
+                        //insere na tabela o número de linhas que a lista tem
+                        model.setRowCount(metaData.getColumnCount());
+
+                        //laço para inserir os dados dos objetos na Tabela
+                        for (int i = 1; i < metaData.getColumnCount() + 1; i++) {
+                            model.setValueAt(metaData.getColumnName(i), i - 1, 0);
+                            model.setValueAt(metaData.getColumnTypeName(i), i - 1, 1);
+                            model.setValueAt(metaData.getPrecision(i), i - 1, 2);
+                            model.setValueAt(metaData.getScale(i), i - 1, 3);
+                        }
+
+                        resultSet.close();
+                        statement.close();
+                        conn.close();
+
+                        JOptionPane.showMessageDialog(this, "Consulta executada com sucesso, a lista de campos foi atualizada.");
+
+                    } catch (SQLException ex) {
+                        FrmMensagem frmMensagem = new FrmMensagem(parent, true);
+                        frmMensagem.Mostrar(ex.toString());
+                        frmMensagem.setVisible(true);
                     }
-
-                    resultSet.close();
-                    statement.close();
-                    conn.close();            
-
-                } catch (SQLException ex) {
-                    FrmMensagem frmMensagem = new FrmMensagem(parent, true);
-                    frmMensagem.Mostrar(ex.toString());
-                    frmMensagem.setVisible(true);
                 }
 
             }
-        }else{
-            JOptionPane.showConfirmDialog(this,"Para testar a consulta você deve salvar as alterações antes","Aviso",JOptionPane.OK_OPTION);
+        } else {
+            JOptionPane.showConfirmDialog(this, "Para testar a consulta você deve salvar as alterações antes", "Aviso", JOptionPane.OK_OPTION);
         }
 
     }//GEN-LAST:event_btnTesteActionPerformed

@@ -67,11 +67,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenu8 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstProjeto = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstProjeto = new javax.swing.JTree();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mniNovo = new javax.swing.JMenuItem();
@@ -96,7 +96,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuItem1.setText("jMenuItem1");
 
+        lstProjeto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstProjetoMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(lstProjeto);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Construtor de Staging Area para processo de ETL");
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(800, 600));
 
@@ -123,22 +131,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 .addGap(0, 11, Short.MAX_VALUE))
         );
 
-        lstProjeto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstProjetoMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(lstProjeto);
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
+            .addGap(0, 630, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+            .addGap(0, 364, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Arquivo");
@@ -183,7 +184,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniDefinicaoProjeto.setText("Definição do Projeto");
         jMenu2.add(mniDefinicaoProjeto);
 
-        mniGerarSqlStage.setText("Gerar SQL StageArea");
+        mniGerarSqlStage.setText("Gerar SQL Staging Area");
         jMenu2.add(mniGerarSqlStage);
 
         mniGerarSqlDW.setText("Gerar SQL Data Ware House");
