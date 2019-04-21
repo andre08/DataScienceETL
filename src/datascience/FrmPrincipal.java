@@ -1,9 +1,9 @@
 package datascience;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeSelectionModel;
 
 public class FrmPrincipal extends javax.swing.JFrame {
 
@@ -11,30 +11,30 @@ public class FrmPrincipal extends javax.swing.JFrame {
     Conexao conexaoSelecionado;
     Consulta consultaSelecionada;
     Entidade entidadeSelecionada;
-    
+
     public FrmPrincipal() {
-        initComponents(); 
+        initComponents();
         controle = new Controle();
-        controle.NovoJson();    
+        controle.NovoJson();
         AtualizarTela();
     }
-    
-    private void AtualizarTela(){
-      
+
+    private void AtualizarTela() {
+
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Projeto");
 
         DefaultMutableTreeNode conexaoNode = new DefaultMutableTreeNode("Conexões");
         DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
         DefaultMutableTreeNode entidadeNode = new DefaultMutableTreeNode("Entidades");
-        
+
         DefaultMutableTreeNode itensNode;
-        
+
         for (Conexao conexao : controle.getConexoes()) {
             itensNode = new DefaultMutableTreeNode(conexao.getNome());
             itensNode.setUserObject(conexao);
             conexaoNode.add(itensNode);
         }
-        
+
         for (Consulta consulta : controle.getConsultas()) {
             itensNode = new DefaultMutableTreeNode(consulta.getNome());
             itensNode.setUserObject(consulta);
@@ -50,28 +50,24 @@ public class FrmPrincipal extends javax.swing.JFrame {
         rootNode.add(conexaoNode);
         rootNode.add(consultaNode);
         rootNode.add(entidadeNode);
-        
+
         DefaultTreeModel modelo = new DefaultTreeModel(rootNode);
         modelo.reload(rootNode);
-        lstProjeto.setModel(modelo); 
-        
-        for(int i=0;i<lstProjeto.getRowCount();++i){
+        lstProjeto.setModel(modelo);
+
+        for (int i = 0; i < lstProjeto.getRowCount(); ++i) {
             lstProjeto.expandRow(i);
-        }        
+        }
 
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu8 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstProjeto = new javax.swing.JTree();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mniNovo = new javax.swing.JMenuItem();
@@ -92,9 +88,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenu9 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
 
-        jMenu8.setText("jMenu8");
-
-        jMenuItem1.setText("jMenuItem1");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Construtor de Staging Area para processo de ETL");
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         lstProjeto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -103,43 +100,19 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(lstProjeto);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Construtor de Staging Area para processo de ETL");
-        setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(547, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jButton1)
-                .addGap(0, 11, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 630, Short.MAX_VALUE)
+            .addGap(0, 817, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 817, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 364, Short.MAX_VALUE)
+            .addGap(0, 459, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Arquivo");
@@ -185,9 +158,19 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenu2.add(mniDefinicaoProjeto);
 
         mniGerarSqlStage.setText("Gerar SQL Staging Area");
+        mniGerarSqlStage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerarSqlStageActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniGerarSqlStage);
 
-        mniGerarSqlDW.setText("Gerar SQL Data Ware House");
+        mniGerarSqlDW.setText("Gerar SQL Data Warehouse");
+        mniGerarSqlDW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerarSqlDWActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniGerarSqlDW);
 
         jMenuBar1.add(jMenu2);
@@ -218,7 +201,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenu6.setText("Entidade Destinos");
 
-        mniGerenciarEntidade.setText("Gerenciar Entidades de Destino");
+        mniGerenciarEntidade.setText("Gerenciar Entidade Dimensão/Fato");
+        mniGerenciarEntidade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerenciarEntidadeActionPerformed(evt);
+            }
+        });
         jMenu6.add(mniGerenciarEntidade);
 
         jMenuBar1.add(jMenu6);
@@ -226,6 +214,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenu9.setText("Mapeamento");
 
         jMenuItem3.setText("Configurar Mapeamento");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu9.add(jMenuItem3);
 
         jMenuBar1.add(jMenu9);
@@ -236,11 +229,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -248,32 +239,25 @@ public class FrmPrincipal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-               
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void mniAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniAbrirActionPerformed
-        if ((controle.getConexoes().size() > 0)||(controle.getConsultas().size() > 0)||(controle.getEntidades().size() > 0)){
-            
-            int resultado = JOptionPane.showConfirmDialog(this,"Deseja salvar os dados antes de criar um novo","Confirmação",JOptionPane.YES_NO_OPTION);
-            if(resultado == JOptionPane.YES_OPTION){
+        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidades().size() > 0)) {
+
+            int resultado = JOptionPane.showConfirmDialog(this, "Deseja salvar os dados antes de criar um novo", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (resultado == JOptionPane.YES_OPTION) {
                 controle.SalvarJson(this);
                 controle.NovoJson();
                 controle.CarregarJson(this);
-            } else{
+            } else {
                 controle.NovoJson();
                 controle.CarregarJson(this);
-            }          
-        }else{   
+            }
+        } else {
             controle.NovoJson();
             controle.CarregarJson(this);
         }
@@ -287,38 +271,38 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void mniNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniNovoActionPerformed
 
-        if ((controle.getConexoes().size() > 0)||(controle.getConsultas().size() > 0)||(controle.getEntidades().size() > 0)){
-            
-            int resultado = JOptionPane.showConfirmDialog(this,"Deseja salvar os dados antes de criar um novo","Confirmação",JOptionPane.YES_NO_OPTION);
-            if(resultado == JOptionPane.YES_OPTION){
+        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidades().size() > 0)) {
+
+            int resultado = JOptionPane.showConfirmDialog(this, "Deseja salvar os dados antes de criar um novo", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (resultado == JOptionPane.YES_OPTION) {
                 controle.SalvarJson(this);
-                controle.NovoJson(); 
+                controle.NovoJson();
                 AtualizarTela();
-            }else{
-                controle.NovoJson(); 
+            } else {
+                controle.NovoJson();
                 AtualizarTela();
             }
-            
-        }else{                    
-          controle.NovoJson();  
-          AtualizarTela();
+
+        } else {
+            controle.NovoJson();
+            AtualizarTela();
         }
-        
+
     }//GEN-LAST:event_mniNovoActionPerformed
 
     private void mniGerenciarConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarConexaoActionPerformed
 
         FrmConexao frmConexao = new FrmConexao(this, true);
-        frmConexao.controle = this.controle;    
-        if(this.conexaoSelecionado != null){
+        frmConexao.controle = this.controle;
+        if (this.conexaoSelecionado != null) {
             frmConexao.SetConexaoSelecionada(this.conexaoSelecionado);
         }
         frmConexao.pack();
-        frmConexao.setLocationRelativeTo(null);      
+        frmConexao.setLocationRelativeTo(null);
         frmConexao.setVisible(true);
         this.controle = frmConexao.controle;
         AtualizarTela();
-        
+
     }//GEN-LAST:event_mniGerenciarConexaoActionPerformed
 
     private void mniSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSalvarActionPerformed
@@ -327,48 +311,111 @@ public class FrmPrincipal extends javax.swing.JFrame {
         AtualizarTela();
     }//GEN-LAST:event_mniSalvarActionPerformed
 
-    
+
     private void lstProjetoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstProjetoMouseClicked
 
-        this.conexaoSelecionado = null;
-        this.consultaSelecionada = null;
-        this.entidadeSelecionada = null;
-        DefaultMutableTreeNode selecao = (DefaultMutableTreeNode)lstProjeto.getLastSelectedPathComponent();        
-        
-        if (selecao != null){
-        
-            if(selecao.getUserObject() instanceof Conexao){
-                this.conexaoSelecionado = (Conexao) selecao.getUserObject();
+        DefaultMutableTreeNode selecao = (DefaultMutableTreeNode) lstProjeto.getLastSelectedPathComponent();
+
+        if (selecao != null) {
+
+            if (selecao.getUserObject() instanceof Conexao) {
+                this.consultaSelecionada = null;
+                this.entidadeSelecionada = null;
+                if (this.conexaoSelecionado != null) {
+                    if (this.conexaoSelecionado.equals((Conexao) selecao.getUserObject())) {
+                        mniGerenciarConexaoActionPerformed(null);
+                    } else {
+                        this.conexaoSelecionado = (Conexao) selecao.getUserObject();
+                    }
+                } else {
+                    this.conexaoSelecionado = (Conexao) selecao.getUserObject();
+                }
             }
 
-            if(selecao.getUserObject() instanceof Consulta){
-                this.consultaSelecionada = (Consulta) selecao.getUserObject();
+            if (selecao.getUserObject() instanceof Consulta) {
+                this.conexaoSelecionado = null;
+                this.entidadeSelecionada = null;
+                if (this.consultaSelecionada != null) {
+                    if (this.consultaSelecionada.equals((Consulta) selecao.getUserObject())) {
+                        mniGerenciarConsultaActionPerformed(null);
+                    } else {
+                        this.consultaSelecionada = (Consulta) selecao.getUserObject();
+                    }
+                } else {
+                    this.consultaSelecionada = (Consulta) selecao.getUserObject();
+                }
             }
 
-            if(selecao.getUserObject() instanceof Entidade){
-                this.entidadeSelecionada = (Entidade) selecao.getUserObject();
-            }
+            if (selecao.getUserObject() instanceof Entidade) {
+                this.conexaoSelecionado = null;
+                this.consultaSelecionada = null;
+                if (this.entidadeSelecionada != null) {
+                    if (this.entidadeSelecionada.equals((Entidade) selecao.getUserObject())) {
+                        mniGerenciarEntidadeActionPerformed(null);
+                    } else {
+                        this.entidadeSelecionada = (Entidade) selecao.getUserObject();
+                    }
 
+                } else {
+                    this.entidadeSelecionada = (Entidade) selecao.getUserObject();
+                }
+            }
         }
-
     }//GEN-LAST:event_lstProjetoMouseClicked
 
     private void mniGerenciarConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarConsultaActionPerformed
         // TODO add your handling code here:
         FrmConsulta frmConsulta = new FrmConsulta(this, true);
-        frmConsulta.controle = this.controle;    
-        frmConsulta.AtualizarConexao();
-        if(this.consultaSelecionada != null){
+        frmConsulta.controle = this.controle;
+        if (this.consultaSelecionada != null) {
             frmConsulta.SetConsultaSelecionada(this.consultaSelecionada);
+        } else {
+            frmConsulta.LimparTela();
         }
         frmConsulta.pack();
-        frmConsulta.setLocationRelativeTo(null);      
+        frmConsulta.setLocationRelativeTo(null);
         frmConsulta.setVisible(true);
         this.controle = frmConsulta.controle;
         AtualizarTela();
-        
-        
+
+
     }//GEN-LAST:event_mniGerenciarConsultaActionPerformed
+
+    private void mniGerenciarEntidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarEntidadeActionPerformed
+        // TODO add your handling code here:
+        FrmDimensaoFato frmDimensaoFato = new FrmDimensaoFato(this, true);
+        frmDimensaoFato.pack();
+        frmDimensaoFato.setLocationRelativeTo(null);
+        frmDimensaoFato.setVisible(true);
+    }//GEN-LAST:event_mniGerenciarEntidadeActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        FrmMapeamento frmMapeamento = new FrmMapeamento(this, true);
+        frmMapeamento.pack();
+        frmMapeamento.setLocationRelativeTo(null);
+        frmMapeamento.setVisible(true);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void mniGerarSqlStageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerarSqlStageActionPerformed
+        // TODO add your handling code here:
+        FrmGerarStagingArea frmGerarStagingArea = new FrmGerarStagingArea(this, true);
+        frmGerarStagingArea.controle = this.controle;
+        frmGerarStagingArea.AtualizarConsultas();
+        frmGerarStagingArea.pack();
+        frmGerarStagingArea.setLocationRelativeTo(null);
+        frmGerarStagingArea.setVisible(true);
+    }//GEN-LAST:event_mniGerarSqlStageActionPerformed
+
+    private void mniGerarSqlDWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerarSqlDWActionPerformed
+        // TODO add your handling code here:
+        FrmGerarDataWarehouse frmGerarDataWarehouse = new FrmGerarDataWarehouse(this, true);
+        frmGerarDataWarehouse.controle = this.controle;
+        frmGerarDataWarehouse.AtualizarEntidades();
+        frmGerarDataWarehouse.pack();
+        frmGerarDataWarehouse.setLocationRelativeTo(null);
+        frmGerarDataWarehouse.setVisible(true);
+    }//GEN-LAST:event_mniGerarSqlDWActionPerformed
 
     /**
      * @param args the command line arguments
@@ -381,7 +428,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                System.out.println(info.getName());
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -406,21 +454,18 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 new FrmPrincipal().setVisible(true);
             }
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;

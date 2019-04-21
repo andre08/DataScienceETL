@@ -5,6 +5,10 @@
  */
 package datascience;
 
+import java.awt.LayoutManager;
+import java.awt.LayoutManager2;
+import javax.swing.UIManager;
+
 /**
  *
  * @author Pessoal

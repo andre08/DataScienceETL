@@ -7,74 +7,122 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 public class FrmConsulta extends javax.swing.JDialog {
 
     private java.awt.Frame parent;
-    String alterado = "N";
+
+    public Controle controle;
+    public Consulta consultaSelecionada;
+    public Consulta consultaAtual;
 
     public FrmConsulta(java.awt.Frame parent, boolean modal) {
+
         super(parent, modal);
         initComponents();
-        LimparTela();
         this.parent = parent;
+
+        tblAtributos.getColumnModel().getColumn(4).setWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMinWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMaxWidth(0);
+
+        //desativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+        btnTeste.setEnabled(false);
+        btnAtributo.setEnabled(false);
+        btnFechar.setEnabled(true);
+
     }
 
-    public Consulta consultaSelecionada;
-    public Controle controle;
+    public void LimparTela() {
 
-    private void LimparTela() {
-
-        cbxConexão.setSelectedIndex(-1);
+        this.consultaSelecionada = null;
+        this.consultaAtual = null;
         txtNome.setText("");
         txtDescricao.setText("");
         txtEntidade.setText("");
-        this.alterado = "S";
 
+        AtualizarConexao();
+        cbxConexão.setSelectedIndex(-1);
+
+        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+        modelAtributo.setRowCount(0);
+        tblAtributos.setModel(modelAtributo);
+
+        //ativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(true);
+        btnExcluir.setEnabled(false);
+
+        //crinando um novo objeto
+        this.consultaAtual = new Consulta();
     }
 
-    public void AtualizarConexao() {
+    private void CarregaAtributos() {
 
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (Conexao conexao : controle.getConexoes()) {
-            model.addElement(conexao);
-        }
-        cbxConexão.setModel(model);
+        Entidade entidade = consultaAtual.getEntidade();
 
-    }
+        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+        //ativando controles
+        if (entidade.getAtributos().size() > 0) {
 
-    public void SetConsultaSelecionada(Consulta consulta) {
-
-        this.consultaSelecionada = consulta;
-
-        if (this.consultaSelecionada != null) {
-            txtNome.setText(consultaSelecionada.getNome());
-            txtDescricao.setText(consultaSelecionada.getDescricao());
-            txtConsulta.setText(consultaSelecionada.getSql());
-            cbxConexão.setSelectedItem(consultaSelecionada.getConexao());
-            Entidade entidade = consultaSelecionada.getEntidade();
-            txtEntidade.setText(entidade.getNome());
-
-            DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
             for (Atributo atributo : entidade.getAtributos()) {
                 modelAtributo.setRowCount(modelAtributo.getRowCount() + 1);
                 modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount() - 1, 0);
                 modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount() - 1, 1);
                 modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount() - 1, 2);
                 modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount() - 1, 3);
+                modelAtributo.setValueAt(atributo, modelAtributo.getRowCount() - 1, 4);
             }
             tblAtributos.setModel(modelAtributo);
 
+            btnAtributo.setEnabled(true);
+        } else {
+            btnAtributo.setEnabled(false);
         }
-        this.alterado = "N";
+    }
 
+    public void AtualizarConexao() {
+
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if (controle != null) {
+            if (controle.getConexoes() != null) {
+                for (Conexao conexao : controle.getConexoes()) {
+                    model.addElement(conexao);
+                }
+            }
+        }
+        cbxConexão.setModel(model);
+    }
+
+    public void SetConsultaSelecionada(Consulta consulta) {
+
+        this.consultaSelecionada = consulta;
+        this.consultaAtual = consulta;
+
+        if (this.consultaAtual != null) {
+
+            txtNome.setText(consultaAtual.getNome());
+            txtDescricao.setText(consultaAtual.getDescricao());
+            txtConsulta.setText(consultaAtual.getSql());
+            AtualizarConexao();
+            cbxConexão.setSelectedItem(consultaAtual.getConexao());
+            Entidade entidade = consultaAtual.getEntidade();
+            txtEntidade.setText(entidade.getNome());
+
+            //ativando controles
+            btnNovo.setEnabled(true);
+            btnSalvar.setEnabled(true);
+            btnExcluir.setEnabled(true);
+
+            CarregaAtributos();
+
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -103,16 +151,11 @@ public class FrmConsulta extends javax.swing.JDialog {
         btnSalvar = new javax.swing.JButton();
         btnNovo = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
+        btnAtributo = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestão de Consultas");
-
-        txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
 
         jLabel1.setText("Nome:");
 
@@ -120,23 +163,11 @@ public class FrmConsulta extends javax.swing.JDialog {
 
         txtDescricao.setColumns(20);
         txtDescricao.setRows(5);
-        txtDescricao.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
         jScrollPane1.setViewportView(txtDescricao);
 
         jLabel3.setText("Entidade:");
 
         jLabel9.setText("Conexão:");
-
-        cbxConexão.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ORACLE", "MySQL", "MS SQL Server" }));
-        cbxConexão.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
 
         jLabel4.setText("Atributos:");
 
@@ -145,34 +176,33 @@ public class FrmConsulta extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Nome", "Tipo", "Tamanho", "Precisão"
+                "Nome", "Tipo", "Tamanho", "Precisão", "Objeto"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
         jScrollPane2.setViewportView(tblAtributos);
+        if (tblAtributos.getColumnModel().getColumnCount() > 0) {
+            tblAtributos.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         jLabel5.setText("Consulta:");
 
-        txtEntidade.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
         txtConsulta.setColumns(20);
         txtConsulta.setRows(5);
-        txtConsulta.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
         jScrollPane4.setViewportView(txtConsulta);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -271,6 +301,13 @@ public class FrmConsulta extends javax.swing.JDialog {
             }
         });
 
+        btnAtributo.setText("Atributo");
+        btnAtributo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtributoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -278,7 +315,9 @@ public class FrmConsulta extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTeste)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addComponent(btnAtributo)
+                .addGap(71, 71, 71)
                 .addComponent(btnExcluir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo)
@@ -297,7 +336,8 @@ public class FrmConsulta extends javax.swing.JDialog {
                     .addComponent(btnTeste)
                     .addComponent(btnSalvar)
                     .addComponent(btnNovo)
-                    .addComponent(btnExcluir))
+                    .addComponent(btnExcluir)
+                    .addComponent(btnAtributo))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -307,9 +347,7 @@ public class FrmConsulta extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jSeparator1)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +357,8 @@ public class FrmConsulta extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -327,58 +366,46 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
 
-        controle.getConsultas().remove(consultaSelecionada);
-        this.consultaSelecionada = null;
-        dispose();
+        if (this.consultaSelecionada != null) {
+            controle.getConsultas().remove(consultaSelecionada);
+            this.consultaSelecionada = null;
+            dispose();
+        }
 
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
 
-        consultaSelecionada = null;
         LimparTela();
-        AtualizarConexao();
 
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
 
-        Consulta consulta = new Consulta();
-        consulta.setNome(txtNome.getText());
-        consulta.setDescricao(txtDescricao.getText());
-        consulta.setSql(txtConsulta.getText());
+        this.consultaAtual.setNome(txtNome.getText());
+        this.consultaAtual.setDescricao(txtDescricao.getText());
+        this.consultaAtual.setSql(txtConsulta.getText());
         Object[] model = cbxConexão.getSelectedObjects();
+
         if (model.length > 0) {
             Conexao conexao = (Conexao) model[0];
-            consulta.setConexao(conexao);
+            this.consultaAtual.setConexao(conexao);
         }
+
         /*salvando dados */
-        Entidade entidade = new Entidade();
+        Entidade entidade = this.consultaAtual.getEntidade();
         entidade.setNome(txtEntidade.getText());
-
-        List<Atributo> atributos = new ArrayList<Atributo>();
-        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
-        for (int i = 0; i < modelAtributo.getRowCount(); i++) {
-            Atributo atributo = new Atributo();
-            atributo.setNome(modelAtributo.getValueAt(i, 0).toString());
-            atributo.setTipo(modelAtributo.getValueAt(i, 1).toString());
-            atributo.setTamanho(Integer.parseInt(modelAtributo.getValueAt(i, 2).toString()));
-            atributo.setPrecisao(Integer.parseInt(modelAtributo.getValueAt(i, 3).toString()));
-
-            atributos.add(atributo);
-        }
-
-        entidade.setAtributos(atributos);
-        consulta.setEntidade(entidade);
-        controle.addConsulta(consultaSelecionada, consulta);
-        this.consultaSelecionada = consulta;
-        this.alterado = "N";
+        this.consultaAtual.setEntidade(entidade);
+        controle.addConsulta(this.consultaSelecionada, this.consultaAtual);
+        this.consultaSelecionada = this.consultaAtual;
+        
+        JOptionPane.showMessageDialog(this, "Consulta salva com sucesso.");
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
 
-        if (this.alterado.equals("N")) {
+        if (this.consultaSelecionada.equals(this.consultaAtual)) {
 
             if (consultaSelecionada != null) {
 
@@ -411,6 +438,7 @@ public class FrmConsulta extends javax.swing.JDialog {
                             model.setValueAt(metaData.getColumnTypeName(i), i - 1, 1);
                             model.setValueAt(metaData.getPrecision(i), i - 1, 2);
                             model.setValueAt(metaData.getScale(i), i - 1, 3);
+                            model.setValueAt(evt, i, i);
                         }
 
                         resultSet.close();
@@ -436,13 +464,12 @@ public class FrmConsulta extends javax.swing.JDialog {
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
 
         dispose();
-
+        
     }//GEN-LAST:event_btnFecharActionPerformed
 
-    private void OnChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OnChange
+    private void btnAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtributoActionPerformed
         // TODO add your handling code here:
-        this.alterado = "S";
-    }//GEN-LAST:event_OnChange
+    }//GEN-LAST:event_btnAtributoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -487,6 +514,7 @@ public class FrmConsulta extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtributo;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnFechar;
     private javax.swing.JButton btnNovo;

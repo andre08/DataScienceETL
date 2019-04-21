@@ -1,21 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datascience;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author projeto02
- */
 public class FrmConexao extends javax.swing.JDialog {
 
-    /**
-     * Creates new form FrmConexao
-     */
     private java.awt.Frame parent;
     String alterado = "N";
     
@@ -24,7 +12,6 @@ public class FrmConexao extends javax.swing.JDialog {
         initComponents();
         LimparTela();
         this.parent = parent;
-       
     }
     
     public Conexao conexaoSelecionada;
@@ -42,6 +29,7 @@ public class FrmConexao extends javax.swing.JDialog {
         txtURL.setText("");
         txtUsuario.setText("");
         this.alterado = "S";
+        
     }
     
     public void SetConexaoSelecionada(Conexao conexao){
@@ -59,7 +47,8 @@ public class FrmConexao extends javax.swing.JDialog {
             txtURL.setText(conexaoSelecionada.getUrl());
             txtUsuario.setText(conexaoSelecionada.getUsename()); 
             this.alterado = "N";
-        }        
+        } 
+        
     }
 
     /**
@@ -100,6 +89,7 @@ public class FrmConexao extends javax.swing.JDialog {
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Gestão de Conexões");
 
         txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -365,7 +355,8 @@ public class FrmConexao extends javax.swing.JDialog {
         controle.addConexao(conexaoSelecionada, conexao);
         this.conexaoSelecionada = conexao;
         this.alterado = "N";
-            
+
+        JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");        
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed

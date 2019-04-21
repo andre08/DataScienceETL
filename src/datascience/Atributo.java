@@ -10,6 +10,10 @@ public class Atributo {
         this.tipo = "";
         this.tamanho = 0;
         this.precisao = 0;
+        this.obrigatorio = "N";
+        this.chavePrimaria = "N";
+        this.chaveEstrangeira = "N";
+        this.valorSequencial = "N";
         this.observacao = "";
     }
     
@@ -18,6 +22,12 @@ public class Atributo {
     private String tipo;
     private int tamanho;
     private int precisao;
+    private String obrigatorio;
+    private String chavePrimaria;
+    private String chaveEstrangeira;
+    private String valorSequencial;
+    private Entidade referenciaEntidade;
+    private Atributo referenciaAtributo;
     private String observacao;
 
     public String getNome() {
@@ -60,6 +70,54 @@ public class Atributo {
         this.precisao = precisao;
     }
 
+    public String getObrigatorio() {
+        return obrigatorio;
+    }
+
+    public void setObrigatorio(String obrigatorio) {
+        this.obrigatorio = obrigatorio;
+    }
+
+    public String getChavePrimaria() {
+        return chavePrimaria;
+    }
+
+    public void setChavePrimaria(String chavePrimaria) {
+        this.chavePrimaria = chavePrimaria;
+    }
+
+    public String getChaveEstrangeira() {
+        return chaveEstrangeira;
+    }
+
+    public void setChaveEstrangeira(String chaveEstrangeira) {
+        this.chaveEstrangeira = chaveEstrangeira;
+    }
+
+    public String getValorSequencial() {
+        return valorSequencial;
+    }
+
+    public void setValorSequencial(String valorSequencial) {
+        this.valorSequencial = valorSequencial;
+    }
+
+    public Entidade getReferenciaEntidade() {
+        return referenciaEntidade;
+    }
+
+    public void setReferenciaEntidade(Entidade referenciaEntidade) {
+        this.referenciaEntidade = referenciaEntidade;
+    }
+
+    public Atributo getReferenciaAtributo() {
+        return referenciaAtributo;
+    }
+
+    public void setReferenciaAtributo(Atributo referenciaAtributo) {
+        this.referenciaAtributo = referenciaAtributo;
+    }
+
     public String getObservacao() {
         return observacao;
     }
@@ -69,19 +127,20 @@ public class Atributo {
     }
 
     @Override
-    public String toString() {
-        return "Atributo{" + "nome=" + nome + '}';
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Objects.hashCode(this.nome);
-        hash = 29 * hash + Objects.hashCode(this.descricao);
-        hash = 29 * hash + Objects.hashCode(this.tipo);
-        hash = 29 * hash + this.tamanho;
-        hash = 29 * hash + this.precisao;
-        hash = 29 * hash + Objects.hashCode(this.observacao);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.nome);
+        hash = 97 * hash + Objects.hashCode(this.descricao);
+        hash = 97 * hash + Objects.hashCode(this.tipo);
+        hash = 97 * hash + this.tamanho;
+        hash = 97 * hash + this.precisao;
+        hash = 97 * hash + Objects.hashCode(this.obrigatorio);
+        hash = 97 * hash + Objects.hashCode(this.chavePrimaria);
+        hash = 97 * hash + Objects.hashCode(this.chaveEstrangeira);
+        hash = 97 * hash + Objects.hashCode(this.valorSequencial);
+        hash = 97 * hash + Objects.hashCode(this.referenciaEntidade);
+        hash = 97 * hash + Objects.hashCode(this.referenciaAtributo);
+        hash = 97 * hash + Objects.hashCode(this.observacao);
         return hash;
     }
 
@@ -112,10 +171,33 @@ public class Atributo {
         if (!Objects.equals(this.tipo, other.tipo)) {
             return false;
         }
+        if (!Objects.equals(this.obrigatorio, other.obrigatorio)) {
+            return false;
+        }
+        if (!Objects.equals(this.chavePrimaria, other.chavePrimaria)) {
+            return false;
+        }
+        if (!Objects.equals(this.chaveEstrangeira, other.chaveEstrangeira)) {
+            return false;
+        }
+        if (!Objects.equals(this.valorSequencial, other.valorSequencial)) {
+            return false;
+        }
         if (!Objects.equals(this.observacao, other.observacao)) {
+            return false;
+        }
+        if (!Objects.equals(this.referenciaEntidade, other.referenciaEntidade)) {
+            return false;
+        }
+        if (!Objects.equals(this.referenciaAtributo, other.referenciaAtributo)) {
             return false;
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
 }

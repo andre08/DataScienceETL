@@ -1,19 +1,15 @@
 package datascience;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class Entidade {
-
+public class DimensaoFato {
+    
     private String nome;
     private String descricao;
-    private List<Atributo> atributos;
+    private Conexao conexao;
+    private Entidade entidade;
 
-    public Entidade() {
-        this.nome = "";
-        this.descricao = "";
-        this.atributos = new ArrayList<Atributo>();
+    public DimensaoFato() {
     }
 
     public String getNome() {
@@ -32,12 +28,20 @@ public class Entidade {
         this.descricao = descricao;
     }
 
-    public List<Atributo> getAtributos() {
-        return atributos;
+    public Conexao getConexao() {
+        return conexao;
     }
 
-    public void setAtributos(List<Atributo> atributos) {
-        this.atributos = atributos;
+    public void setConexao(Conexao conexao) {
+        this.conexao = conexao;
+    }
+
+    public Entidade getEntidade() {
+        return entidade;
+    }
+
+    public void setEntidade(Entidade entidade) {
+        this.entidade = entidade;
     }
 
     @Override
@@ -45,7 +49,8 @@ public class Entidade {
         int hash = 3;
         hash = 79 * hash + Objects.hashCode(this.nome);
         hash = 79 * hash + Objects.hashCode(this.descricao);
-        hash = 79 * hash + Objects.hashCode(this.atributos);
+        hash = 79 * hash + Objects.hashCode(this.conexao);
+        hash = 79 * hash + Objects.hashCode(this.entidade);
         return hash;
     }
 
@@ -60,14 +65,17 @@ public class Entidade {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Entidade other = (Entidade) obj;
+        final DimensaoFato other = (DimensaoFato) obj;
         if (!Objects.equals(this.nome, other.nome)) {
             return false;
         }
         if (!Objects.equals(this.descricao, other.descricao)) {
             return false;
         }
-        if (!Objects.equals(this.atributos, other.atributos)) {
+        if (!Objects.equals(this.conexao, other.conexao)) {
+            return false;
+        }
+        if (!Objects.equals(this.entidade, other.entidade)) {
             return false;
         }
         return true;
@@ -77,5 +85,5 @@ public class Entidade {
     public String toString() {
         return nome;
     }
-
+    
 }

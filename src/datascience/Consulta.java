@@ -17,6 +17,8 @@ public class Consulta {
         this.nome = "";
         this.descricao = "";
         this.sql = "";
+        this.conexao = new Conexao();
+        this.entidade = new Entidade();
     }
         
     public String getNome() {
