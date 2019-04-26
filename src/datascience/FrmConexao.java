@@ -5,21 +5,26 @@ import javax.swing.JOptionPane;
 public class FrmConexao extends javax.swing.JDialog {
 
     private java.awt.Frame parent;
-    String alterado = "N";
-    
+
     public FrmConexao(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         LimparTela();
         this.parent = parent;
+        this.conexaoSelecionada = null;
+        this.controle = null;
     }
-    
-    public Conexao conexaoSelecionada;
+
     public Controle controle;
-    
-    private void LimparTela(){
-        
+    public Conexao conexaoSelecionada;
+    private Conexao conexaoAtual;
+
+    private void LimparTela() {
+
+        this.conexaoSelecionada = null;
+        this.conexaoAtual = new Conexao();
         cbxSGDB.setSelectedIndex(-1);
+        cbxObjetivo.setSelectedIndex(-1);
         txtDescricao.setText("");
         txtNome.setText("");
         txtNomeBase.setText("");
@@ -28,27 +33,50 @@ public class FrmConexao extends javax.swing.JDialog {
         txtSenha.setText("");
         txtURL.setText("");
         txtUsuario.setText("");
-        this.alterado = "S";
-        
+
+    }
+
+    public void SetConexaoSelecionada(Conexao conexao) {
+
+        LimparTela();
+        this.conexaoSelecionada = conexao;
+        this.conexaoAtual = conexao.Copia();
+
+        if (this.conexaoAtual != null) {
+            cbxSGDB.setSelectedItem(conexaoAtual.getSGDB());
+            cbxObjetivo.setSelectedItem(conexaoAtual.getObjetivo());
+            txtDescricao.setText(conexaoAtual.getDescricao());
+            txtNome.setText(conexaoAtual.getNome());
+            txtNomeBase.setText(conexaoAtual.getNomeBanco());
+            txtPorta.setText(Integer.toString(conexaoAtual.getPorta()));
+            txtSID.setText(conexaoAtual.getSID());
+            txtSenha.setText(conexaoAtual.getPassword());
+            txtURL.setText(conexaoAtual.getUrl());
+            txtUsuario.setText(conexaoAtual.getUsename());
+        }
+
     }
     
-    public void SetConexaoSelecionada(Conexao conexao){
+    public void AtualizaAtual() {
         
-        this.conexaoSelecionada = conexao;
-        
-        if(this.conexaoSelecionada != null){
-            cbxSGDB.setSelectedItem(conexaoSelecionada.getSGDB());
-            txtDescricao.setText(conexaoSelecionada.getDescricao());
-            txtNome.setText(conexaoSelecionada.getNome());
-            txtNomeBase.setText(conexaoSelecionada.getNomeBanco());
-            txtPorta.setText(Integer.toString(conexaoSelecionada.getPorta()));
-            txtSID.setText(conexaoSelecionada.getSID());
-            txtSenha.setText(conexaoSelecionada.getPassword());
-            txtURL.setText(conexaoSelecionada.getUrl());
-            txtUsuario.setText(conexaoSelecionada.getUsename()); 
-            this.alterado = "N";
-        } 
-        
+        this.conexaoAtual.setNome(txtNome.getText());
+        this.conexaoAtual.setDescricao(txtDescricao.getText());
+        this.conexaoAtual.setNomeBanco(txtNomeBase.getText());
+        this.conexaoAtual.setUrl(txtURL.getText());
+        if (txtPorta.getText().trim().equals("")){
+            txtPorta.setText("0");
+        }
+        this.conexaoAtual.setPorta(Integer.parseInt(txtPorta.getText()));
+        this.conexaoAtual.setUsename(txtUsuario.getText());
+        this.conexaoAtual.setPassword(txtSenha.getText());
+        this.conexaoAtual.setSID(txtSID.getText());
+        if(cbxSGDB.getSelectedIndex() != -1){
+        this.conexaoAtual.setSGDB(cbxSGDB.getSelectedItem().toString());
+        }
+        if(cbxObjetivo.getSelectedIndex() != -1){
+        this.conexaoAtual.setObjetivo(cbxObjetivo.getSelectedItem().toString());
+        }
+
     }
 
     /**
@@ -67,7 +95,6 @@ public class FrmConexao extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescricao = new javax.swing.JTextArea();
         txtURL = new javax.swing.JTextField();
-        txtPorta = new javax.swing.JTextField();
         txtNomeBase = new javax.swing.JTextField();
         txtSID = new javax.swing.JTextField();
         txtUsuario = new javax.swing.JTextField();
@@ -80,6 +107,9 @@ public class FrmConexao extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         cbxSGDB = new javax.swing.JComboBox<>();
+        txtPorta = new javax.swing.JFormattedTextField();
+        jLabel10 = new javax.swing.JLabel();
+        cbxObjetivo = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         btnFechar = new javax.swing.JButton();
         btnTeste = new javax.swing.JButton();
@@ -91,12 +121,6 @@ public class FrmConexao extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestão de Conexões");
 
-        txtNome.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
         jLabel1.setText("Nome:");
 
         jLabel2.setText("Descrição:");
@@ -104,48 +128,7 @@ public class FrmConexao extends javax.swing.JDialog {
         txtDescricao.setColumns(20);
         txtDescricao.setLineWrap(true);
         txtDescricao.setRows(5);
-        txtDescricao.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
         jScrollPane1.setViewportView(txtDescricao);
-
-        txtURL.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
-        txtPorta.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
-        txtNomeBase.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
-        txtSID.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
-        txtUsuario.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
-
-        txtSenha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
 
         jLabel3.setText("URL:");
 
@@ -162,11 +145,12 @@ public class FrmConexao extends javax.swing.JDialog {
         jLabel9.setText("SGDB:");
 
         cbxSGDB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ORACLE", "MySQL", "MS SQL Server" }));
-        cbxSGDB.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                OnChange(evt);
-            }
-        });
+
+        txtPorta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#"))));
+
+        jLabel10.setText("Objetivo:");
+
+        cbxObjetivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Origem dos dados", "Staging Area", "Data Warehouse" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -186,24 +170,31 @@ public class FrmConexao extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addComponent(txtNome)
-                    .addComponent(cbxSGDB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtSID, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtURL, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtSID, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtURL, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel8)
-                                .addGap(27, 27, 27)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtSenha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(txtNomeBase))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(txtNomeBase)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(cbxSGDB, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbxObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -212,7 +203,10 @@ public class FrmConexao extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
-                    .addComponent(cbxSGDB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cbxSGDB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel10)
+                        .addComponent(cbxObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
@@ -221,7 +215,7 @@ public class FrmConexao extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,65 +328,65 @@ public class FrmConexao extends javax.swing.JDialog {
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
         // TODO add your handling code here:
-        conexaoSelecionada = null;
-        LimparTela();        
+        int resposta = JOptionPane.NO_OPTION;
+        AtualizaAtual();
+        if (this.conexaoSelecionada != null) {
+            if (!this.conexaoSelecionada.equals(this.conexaoAtual)) {
+                resposta = JOptionPane.showConfirmDialog(this, "Atenção está ação vai apagar todas as alterações realizadas. Deseja salvar as informações antes", "Aviso", JOptionPane.YES_NO_OPTION);
+            }
+        }
+        if (resposta == JOptionPane.NO_OPTION) {
+            LimparTela();
+        }
+
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
-        
-        Conexao conexao = new Conexao();
-        conexao.setNome(txtNome.getText());
-        conexao.setDescricao(txtDescricao.getText());
-        conexao.setNomeBanco(txtNomeBase.getText());
-        conexao.setUrl(txtURL.getText());
-        conexao.setPorta(Integer.parseInt(txtPorta.getText()));
-        conexao.setUsename(txtUsuario.getText());
-        conexao.setPassword(txtSenha.getText());
-        conexao.setSID(txtSID.getText());
-        conexao.setSGDB(cbxSGDB.getSelectedItem().toString());
-        
-        controle.addConexao(conexaoSelecionada, conexao);
-        this.conexaoSelecionada = conexao;
-        this.alterado = "N";
-
-        JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");        
+        AtualizaAtual();
+        controle.addConexao(this.conexaoSelecionada, this.conexaoAtual);
+        this.conexaoSelecionada = this.conexaoAtual;
+        JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
         // TODO add your handling code here:
+        int resposta = JOptionPane.NO_OPTION;
+        AtualizaAtual();
+        if (this.conexaoSelecionada != null) {
+            if (!this.conexaoSelecionada.equals(this.conexaoAtual)) {
+                resposta = JOptionPane.showConfirmDialog(this, "Atenção está ação vai apagar todas as alterações realizadas. Deseja salvar as informações antes", "Aviso", JOptionPane.YES_NO_OPTION);
+            }
+        }
+        if (resposta == JOptionPane.YES_OPTION) {
+            btnSalvarActionPerformed(evt);
+        }
         dispose();
+        
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         // TODO add your handling code here:
-        if (this.alterado.equals("N")){
-            
-            if(conexaoSelecionada == null){
+        if (conexaoAtual == null) {
 
-            }else{
-                ConnectionManager.testConnection(this.parent, conexaoSelecionada);
-            }
-
-        }else{
-            JOptionPane.showConfirmDialog(this,"Para testar a conexão você deve salvar as alterações antes","Aviso",JOptionPane.OK_OPTION);
+        } else {
+            ConnectionManager.testConnection(this.parent, conexaoAtual);
         }
-        
+
     }//GEN-LAST:event_btnTesteActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         // TODO add your handling code here:
-        
-        controle.getConexoes().remove(conexaoSelecionada);
-        this.conexaoSelecionada = null;
-        dispose();
-        
+        int resposta = JOptionPane.NO_OPTION;
+        if (this.conexaoSelecionada != null) {
+            resposta = JOptionPane.showConfirmDialog(this, "Atenção está ação vai apagar todas as alterações realizadas. Deseja realmente continuar?", "Aviso", JOptionPane.YES_NO_OPTION);
+        }
+        if (resposta == JOptionPane.YES_OPTION) {
+            controle.getConexoes().remove(conexaoSelecionada);
+            this.conexaoSelecionada = null;
+            dispose();
+        }
     }//GEN-LAST:event_btnExcluirActionPerformed
-
-    private void OnChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_OnChange
-        // TODO add your handling code here:
-        this.alterado = "S";
-    }//GEN-LAST:event_OnChange
 
     /**
      * @param args the command line arguments
@@ -443,8 +437,10 @@ public class FrmConexao extends javax.swing.JDialog {
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnTeste;
+    private javax.swing.JComboBox<String> cbxObjetivo;
     private javax.swing.JComboBox<String> cbxSGDB;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -460,7 +456,7 @@ public class FrmConexao extends javax.swing.JDialog {
     private javax.swing.JTextArea txtDescricao;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtNomeBase;
-    private javax.swing.JTextField txtPorta;
+    private javax.swing.JFormattedTextField txtPorta;
     private javax.swing.JTextField txtSID;
     private javax.swing.JTextField txtSenha;
     private javax.swing.JTextField txtURL;

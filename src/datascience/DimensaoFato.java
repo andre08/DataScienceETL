@@ -2,7 +2,7 @@ package datascience;
 
 import java.util.Objects;
 
-public class DimensaoFato {
+public class DimensaoFato  extends Object implements Cloneable{
     
     private String nome;
     private String descricao;

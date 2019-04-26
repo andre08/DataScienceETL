@@ -1,16 +1,16 @@
 package datascience;
 
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class FrmPrincipal extends javax.swing.JFrame {
 
-    Controle controle;
-    Conexao conexaoSelecionado;
-    Consulta consultaSelecionada;
-    Entidade entidadeSelecionada;
+    public Controle controle;
+    public Conexao conexaoSelecionado;
+    public Consulta consultaSelecionada;
+    public Entidade entidadeDWSelecionada;
+    public Entidade entidadeSASelecionada;
 
     public FrmPrincipal() {
         initComponents();
@@ -21,11 +21,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void AtualizarTela() {
 
+        this.conexaoSelecionado = null;
+        this.consultaSelecionada = null;
+        this.entidadeDWSelecionada = null;
+        this.entidadeSASelecionada = null;
+
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Projeto");
 
         DefaultMutableTreeNode conexaoNode = new DefaultMutableTreeNode("Conexões");
         DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
-        DefaultMutableTreeNode entidadeNode = new DefaultMutableTreeNode("Entidades");
+        DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades Staging Area");
+        DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades Data Warehouse");
 
         DefaultMutableTreeNode itensNode;
 
@@ -41,15 +47,22 @@ public class FrmPrincipal extends javax.swing.JFrame {
             consultaNode.add(itensNode);
         }
 
-        for (Entidade entidade : controle.getEntidades()) {
+        for (Entidade entidade : controle.getEntidadesSA()) {
             itensNode = new DefaultMutableTreeNode(entidade.getNome());
             itensNode.setUserObject(entidade);
-            entidadeNode.add(itensNode);
+            entidadeSANode.add(itensNode);
+        }
+
+        for (Entidade entidade : controle.getEntidadesDW()) {
+            itensNode = new DefaultMutableTreeNode(entidade.getNome());
+            itensNode.setUserObject(entidade);
+            entidadeDWNode.add(itensNode);
         }
 
         rootNode.add(conexaoNode);
         rootNode.add(consultaNode);
-        rootNode.add(entidadeNode);
+        rootNode.add(entidadeSANode);
+        rootNode.add(entidadeDWNode);
 
         DefaultTreeModel modelo = new DefaultTreeModel(rootNode);
         modelo.reload(rootNode);
@@ -84,7 +97,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         mniGerenciarConsulta = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
-        mniGerenciarEntidade = new javax.swing.JMenuItem();
+        mniGerenciarEntidadeSA = new javax.swing.JMenuItem();
+        mniGerenciarEntidadeDW = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
 
@@ -201,13 +215,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenu6.setText("Entidade Destinos");
 
-        mniGerenciarEntidade.setText("Gerenciar Entidade Dimensão/Fato");
-        mniGerenciarEntidade.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniGerenciarEntidadeActionPerformed(evt);
-            }
-        });
-        jMenu6.add(mniGerenciarEntidade);
+        mniGerenciarEntidadeSA.setText("Gerenciar Entidade Staging Area");
+        jMenu6.add(mniGerenciarEntidadeSA);
+
+        mniGerenciarEntidadeDW.setText("Gerenciar Entidade Dimensão/Fato");
+        jMenu6.add(mniGerenciarEntidadeDW);
 
         jMenuBar1.add(jMenu6);
 
@@ -246,7 +258,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mniAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniAbrirActionPerformed
-        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidades().size() > 0)) {
+        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidadesSA().size() > 0) || (controle.getEntidadesDW().size() > 0)) {
 
             int resultado = JOptionPane.showConfirmDialog(this, "Deseja salvar os dados antes de criar um novo", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (resultado == JOptionPane.YES_OPTION) {
@@ -271,7 +283,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void mniNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniNovoActionPerformed
 
-        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidades().size() > 0)) {
+        if ((controle.getConexoes().size() > 0) || (controle.getConsultas().size() > 0) || (controle.getEntidadesSA().size() > 0) || (controle.getEntidadesDW().size() > 0)) {
 
             int resultado = JOptionPane.showConfirmDialog(this, "Deseja salvar os dados antes de criar um novo", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (resultado == JOptionPane.YES_OPTION) {
@@ -300,7 +312,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
         frmConexao.pack();
         frmConexao.setLocationRelativeTo(null);
         frmConexao.setVisible(true);
-        this.controle = frmConexao.controle;
         AtualizarTela();
 
     }//GEN-LAST:event_mniGerenciarConexaoActionPerformed
@@ -320,7 +331,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
             if (selecao.getUserObject() instanceof Conexao) {
                 this.consultaSelecionada = null;
-                this.entidadeSelecionada = null;
+                this.entidadeSASelecionada = null;
+                this.entidadeDWSelecionada = null;
                 if (this.conexaoSelecionado != null) {
                     if (this.conexaoSelecionado.equals((Conexao) selecao.getUserObject())) {
                         mniGerenciarConexaoActionPerformed(null);
@@ -334,7 +346,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
             if (selecao.getUserObject() instanceof Consulta) {
                 this.conexaoSelecionado = null;
-                this.entidadeSelecionada = null;
+                this.entidadeSASelecionada = null;
+                this.entidadeDWSelecionada = null;
                 if (this.consultaSelecionada != null) {
                     if (this.consultaSelecionada.equals((Consulta) selecao.getUserObject())) {
                         mniGerenciarConsultaActionPerformed(null);
@@ -346,20 +359,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 }
             }
 
-            if (selecao.getUserObject() instanceof Entidade) {
-                this.conexaoSelecionado = null;
-                this.consultaSelecionada = null;
-                if (this.entidadeSelecionada != null) {
-                    if (this.entidadeSelecionada.equals((Entidade) selecao.getUserObject())) {
-                        mniGerenciarEntidadeActionPerformed(null);
-                    } else {
-                        this.entidadeSelecionada = (Entidade) selecao.getUserObject();
-                    }
-
-                } else {
-                    this.entidadeSelecionada = (Entidade) selecao.getUserObject();
-                }
-            }
         }
     }//GEN-LAST:event_lstProjetoMouseClicked
 
@@ -367,27 +366,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         FrmConsulta frmConsulta = new FrmConsulta(this, true);
         frmConsulta.controle = this.controle;
+        frmConsulta.LimparTela();
         if (this.consultaSelecionada != null) {
             frmConsulta.SetConsultaSelecionada(this.consultaSelecionada);
-        } else {
-            frmConsulta.LimparTela();
         }
         frmConsulta.pack();
         frmConsulta.setLocationRelativeTo(null);
         frmConsulta.setVisible(true);
-        this.controle = frmConsulta.controle;
         AtualizarTela();
-
-
     }//GEN-LAST:event_mniGerenciarConsultaActionPerformed
-
-    private void mniGerenciarEntidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarEntidadeActionPerformed
-        // TODO add your handling code here:
-        FrmDimensaoFato frmDimensaoFato = new FrmDimensaoFato(this, true);
-        frmDimensaoFato.pack();
-        frmDimensaoFato.setLocationRelativeTo(null);
-        frmDimensaoFato.setVisible(true);
-    }//GEN-LAST:event_mniGerenciarEntidadeActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
@@ -477,7 +464,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem mniGerarSqlStage;
     private javax.swing.JMenuItem mniGerenciarConexao;
     private javax.swing.JMenuItem mniGerenciarConsulta;
-    private javax.swing.JMenuItem mniGerenciarEntidade;
+    private javax.swing.JMenuItem mniGerenciarEntidadeDW;
+    private javax.swing.JMenuItem mniGerenciarEntidadeSA;
     private javax.swing.JMenuItem mniNovo;
     private javax.swing.JMenuItem mniSalvar;
     // End of variables declaration//GEN-END:variables

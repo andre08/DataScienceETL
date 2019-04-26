@@ -2,7 +2,7 @@ package datascience;
 
 import java.util.Objects;
 
-public class Conexao {
+public class Conexao  extends Object implements Cloneable{
 
     private String nome;
     private String descricao;
@@ -13,6 +13,7 @@ public class Conexao {
     private String usename;
     private String password;
     private String SGDB;
+    private String objetivo;
 
     public Conexao() {
         this.nome = "";
@@ -24,8 +25,9 @@ public class Conexao {
         this.usename = "";
         this.password = "";
         this.SGDB = "";
+        this.objetivo = "";
     }  
-    
+
     public String getNome() {
         return nome;
     }
@@ -98,23 +100,27 @@ public class Conexao {
         this.SGDB = SGDB;
     }
 
-    @Override
-    public String toString() {
-        return nome;
+    public String getObjetivo() {
+        return objetivo;
+    }
+
+    public void setObjetivo(String objetivo) {
+        this.objetivo = objetivo;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 43 * hash + Objects.hashCode(this.nome);
-        hash = 43 * hash + Objects.hashCode(this.descricao);
-        hash = 43 * hash + Objects.hashCode(this.url);
-        hash = 43 * hash + this.porta;
-        hash = 43 * hash + Objects.hashCode(this.nomeBanco);
-        hash = 43 * hash + Objects.hashCode(this.SID);
-        hash = 43 * hash + Objects.hashCode(this.usename);
-        hash = 43 * hash + Objects.hashCode(this.password);
-        hash = 43 * hash + Objects.hashCode(this.SGDB);
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.nome);
+        hash = 53 * hash + Objects.hashCode(this.descricao);
+        hash = 53 * hash + Objects.hashCode(this.url);
+        hash = 53 * hash + this.porta;
+        hash = 53 * hash + Objects.hashCode(this.nomeBanco);
+        hash = 53 * hash + Objects.hashCode(this.SID);
+        hash = 53 * hash + Objects.hashCode(this.usename);
+        hash = 53 * hash + Objects.hashCode(this.password);
+        hash = 53 * hash + Objects.hashCode(this.SGDB);
+        hash = 53 * hash + Objects.hashCode(this.objetivo);
         return hash;
     }
 
@@ -157,7 +163,28 @@ public class Conexao {
         if (!Objects.equals(this.SGDB, other.SGDB)) {
             return false;
         }
+        if (!Objects.equals(this.objetivo, other.objetivo)) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }   
+
+    public Conexao Copia() {
+        try {
+            return (Conexao) this.clone(); //To change body of generated methods, choose Tools | Templates.
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
     }
     
 }

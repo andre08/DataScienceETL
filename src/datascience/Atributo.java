@@ -2,7 +2,7 @@ package datascience;
 
 import java.util.Objects;
 
-public class Atributo {
+public class Atributo  extends Object implements Cloneable{
 
     public Atributo() {
         this.nome = "";

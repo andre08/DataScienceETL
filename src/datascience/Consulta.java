@@ -1,8 +1,10 @@
 package datascience;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Consulta {
+public class Consulta extends Object implements Cloneable{
 
     /*informações sobre a consulta*/
     private String nome;
@@ -106,5 +108,17 @@ public class Consulta {
         }
         return true;
     }
-    
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Consulta Copia() {
+        try {
+            return (Consulta) this.clone(); //To change body of generated methods, choose Tools | Templates.
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
+    }
 }

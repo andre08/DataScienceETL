@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Entidade {
+public class Entidade  extends Object implements Cloneable{
 
     private String nome;
     private String descricao;
+    private Conexao conexao;
     private List<Atributo> atributos;
 
     public Entidade() {
         this.nome = "";
         this.descricao = "";
+        this.conexao = new Conexao();
         this.atributos = new ArrayList<Atributo>();
     }
 
@@ -40,12 +42,21 @@ public class Entidade {
         this.atributos = atributos;
     }
 
+    public Conexao getConexao() {
+        return conexao;
+    }
+
+    public void setConexao(Conexao conexao) {
+        this.conexao = conexao;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.nome);
-        hash = 79 * hash + Objects.hashCode(this.descricao);
-        hash = 79 * hash + Objects.hashCode(this.atributos);
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.nome);
+        hash = 37 * hash + Objects.hashCode(this.descricao);
+        hash = 37 * hash + Objects.hashCode(this.conexao);
+        hash = 37 * hash + Objects.hashCode(this.atributos);
         return hash;
     }
 
@@ -67,6 +78,9 @@ public class Entidade {
         if (!Objects.equals(this.descricao, other.descricao)) {
             return false;
         }
+        if (!Objects.equals(this.conexao, other.conexao)) {
+            return false;
+        }
         if (!Objects.equals(this.atributos, other.atributos)) {
             return false;
         }
@@ -78,4 +92,21 @@ public class Entidade {
         return nome;
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Entidade copiar(){
+        try {
+            return (Entidade) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }        
+    }
 }

@@ -19,8 +19,8 @@ public class FrmGerarDataWarehouse extends javax.swing.JDialog {
 
         DefaultListModel  model = new DefaultListModel();
         if (controle != null) {
-            if (controle.getEntidades() != null) {
-                for (Entidade entidade : controle.getEntidades()) {
+            if (controle.getEntidadesDW()!= null) {
+                for (Entidade entidade : controle.getEntidadesDW()) {
                     model.addElement(entidade);
                 }
             }
