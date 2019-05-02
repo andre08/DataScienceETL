@@ -5,11 +5,23 @@
  */
 package datascience;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Pessoal
  */
 public class FrmEntidadeSA extends javax.swing.JDialog {
+
+    private java.awt.Frame parent;
+
+    public Controle controle;
+    public Entidade entidadeSelecionadaSA;
+    public Entidade entidadeAtualSA;
+    public Atributo atributoSelecionado;
+    public MapeamentoSA mapeamentoSelecionado;
 
     /**
      * Creates new form FrmDimensaoFato
@@ -17,6 +29,113 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
     public FrmEntidadeSA(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        this.parent = parent;
+
+        //desativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+        btnAtributo.setEnabled(false);
+        btnFechar.setEnabled(true);
+
+        this.atributoSelecionado = null;
+
+    }
+
+    public void AtualizarConexao() {
+
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if (controle != null) {
+            if (controle.getConexoes() != null) {
+                for (Conexao conexao : controle.getConexoes()) {
+                    if (conexao.getObjetivo().equals("Staging Area")) {
+                        model.addElement(conexao);
+                    }
+                }
+            }
+        }
+        cbxConexão.setModel(model);
+    }
+
+    private void CarregaAtributos() {
+
+        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+        tblAtributos.getColumnModel().getColumn(4).setWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMinWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMaxWidth(0);
+
+        //ativando controles
+        btnAtributo.setEnabled(false);
+        if (this.entidadeAtualSA.getAtributos().size() > 0) {
+            modelAtributo.setRowCount(0);
+            for (Atributo atributo : this.entidadeAtualSA.getAtributos()) {
+                modelAtributo.setRowCount(modelAtributo.getRowCount() + 1);
+                modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount() - 1, 0);
+                modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount() - 1, 1);
+                modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount() - 1, 2);
+                modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount() - 1, 3);
+                modelAtributo.setValueAt(atributo, modelAtributo.getRowCount() - 1, 4);
+            }
+            tblAtributos.setModel(modelAtributo);
+            btnAtributo.setEnabled(true);
+        }
+    }
+
+    public void LimparTela() {
+
+        this.entidadeSelecionadaSA = null;
+        //crinando um novo objeto
+        this.entidadeAtualSA = new Entidade();
+
+        AtualizarConexao();
+        cbxConexão.setSelectedIndex(-1);
+
+        txtNome.setText("");
+        txtDescricao.setText("");
+
+        CarregaAtributos();
+
+        //ativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(true);
+        btnExcluir.setEnabled(false);
+
+    }
+
+    public void AtualizaAtual() {
+
+        Object[] model = cbxConexão.getSelectedObjects();
+        if (model.length > 0) {
+            Conexao conexao = (Conexao) model[0];
+            this.entidadeAtualSA.setConexao(conexao);
+        }
+
+        this.entidadeAtualSA.setNome(txtNome.getText());
+        this.entidadeAtualSA.setDescricao(txtDescricao.getText());
+
+    }
+
+    public void SetEntidadeSelecionada(Entidade entidade) {
+
+        this.entidadeSelecionadaSA = entidade;
+        this.entidadeAtualSA = entidade.copia();
+
+        AtualizarConexao();
+
+        if (this.entidadeAtualSA != null) {
+
+            cbxConexão.setSelectedItem(entidadeAtualSA.getConexao());
+            txtNome.setText(entidadeAtualSA.getNome());
+            txtDescricao.setText(entidadeAtualSA.getDescricao());
+            CarregaAtributos();
+
+            //ativando controles
+            btnNovo.setEnabled(true);
+            btnSalvar.setEnabled(true);
+            btnExcluir.setEnabled(true);
+
+        }
     }
 
     /**
@@ -35,19 +154,18 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         btnNovo = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         btnAtributo = new javax.swing.JButton();
+        btnGerarEntidadeDW = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         txtNome = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescricao = new javax.swing.JTextArea();
-        jLabel3 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         cbxConexão = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblAtributos = new javax.swing.JTable();
-        txtEntidade = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestão de Dimensões e Fatos");
@@ -87,14 +205,23 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
             }
         });
 
+        btnGerarEntidadeDW.setText("Gerar destino em DW");
+        btnGerarEntidadeDW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarEntidadeDWActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(296, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnGerarEntidadeDW)
+                .addGap(18, 18, 18)
                 .addComponent(btnAtributo)
-                .addGap(71, 71, 71)
+                .addGap(46, 46, 46)
                 .addComponent(btnExcluir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo)
@@ -113,7 +240,8 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
                     .addComponent(btnSalvar)
                     .addComponent(btnNovo)
                     .addComponent(btnExcluir)
-                    .addComponent(btnAtributo))
+                    .addComponent(btnAtributo)
+                    .addComponent(btnGerarEntidadeDW))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -124,8 +252,6 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         txtDescricao.setColumns(20);
         txtDescricao.setRows(5);
         jScrollPane1.setViewportView(txtDescricao);
-
-        jLabel3.setText("Entidade:");
 
         jLabel9.setText("Conexão:");
 
@@ -154,58 +280,58 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        tblAtributos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAtributosMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblAtributos);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3))
-                        .addGap(18, 91, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtEntidade)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cbxConexão, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel1))
+                        .addGap(13, 13, 13)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNome)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))))
+                            .addComponent(cbxConexão, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(12, 12, 12)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel9)
+                    .addComponent(cbxConexão, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxConexão, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtEntidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -225,7 +351,7 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -239,19 +365,103 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
 
+        this.AtualizaAtual();
+        controle.AddEntidadeSA(this.entidadeSelecionadaSA, this.entidadeAtualSA);
+
+        JOptionPane.showMessageDialog(this, "Entidade salva com sucesso.");
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-
+        LimparTela();
+        this.entidadeAtualSA.AddAtributosSA();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
 
+        if (this.entidadeSelecionadaSA != null) {
+            this.controle.getEntidadesSA().remove(this.entidadeSelecionadaSA);
+            controle.getMapeamentosSA().remove(this.mapeamentoSelecionado);
+            this.entidadeSelecionadaSA = null;
+            dispose();
+        }
+
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtributoActionPerformed
-        // TODO add your handling code here:
+
+        if (this.atributoSelecionado != null) {
+            FrmAtributo frmAtributo = new FrmAtributo(this.parent, true);
+            frmAtributo.controle = this.controle;
+            frmAtributo.entidadeSelecionada = this.entidadeAtualSA;
+            frmAtributo.LimparTela();
+            frmAtributo.SetAtributoSelecionado(this.atributoSelecionado, "SA");
+            frmAtributo.pack();
+            frmAtributo.setLocationRelativeTo(null);
+            frmAtributo.setVisible(true);
+            CarregaAtributos();
+        }
     }//GEN-LAST:event_btnAtributoActionPerformed
+
+    private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
+        // TODO add your handling code here:
+        Atributo tempAtributo = new Atributo();
+        if (tblAtributos.getSelectedRow() >= 0) {
+            for (Atributo atributo : this.entidadeAtualSA.getAtributos()) {
+                if (atributo.equals((Atributo) tblAtributos.getValueAt(tblAtributos.getSelectedRow(), 4))) {
+                    tempAtributo = atributo;
+                }
+            }
+        }
+        if (this.atributoSelecionado != null) {
+            if (this.atributoSelecionado.equals(tempAtributo)) {
+                btnAtributoActionPerformed(null);
+            } else {
+                this.atributoSelecionado = tempAtributo;
+            }
+        } else {
+            this.atributoSelecionado = tempAtributo;
+        }
+    }//GEN-LAST:event_tblAtributosMouseClicked
+
+    private void btnGerarEntidadeDWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarEntidadeDWActionPerformed
+        // TODO add your handling code here:
+        AtualizaAtual();
+        if (this.entidadeSelecionadaSA.equals(this.entidadeAtualSA)) {
+
+            MapeamentoDW mapeamentoDW = null;
+            for (MapeamentoDW mapa : this.controle.getMapeamentosDW()) {
+                if (mapa.getEntidadeSAOrigem().equals(this.entidadeSelecionadaSA)) {
+                    mapeamentoDW = mapa;
+                }
+            }
+
+            if (mapeamentoDW == null) {
+
+                Entidade novaEntidade = new Entidade();
+                novaEntidade = this.entidadeSelecionadaSA.copia();
+                novaEntidade.setNome("FATO_DIM_"+novaEntidade.getNome());
+                this.controle.AddEntidadeDW(null, novaEntidade);
+
+                mapeamentoDW = new MapeamentoDW();
+                mapeamentoDW.setEntidadeSAOrigem(this.entidadeSelecionadaSA);
+                mapeamentoDW.setEntidadeDWDestino(novaEntidade);
+                this.controle.AddMapeamentoDW(null, mapeamentoDW);
+
+                JOptionPane.showMessageDialog(this, "Entidade copiada para Data Warehouse.");
+            }
+
+            FrmEntidadeDW frmEntidadeDW = new FrmEntidadeDW(this.parent, true);
+            frmEntidadeDW.controle = this.controle;
+            frmEntidadeDW.mapeamentoSelecionado = mapeamentoDW;
+            frmEntidadeDW.LimparTela();
+            frmEntidadeDW.SetEntidadeSelecionada(mapeamentoDW.getEntidadeDWDestino());
+            frmEntidadeDW.pack();
+            frmEntidadeDW.setLocationRelativeTo(null);
+            frmEntidadeDW.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Salve a consulta antes de acessar o mapeamento para Data Warehouse.");
+        }
+    }//GEN-LAST:event_btnGerarEntidadeDWActionPerformed
 
     /**
      * @param args the command line arguments
@@ -300,12 +510,12 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
     private javax.swing.JButton btnAtributo;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnFechar;
+    private javax.swing.JButton btnGerarEntidadeDW;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<String> cbxConexão;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -315,7 +525,6 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblAtributos;
     private javax.swing.JTextArea txtDescricao;
-    private javax.swing.JTextField txtEntidade;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
 }

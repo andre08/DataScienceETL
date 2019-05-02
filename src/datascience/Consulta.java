@@ -1,19 +1,18 @@
 package datascience;
 
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Consulta extends Object implements Cloneable{
 
     /*informações sobre a consulta*/
     private String nome;
     private String descricao;
-    private String sql;
-    
-    /*obtendo dados do resutado*/
     private Conexao conexao;
+    private String sql;
+    /*obtendo dados do resutado*/
     private Entidade entidade;
+    //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
+    private int hashConexao;
 
     public Consulta() {
         this.nome = "";
@@ -21,6 +20,7 @@ public class Consulta extends Object implements Cloneable{
         this.sql = "";
         this.conexao = new Conexao();
         this.entidade = new Entidade();
+        this.entidade.setConexao(this.conexao);
     }
         
     public String getNome() {
@@ -61,6 +61,14 @@ public class Consulta extends Object implements Cloneable{
 
     public void setEntidade(Entidade entidade) {
         this.entidade = entidade;
+    }
+
+    public int getHashConexao() {
+        return hashConexao;
+    }
+
+    public void setHashConexao(int hashConexao) {
+        this.hashConexao = hashConexao;
     }
 
     @Override
@@ -109,16 +117,17 @@ public class Consulta extends Object implements Cloneable{
         return true;
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone(); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Consulta copia() {
+        
+        Consulta copiaConsulta = new Consulta();
+        
+        copiaConsulta.setNome(this.nome);
+        copiaConsulta.setDescricao(this.descricao);
+        copiaConsulta.setSql(this.sql);
+        copiaConsulta.setConexao(this.conexao==null?null:this.conexao.copia());
+        copiaConsulta.setEntidade(this.entidade==null?null:this.entidade.copia());
+        
+        return copiaConsulta;
 
-    public Consulta Copia() {
-        try {
-            return (Consulta) this.clone(); //To change body of generated methods, choose Tools | Templates.
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
     }
 }

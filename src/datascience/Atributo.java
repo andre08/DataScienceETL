@@ -2,21 +2,8 @@ package datascience;
 
 import java.util.Objects;
 
-public class Atributo  extends Object implements Cloneable{
+public class Atributo extends Object implements Cloneable {
 
-    public Atributo() {
-        this.nome = "";
-        this.descricao = "";
-        this.tipo = "";
-        this.tamanho = 0;
-        this.precisao = 0;
-        this.obrigatorio = "N";
-        this.chavePrimaria = "N";
-        this.chaveEstrangeira = "N";
-        this.valorSequencial = "N";
-        this.observacao = "";
-    }
-    
     private String nome;
     private String descricao;
     private String tipo;
@@ -29,6 +16,22 @@ public class Atributo  extends Object implements Cloneable{
     private Entidade referenciaEntidade;
     private Atributo referenciaAtributo;
     private String observacao;
+    //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
+    private int hashReferenciaEntidade;
+    private int hashReferenciaAtributo;            
+    
+    public Atributo() {
+        this.nome = "";
+        this.descricao = "";
+        this.tipo = "";
+        this.tamanho = 0;
+        this.precisao = 0;
+        this.obrigatorio = "N";
+        this.chavePrimaria = "N";
+        this.chaveEstrangeira = "N";
+        this.valorSequencial = "N";
+        this.observacao = "";
+    }
 
     public String getNome() {
         return nome;
@@ -126,6 +129,22 @@ public class Atributo  extends Object implements Cloneable{
         this.observacao = observacao;
     }
 
+    public int getHashReferenciaEntidade() {
+        return hashReferenciaEntidade;
+    }
+
+    public void setHashReferenciaEntidade(int hashReferenciaEntidade) {
+        this.hashReferenciaEntidade = hashReferenciaEntidade;
+    }
+
+    public int getHashReferenciaAtributo() {
+        return hashReferenciaAtributo;
+    }
+
+    public void setHashReferenciaAtributo(int hashReferenciaAtributo) {
+        this.hashReferenciaAtributo = hashReferenciaAtributo;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -199,5 +218,26 @@ public class Atributo  extends Object implements Cloneable{
     public String toString() {
         return nome;
     }
+
+    public Atributo copia() {
+        
+        Atributo copiaAtributo = new Atributo();
+        
+        copiaAtributo.setNome(this.nome);
+        copiaAtributo.setDescricao(this.descricao);
+        copiaAtributo.setTipo(this.tipo);
+        copiaAtributo.setTamanho(this.tamanho);
+        copiaAtributo.setPrecisao(this.precisao);
+        copiaAtributo.setObrigatorio(this.obrigatorio);
+        copiaAtributo.setChavePrimaria(this.chavePrimaria);
+        copiaAtributo.setChaveEstrangeira(this.chaveEstrangeira);
+        copiaAtributo.setValorSequencial(this.valorSequencial);
+        copiaAtributo.setObservacao(this.observacao);
+        copiaAtributo.setReferenciaEntidade(this.referenciaEntidade==null?null:this.referenciaEntidade.copia());
+        copiaAtributo.setReferenciaAtributo(this.referenciaAtributo==null?null:this.referenciaAtributo.copia());
+        
+        return copiaAtributo;
+    }
+
 
 }

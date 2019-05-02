@@ -11,6 +11,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     public Consulta consultaSelecionada;
     public Entidade entidadeDWSelecionada;
     public Entidade entidadeSASelecionada;
+    public MapeamentoDW mapeamentoDWSelecionada;
+    public MapeamentoSA mapeamentoSASelecionada;
 
     public FrmPrincipal() {
         initComponents();
@@ -25,6 +27,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         this.consultaSelecionada = null;
         this.entidadeDWSelecionada = null;
         this.entidadeSASelecionada = null;
+        this.mapeamentoDWSelecionada = null;
+        this.mapeamentoSASelecionada = null;
 
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Projeto");
 
@@ -32,6 +36,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
         DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades Staging Area");
         DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades Data Warehouse");
+        DefaultMutableTreeNode mapeamentoSANode = new DefaultMutableTreeNode("Mapeamento Staging Area");
+        DefaultMutableTreeNode mapeamentoDWNode = new DefaultMutableTreeNode("Mapeamento Data Warehouse");
 
         DefaultMutableTreeNode itensNode;
 
@@ -59,10 +65,24 @@ public class FrmPrincipal extends javax.swing.JFrame {
             entidadeDWNode.add(itensNode);
         }
 
+        for (MapeamentoSA mapeamentoSA : controle.getMapeamentosSA()) {
+            itensNode = new DefaultMutableTreeNode(mapeamentoSA.toString());
+            itensNode.setUserObject(mapeamentoSA);
+            mapeamentoSANode.add(itensNode);
+        }
+
+        for (MapeamentoDW mapeamentoDW : controle.getMapeamentosDW()) {
+            itensNode = new DefaultMutableTreeNode(mapeamentoDW.toString());
+            itensNode.setUserObject(mapeamentoDW);
+            mapeamentoDWNode.add(itensNode);
+        }
+
         rootNode.add(conexaoNode);
         rootNode.add(consultaNode);
         rootNode.add(entidadeSANode);
         rootNode.add(entidadeDWNode);
+        rootNode.add(mapeamentoSANode);
+        rootNode.add(mapeamentoDWNode);
 
         DefaultTreeModel modelo = new DefaultTreeModel(rootNode);
         modelo.reload(rootNode);
@@ -216,9 +236,19 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenu6.setText("Entidade Destinos");
 
         mniGerenciarEntidadeSA.setText("Gerenciar Entidade Staging Area");
+        mniGerenciarEntidadeSA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerenciarEntidadeSAActionPerformed(evt);
+            }
+        });
         jMenu6.add(mniGerenciarEntidadeSA);
 
         mniGerenciarEntidadeDW.setText("Gerenciar Entidade Dimensão/Fato");
+        mniGerenciarEntidadeDW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniGerenciarEntidadeDWActionPerformed(evt);
+            }
+        });
         jMenu6.add(mniGerenciarEntidadeDW);
 
         jMenuBar1.add(jMenu6);
@@ -320,6 +350,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         controle.SalvarJson(this);
         AtualizarTela();
+
     }//GEN-LAST:event_mniSalvarActionPerformed
 
 
@@ -333,6 +364,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 this.consultaSelecionada = null;
                 this.entidadeSASelecionada = null;
                 this.entidadeDWSelecionada = null;
+                this.mapeamentoSASelecionada = null;
+                this.mapeamentoDWSelecionada = null;
                 if (this.conexaoSelecionado != null) {
                     if (this.conexaoSelecionado.equals((Conexao) selecao.getUserObject())) {
                         mniGerenciarConexaoActionPerformed(null);
@@ -348,6 +381,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 this.conexaoSelecionado = null;
                 this.entidadeSASelecionada = null;
                 this.entidadeDWSelecionada = null;
+                this.mapeamentoSASelecionada = null;
+                this.mapeamentoDWSelecionada = null;
                 if (this.consultaSelecionada != null) {
                     if (this.consultaSelecionada.equals((Consulta) selecao.getUserObject())) {
                         mniGerenciarConsultaActionPerformed(null);
@@ -357,6 +392,60 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 } else {
                     this.consultaSelecionada = (Consulta) selecao.getUserObject();
                 }
+            }
+
+            if (selecao.getUserObject() instanceof Entidade) {
+                if (selecao.getParent().toString().equals("Entidades Staging Area")) {
+                    this.conexaoSelecionado = null;
+                    this.consultaSelecionada = null;
+                    this.entidadeDWSelecionada = null;
+                    this.mapeamentoSASelecionada = null;
+                    this.mapeamentoDWSelecionada = null;
+
+                    if (this.entidadeSASelecionada != null) {
+                        if (this.entidadeSASelecionada.equals((Entidade) selecao.getUserObject())) {
+                            mniGerenciarEntidadeSAActionPerformed(null);
+                        } else {
+                            this.entidadeSASelecionada = (Entidade) selecao.getUserObject();
+                        }
+                    } else {
+                        this.entidadeSASelecionada = (Entidade) selecao.getUserObject();
+                    }
+                }
+
+                if (selecao.getParent().toString().equals("Entidades Data Warehouse")) {
+                    this.conexaoSelecionado = null;
+                    this.consultaSelecionada = null;
+                    this.entidadeSASelecionada = null;
+                    this.mapeamentoSASelecionada = null;
+                    this.mapeamentoDWSelecionada = null;
+
+                    if (this.entidadeDWSelecionada != null) {
+                        if (this.entidadeDWSelecionada.equals((Entidade) selecao.getUserObject())) {
+                            mniGerenciarEntidadeDWActionPerformed(null);
+                        } else {
+                            this.entidadeDWSelecionada = (Entidade) selecao.getUserObject();
+                        }
+                    } else {
+                        this.entidadeDWSelecionada = (Entidade) selecao.getUserObject();
+                    }
+                }
+            }
+
+            if (selecao.getUserObject() instanceof MapeamentoSA) {
+                this.conexaoSelecionado = null;
+                this.consultaSelecionada = null;
+                this.entidadeSASelecionada = null;
+                this.entidadeDWSelecionada = null;
+                this.mapeamentoDWSelecionada = null;
+            }
+
+            if (selecao.getUserObject() instanceof MapeamentoDW) {
+                this.conexaoSelecionado = null;
+                this.consultaSelecionada = null;
+                this.entidadeSASelecionada = null;
+                this.entidadeDWSelecionada = null;
+                this.mapeamentoDWSelecionada = null;
             }
 
         }
@@ -403,6 +492,46 @@ public class FrmPrincipal extends javax.swing.JFrame {
         frmGerarDataWarehouse.setLocationRelativeTo(null);
         frmGerarDataWarehouse.setVisible(true);
     }//GEN-LAST:event_mniGerarSqlDWActionPerformed
+
+    private void mniGerenciarEntidadeSAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarEntidadeSAActionPerformed
+        // TODO add your handling code here:
+        if (entidadeSASelecionada != null) {
+            FrmEntidadeSA frmEntidadeSA = new FrmEntidadeSA(this, true);
+            frmEntidadeSA.controle = this.controle;
+
+            for (MapeamentoSA mapaSA : this.controle.getMapeamentosSA()) {
+                if (mapaSA.getEntidadeDestino().equals(entidadeSASelecionada)) {
+                    frmEntidadeSA.mapeamentoSelecionado = mapaSA;
+                }
+            }
+            frmEntidadeSA.LimparTela();
+            frmEntidadeSA.SetEntidadeSelecionada(entidadeSASelecionada);
+            frmEntidadeSA.pack();
+            frmEntidadeSA.setLocationRelativeTo(null);
+            frmEntidadeSA.setVisible(true);
+            AtualizarTela();
+        }
+    }//GEN-LAST:event_mniGerenciarEntidadeSAActionPerformed
+
+    private void mniGerenciarEntidadeDWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerenciarEntidadeDWActionPerformed
+        // TODO add your handling code here:
+        if (entidadeDWSelecionada != null) {
+            FrmEntidadeDW frmEntidadeDW = new FrmEntidadeDW(this, true);
+            frmEntidadeDW.controle = this.controle;
+
+            for (MapeamentoDW mapaDW : this.controle.getMapeamentosDW()) {
+                if (mapaDW.getEntidadeDWDestino().equals(entidadeDWSelecionada)) {
+                    frmEntidadeDW.mapeamentoSelecionado = mapaDW;
+                }
+            }
+            frmEntidadeDW.LimparTela();
+            frmEntidadeDW.SetEntidadeSelecionada(entidadeDWSelecionada);
+            frmEntidadeDW.pack();
+            frmEntidadeDW.setLocationRelativeTo(null);
+            frmEntidadeDW.setVisible(true);
+            AtualizarTela();
+        }
+    }//GEN-LAST:event_mniGerenciarEntidadeDWActionPerformed
 
     /**
      * @param args the command line arguments

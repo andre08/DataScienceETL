@@ -2,6 +2,7 @@ package datascience;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmGerarStagingArea extends javax.swing.JDialog {
@@ -35,6 +36,7 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
         this.parent = parent;
         initComponents();
         lstConsulta.setCellRenderer(new CheckboxListCellRenderer());
+        lstConsulta.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     /**
@@ -187,7 +189,17 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarActionPerformed
+        
+        
+        for (Object objeto : lstConsulta.getSelectedValues()){
+           Consulta consulta = (Consulta) objeto;
+           txtSQL.append(consulta.getNome());
 
+        }
+                
+        
+        
+        
     }//GEN-LAST:event_btnGerarActionPerformed
 
     /**

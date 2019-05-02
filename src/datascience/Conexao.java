@@ -2,7 +2,7 @@ package datascience;
 
 import java.util.Objects;
 
-public class Conexao  extends Object implements Cloneable{
+public class Conexao extends Object implements Cloneable {
 
     private String nome;
     private String descricao;
@@ -26,7 +26,7 @@ public class Conexao  extends Object implements Cloneable{
         this.password = "";
         this.SGDB = "";
         this.objetivo = "";
-    }  
+    }
 
     public String getNome() {
         return nome;
@@ -174,17 +174,22 @@ public class Conexao  extends Object implements Cloneable{
         return nome;
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone(); //To change body of generated methods, choose Tools | Templates.
-    }   
+    public Conexao copia() {
 
-    public Conexao Copia() {
-        try {
-            return (Conexao) this.clone(); //To change body of generated methods, choose Tools | Templates.
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
+        Conexao copiaConexao = new Conexao();
+        
+        copiaConexao.setNome(this.nome);
+        copiaConexao.setDescricao(this.descricao);
+        copiaConexao.setUrl(this.url);
+        copiaConexao.setPorta(this.porta);
+        copiaConexao.setNomeBanco(this.nomeBanco);
+        copiaConexao.setSID(this.SID);
+        copiaConexao.setUsename(this.usename);
+        copiaConexao.setPassword(this.password);
+        copiaConexao.setSGDB(this.SGDB);
+        copiaConexao.setObjetivo(this.objetivo);
+
+        return copiaConexao;
     }
-    
+
 }

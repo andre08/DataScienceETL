@@ -5,11 +5,23 @@
  */
 package datascience;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Pessoal
  */
 public class FrmEntidadeDW extends javax.swing.JDialog {
+
+    private java.awt.Frame parent;
+
+    public Controle controle;
+    public Entidade entidadeSelecionadaDW;
+    public Entidade entidadeAtualDW;
+    public Atributo atributoSelecionado;
+    public MapeamentoDW mapeamentoSelecionado;
 
     /**
      * Creates new form FrmDimensaoFato
@@ -17,6 +29,112 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
     public FrmEntidadeDW(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        this.parent = parent;
+
+        //desativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+        btnAtributo.setEnabled(false);
+        btnFechar.setEnabled(true);
+
+        this.atributoSelecionado = null;
+    }
+
+    public void AtualizarConexao() {
+
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if (controle != null) {
+            if (controle.getConexoes() != null) {
+                for (Conexao conexao : controle.getConexoes()) {
+                    if (conexao.getObjetivo().equals("Data Warehouse")) {
+                        model.addElement(conexao);
+                    }
+                }
+            }
+        }
+        cbxConexão.setModel(model);
+    }
+
+    private void CarregaAtributos() {
+
+        DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
+        tblAtributos.getColumnModel().getColumn(4).setWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMinWidth(0);
+        tblAtributos.getColumnModel().getColumn(4).setMaxWidth(0);
+
+        //ativando controles
+        btnAtributo.setEnabled(false);
+        if (this.entidadeAtualDW.getAtributos().size() > 0) {
+            modelAtributo.setRowCount(0);
+            for (Atributo atributo : this.entidadeAtualDW.getAtributos()) {
+                modelAtributo.setRowCount(modelAtributo.getRowCount() + 1);
+                modelAtributo.setValueAt(atributo.getNome(), modelAtributo.getRowCount() - 1, 0);
+                modelAtributo.setValueAt(atributo.getTipo(), modelAtributo.getRowCount() - 1, 1);
+                modelAtributo.setValueAt(atributo.getTamanho(), modelAtributo.getRowCount() - 1, 2);
+                modelAtributo.setValueAt(atributo.getPrecisao(), modelAtributo.getRowCount() - 1, 3);
+                modelAtributo.setValueAt(atributo, modelAtributo.getRowCount() - 1, 4);
+            }
+            tblAtributos.setModel(modelAtributo);
+            btnAtributo.setEnabled(true);
+        }
+    }
+
+    public void LimparTela() {
+
+        this.entidadeSelecionadaDW = null;
+        //crinando um novo objeto
+        this.entidadeAtualDW = new Entidade();
+
+        AtualizarConexao();
+        cbxConexão.setSelectedIndex(-1);
+
+        txtNome.setText("");
+        txtDescricao.setText("");
+
+        CarregaAtributos();
+
+        //ativando controles
+        btnNovo.setEnabled(false);
+        btnSalvar.setEnabled(true);
+        btnExcluir.setEnabled(false);
+
+    }
+
+    public void AtualizaAtual() {
+
+        Object[] model = cbxConexão.getSelectedObjects();
+        if (model.length > 0) {
+            Conexao conexao = (Conexao) model[0];
+            this.entidadeAtualDW.setConexao(conexao);
+        }
+
+        this.entidadeAtualDW.setNome(txtNome.getText());
+        this.entidadeAtualDW.setDescricao(txtDescricao.getText());
+
+    }
+
+    public void SetEntidadeSelecionada(Entidade entidade) {
+
+        this.entidadeSelecionadaDW = entidade;
+        this.entidadeAtualDW = entidade.copia();
+
+        AtualizarConexao();
+
+        if (this.entidadeAtualDW != null) {
+
+            cbxConexão.setSelectedItem(entidadeAtualDW.getConexao());
+            txtNome.setText(entidadeAtualDW.getNome());
+            txtDescricao.setText(entidadeAtualDW.getDescricao());
+            CarregaAtributos();
+
+            //ativando controles
+            btnNovo.setEnabled(true);
+            btnSalvar.setEnabled(true);
+            btnExcluir.setEnabled(true);
+
+        }
     }
 
     /**
@@ -154,6 +272,11 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        tblAtributos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAtributosMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblAtributos);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -238,20 +361,64 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        this.AtualizaAtual();
+        controle.AddEntidadeDW(this.entidadeSelecionadaDW, this.entidadeAtualDW);
+
+        JOptionPane.showMessageDialog(this, "Entidade salva com sucesso.");
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-
+        LimparTela();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+
+        if (this.entidadeSelecionadaDW != null) {
+            this.controle.getEntidadesSA().remove(this.entidadeSelecionadaDW);
+            controle.getMapeamentosDW().remove(this.mapeamentoSelecionado);
+            this.entidadeSelecionadaDW = null;
+            dispose();
+        }
 
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtributoActionPerformed
         // TODO add your handling code here:
+        if (this.atributoSelecionado != null) {
+            FrmAtributo frmAtributo = new FrmAtributo(this.parent, true);
+            frmAtributo.controle = this.controle;
+            frmAtributo.entidadeSelecionada = this.entidadeAtualDW;
+            frmAtributo.LimparTela();
+            frmAtributo.SetAtributoSelecionado(this.atributoSelecionado, "DW");
+            frmAtributo.pack();
+            frmAtributo.setLocationRelativeTo(null);
+            frmAtributo.setVisible(true);
+            CarregaAtributos();
+        }
+
     }//GEN-LAST:event_btnAtributoActionPerformed
+
+    private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
+        // TODO add your handling code here:
+        Atributo tempAtributo = new Atributo();
+        if (tblAtributos.getSelectedRow() >= 0) {
+            for (Atributo atributo : this.entidadeAtualDW.getAtributos()) {
+                if (atributo.equals((Atributo) tblAtributos.getValueAt(tblAtributos.getSelectedRow(), 4))) {
+                    tempAtributo = atributo;
+                }
+            }
+        }
+        if (this.atributoSelecionado != null) {
+            if (this.atributoSelecionado.equals(tempAtributo)) {
+                btnAtributoActionPerformed(null);
+            } else {
+                this.atributoSelecionado = tempAtributo;
+            }
+        } else {
+            this.atributoSelecionado = tempAtributo;
+        }
+    }//GEN-LAST:event_tblAtributosMouseClicked
 
     /**
      * @param args the command line arguments

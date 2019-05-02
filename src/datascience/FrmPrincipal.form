@@ -112,11 +112,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gerenciar Entidade Staging Area"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniGerenciarEntidadeSAActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniGerenciarEntidadeDW">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gerenciar Entidade Dimens&#xe3;o/Fato"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniGerenciarEntidadeDWActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

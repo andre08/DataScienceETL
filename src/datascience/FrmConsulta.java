@@ -18,6 +18,7 @@ public class FrmConsulta extends javax.swing.JDialog {
     public Controle controle;
     public Consulta consultaSelecionada;
     public Consulta consultaAtual;
+    public Atributo atributoSelecionado;
 
     public FrmConsulta(java.awt.Frame parent, boolean modal) {
 
@@ -33,6 +34,7 @@ public class FrmConsulta extends javax.swing.JDialog {
         btnAtributo.setEnabled(false);
         btnFechar.setEnabled(true);
 
+        this.atributoSelecionado = null;
     }
 
     public void AtualizarConexao() {
@@ -50,7 +52,7 @@ public class FrmConsulta extends javax.swing.JDialog {
 
     private void CarregaAtributos() {
 
-        Entidade entidade = consultaAtual.getEntidade();
+        Entidade entidade = this.consultaAtual.getEntidade();
         DefaultTableModel modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
         tblAtributos.getColumnModel().getColumn(4).setWidth(0);
         tblAtributos.getColumnModel().getColumn(4).setMinWidth(0);
@@ -107,24 +109,14 @@ public class FrmConsulta extends javax.swing.JDialog {
         this.consultaAtual.setNome(txtNome.getText());
         this.consultaAtual.setDescricao(txtDescricao.getText());
         this.consultaAtual.setSql(txtConsulta.getText());
+        this.consultaAtual.getEntidade().setNome(txtEntidade.getText());
 
-        Entidade entidade = this.consultaAtual.getEntidade();
-        entidade.setNome(txtEntidade.getText());
-
-        List<Atributo> atributos = new ArrayList<Atributo>();
-        for (int i = 0; i < tblAtributos.getRowCount(); i++) {
-            Atributo atributo = (Atributo) tblAtributos.getValueAt(i, 4);
-            atributos.add(atributo);
-        }
-        entidade.setAtributos(atributos);
-
-        this.consultaAtual.setEntidade(entidade);
     }
 
     public void SetConsultaSelecionada(Consulta consulta) {
 
         this.consultaSelecionada = consulta;
-        this.consultaAtual = consulta.Copia();
+        this.consultaAtual = consulta.copia();
 
         AtualizarConexao();
 
@@ -172,6 +164,7 @@ public class FrmConsulta extends javax.swing.JDialog {
         btnNovo = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         btnAtributo = new javax.swing.JButton();
+        btnGerarEntidadeSA = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -214,6 +207,11 @@ public class FrmConsulta extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        tblAtributos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAtributosMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblAtributos);
         if (tblAtributos.getColumnModel().getColumnCount() > 0) {
             tblAtributos.getColumnModel().getColumn(4).setResizable(false);
@@ -236,22 +234,22 @@ public class FrmConsulta extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtEntidade)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2)
+                            .addComponent(txtEntidade)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
                             .addComponent(jLabel9)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(cbxConexão, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtNome)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -328,6 +326,13 @@ public class FrmConsulta extends javax.swing.JDialog {
             }
         });
 
+        btnGerarEntidadeSA.setText("Gerar destino em SA");
+        btnGerarEntidadeSA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarEntidadeSAActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -335,9 +340,11 @@ public class FrmConsulta extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTeste)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnGerarEntidadeSA)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAtributo)
-                .addGap(71, 71, 71)
+                .addGap(38, 38, 38)
                 .addComponent(btnExcluir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo)
@@ -357,7 +364,8 @@ public class FrmConsulta extends javax.swing.JDialog {
                     .addComponent(btnSalvar)
                     .addComponent(btnNovo)
                     .addComponent(btnExcluir)
-                    .addComponent(btnAtributo))
+                    .addComponent(btnAtributo)
+                    .addComponent(btnGerarEntidadeSA))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -461,8 +469,82 @@ public class FrmConsulta extends javax.swing.JDialog {
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtributoActionPerformed
-        // TODO add your handling code here:
+
+        if (this.atributoSelecionado != null) {
+            FrmAtributo frmAtributo = new FrmAtributo(this.parent, true);
+            frmAtributo.controle = this.controle;
+            frmAtributo.entidadeSelecionada = consultaAtual.getEntidade();
+            frmAtributo.LimparTela();
+            frmAtributo.SetAtributoSelecionado(this.atributoSelecionado, "CO");
+            frmAtributo.pack();
+            frmAtributo.setLocationRelativeTo(null);
+            frmAtributo.setVisible(true);
+            CarregaAtributos();
+        }
     }//GEN-LAST:event_btnAtributoActionPerformed
+
+    private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
+        // TODO add your handling code here:
+        Atributo tempAtributo = new Atributo();
+        if (tblAtributos.getSelectedRow() >= 0) {
+            for (Atributo atributo : this.consultaAtual.getEntidade().getAtributos()) {
+                if (atributo.equals((Atributo) tblAtributos.getValueAt(tblAtributos.getSelectedRow(), 4))) {
+                    tempAtributo = atributo;
+                }
+            }
+        }
+        if (this.atributoSelecionado != null) {
+            if (this.atributoSelecionado.equals(tempAtributo)) {
+                btnAtributoActionPerformed(null);
+            } else {
+                this.atributoSelecionado = tempAtributo;
+            }
+        } else {
+            this.atributoSelecionado = tempAtributo;
+        }
+    }//GEN-LAST:event_tblAtributosMouseClicked
+
+    private void btnGerarEntidadeSAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarEntidadeSAActionPerformed
+        // TODO add your handling code here:
+        AtualizaAtual();
+        if (this.consultaSelecionada.equals(this.consultaAtual)) {
+
+            MapeamentoSA mapeamentoSA = null;
+            for (MapeamentoSA mapa : this.controle.getMapeamentosSA()) {
+                if (mapa.getConsultaOrigem().equals(this.consultaSelecionada)) {
+                    mapeamentoSA = mapa;
+                }
+            }
+
+            if (mapeamentoSA == null) {
+
+                Entidade novaEntidade = new Entidade();
+                novaEntidade = this.consultaSelecionada.getEntidade().copia();
+                novaEntidade.setNome("SA_"+novaEntidade.getNome());
+                novaEntidade.AddAtributosSA();
+                this.controle.AddEntidadeSA(null, novaEntidade);
+
+                mapeamentoSA = new MapeamentoSA();
+                mapeamentoSA.setConsultaOrigem(this.consultaSelecionada);
+                mapeamentoSA.setEntidadeDestino(novaEntidade);
+                this.controle.AddMapeamentoSA(null, mapeamentoSA);
+
+                JOptionPane.showMessageDialog(this, "Entidade copiada para Staging Area.");
+            }
+
+            FrmEntidadeSA frmEntidadeSA = new FrmEntidadeSA(this.parent, true);
+            frmEntidadeSA.controle = this.controle;
+            frmEntidadeSA.mapeamentoSelecionado = mapeamentoSA;
+            frmEntidadeSA.LimparTela();
+            frmEntidadeSA.SetEntidadeSelecionada(mapeamentoSA.getEntidadeDestino());
+            frmEntidadeSA.pack();
+            frmEntidadeSA.setLocationRelativeTo(null);
+            frmEntidadeSA.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Salve a consulta antes de acessar o mapeamento para Staging Area.");
+        }
+
+    }//GEN-LAST:event_btnGerarEntidadeSAActionPerformed
 
     /**
      * @param args the command line arguments
@@ -510,6 +592,7 @@ public class FrmConsulta extends javax.swing.JDialog {
     private javax.swing.JButton btnAtributo;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnFechar;
+    private javax.swing.JButton btnGerarEntidadeSA;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnTeste;

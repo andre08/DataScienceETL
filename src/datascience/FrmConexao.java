@@ -40,7 +40,7 @@ public class FrmConexao extends javax.swing.JDialog {
 
         LimparTela();
         this.conexaoSelecionada = conexao;
-        this.conexaoAtual = conexao.Copia();
+        this.conexaoAtual = conexao.copia();
 
         if (this.conexaoAtual != null) {
             cbxSGDB.setSelectedItem(conexaoAtual.getSGDB());
@@ -367,9 +367,8 @@ public class FrmConexao extends javax.swing.JDialog {
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         // TODO add your handling code here:
-        if (conexaoAtual == null) {
-
-        } else {
+        if (conexaoAtual != null) {
+            AtualizaAtual();
             ConnectionManager.testConnection(this.parent, conexaoAtual);
         }
 
