@@ -268,7 +268,7 @@ public class FrmAtributo extends javax.swing.JDialog {
 
         jLabel9.setText("Tipo:");
 
-        cbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CHAR", "VARCHAR", "INT", "FLOAT", "NUMERIC", "DECIMAL", "NUMBER", "DATE", "TIME", "DATETIME", "TIMESTAMP", "CLOB", "BLOB", "ENUM" }));
+        cbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CHAR", "VARCHAR", "INT", "FLOAT", "NUMERIC", "DECIMAL", "NUMBER", "DATE", "TIME", "DATETIME", "TIMESTAMP", "CLOB", "BLOB" }));
 
         jLabel4.setText("Precisão:");
 

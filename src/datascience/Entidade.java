@@ -34,7 +34,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("S");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("S");
-        this.getAtributos().add(0,atributo);
+        this.getAtributos().add(0, atributo);
 
         //criando ação
         atributo = new Atributo();
@@ -49,7 +49,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setValorSequencial("N");
         this.getAtributos().add(atributo);
 
-        //criando DATA DE INCLUCAO
+        //criando DATA DE INCLUÇÃO
         atributo = new Atributo();
         atributo.setNome("DTINCLUSAO");
         atributo.setDescricao("ATRIBUTO PARA CONTROLE DE ATUALIZAÇÃO");
@@ -62,9 +62,9 @@ public class Entidade extends Object implements Cloneable {
         atributo.setValorSequencial("N");
         this.getAtributos().add(atributo);
 
-        //criando DATA DE ALTGERACAO
+        //criando DATA DE ATUALIZAÇÃO
         atributo = new Atributo();
-        atributo.setNome("DTALTERACAO");
+        atributo.setNome("DTATUALIZACAO");
         atributo.setDescricao("ATRIBUTO PARA CONTROLE DE ATUALIZAÇÃO");
         atributo.setTipo("DATETIME");
         atributo.setTamanho(0);
@@ -75,6 +75,44 @@ public class Entidade extends Object implements Cloneable {
         atributo.setValorSequencial("N");
         this.getAtributos().add(atributo);
 
+        //criando VERSÃO
+        atributo = new Atributo();
+        atributo.setNome("VERSAO");
+        atributo.setDescricao("ATRIBUTO PARA CONTROLE DE VERSÃO");
+        atributo.setTipo("INT");
+        atributo.setTamanho(0);
+        atributo.setPrecisao(0);
+        atributo.setObrigatorio("S");
+        atributo.setChavePrimaria("N");
+        atributo.setChaveEstrangeira("N");
+        atributo.setValorSequencial("N");
+        this.getAtributos().add(atributo);
+
+        //criando PROCESSADO
+        atributo = new Atributo();
+        atributo.setNome("PROCESSADO");
+        atributo.setDescricao("ATRIBUTO PARA CONTROLE DE PROCESSAMENTO");
+        atributo.setTipo("CHAR");
+        atributo.setTamanho(1);
+        atributo.setPrecisao(0);
+        atributo.setObrigatorio("S");
+        atributo.setChavePrimaria("N");
+        atributo.setChaveEstrangeira("N");
+        atributo.setValorSequencial("N");
+        this.getAtributos().add(atributo);
+
+        //criando MENSAGEM
+        atributo = new Atributo();
+        atributo.setNome("MENSAGEM");
+        atributo.setDescricao("ATRIBUTO PARA MENSAGEM DE PROCESSAMENTO");
+        atributo.setTipo("VARCHAR");
+        atributo.setTamanho(300);
+        atributo.setPrecisao(0);
+        atributo.setObrigatorio("N");
+        atributo.setChavePrimaria("N");
+        atributo.setChaveEstrangeira("N");
+        atributo.setValorSequencial("N");
+        this.getAtributos().add(atributo);
     }
 
     public String getNome() {
@@ -116,7 +154,7 @@ public class Entidade extends Object implements Cloneable {
     public void setHashConexao(int hashConexao) {
         this.hashConexao = hashConexao;
     }
-    
+
     public void addAtributo(Atributo atributoAnterior, Atributo atributoNovo) {
 
         if (atributoAnterior == null) {
@@ -170,20 +208,123 @@ public class Entidade extends Object implements Cloneable {
     }
 
     public Entidade copia() {
-        
+
         Entidade copiaEntidade = new Entidade();
-        
+
         copiaEntidade.setNome(this.nome);
         copiaEntidade.setDescricao(this.descricao);
-        copiaEntidade.setConexao(this.conexao==null?null:this.conexao.copia());
-        
+        copiaEntidade.setConexao(this.conexao == null ? null : this.conexao.copia());
+
         List<Atributo> copiaAtributos = new ArrayList<Atributo>();
         for (Atributo atributo : this.atributos) {
             copiaAtributos.add(atributo.copia());
         }
         copiaEntidade.setAtributos(copiaAtributos);
-        
+
         return copiaEntidade;
 
     }
+
+    public String getSQLCreateCode() {
+
+        int qtdeAtributo;
+        String codeSQL = "CREATE TABLE ";
+        String codeSQLPK = "";
+        String codeSQLFK = "";
+        codeSQL += this.nome + " (\n";
+
+        //Lendo atributos
+        qtdeAtributo = 0;
+        for (Atributo atributo : atributos) {
+            codeSQL += "    ";
+            if (qtdeAtributo > 0) {
+                codeSQL += ", ";
+            }
+            codeSQL += atributo.getSQLCreateCode() + "\n";
+            //VERIFICANDO PK
+            if (atributo.getChavePrimaria().equals("S")) {
+                if (!codeSQLPK.equals("")) {
+                    codeSQLPK += "  , ";
+                }
+                codeSQLPK += atributo.getNome();
+            }
+            //VERIFICANDO FK
+            if ((atributo.getChaveEstrangeira().equals("S")) && (atributo.getReferenciaEntidade() != null) && (atributo.getReferenciaAtributo() != null)) {
+                if (!codeSQLFK.equals("")) {
+                    codeSQLFK += "  , ";
+                }
+                codeSQLFK += "FOREIN KEY (" + atributo.getNome() + ") REFERENCES " + atributo.getReferenciaEntidade().getNome() + "(" + atributo.getReferenciaAtributo().getNome() + ")\n";
+            }
+            qtdeAtributo++;
+        }
+
+        //Lendo Chaves Primarias
+        if (!codeSQLPK.equals("")) {
+            codeSQL += "    , PRIMARY KEY(" + codeSQLPK + ")\n";
+        }
+        //Lendo Chaves Estrangeiras
+        if (!codeSQLFK.equals("")) {
+            codeSQL += "    , " + codeSQLFK + ")\n";
+        }
+        codeSQL += ");\n";
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateCodeMySql() {
+        String codeSQL = this.getSQLCreateCode();
+
+        codeSQL += " \n";
+        codeSQL += "DELIMITER $$ \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += "	SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	-- ATUALIZANDO CAMPO DE CONTROLE DE ALTERACAO \n";
+        codeSQL += "	SET NEW.DTINCLUSAO = NOW(); \n";
+        codeSQL += "	SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "	SET NEW.VERSAO = 1; \n";
+        codeSQL += "	SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "	SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += "END $$ \n";
+        codeSQL += " \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += " \n";
+        codeSQL += "SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	IF (IFNULL(NEW.CONTROLE, '') IN ('INTERNO', 'ERRO')) THEN \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.CONTROLE = OLD.CONTROLE; \n";
+        codeSQL += " \n";
+        codeSQL += "	ELSE \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "		SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += " 		SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "		SET NEW.VERSAO = IFNULL(NEW.VERSAO, 0) + 1; \n";
+        codeSQL += " \n";
+        codeSQL += "	END IF; \n";
+        codeSQL += "END $$ \n";
+        codeSQL += "DELIMITER ; \n";
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateCodeOracle() {
+        String codeSQL = this.getSQLCreateCode();
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateCodeMsSqlServer() {
+        String codeSQL = this.getSQLCreateCode();
+
+        return codeSQL;
+    }
+
 }

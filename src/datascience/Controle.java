@@ -1,5 +1,6 @@
 package datascience;
 
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.FileWriter;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,6 +19,11 @@ public class Controle extends Object implements Cloneable {
 
     //arquivos de controles
     private String Pendente;
+
+    //Configuração
+    private Conexao conexaoSA;
+    private Conexao conexaoDW;
+    private Component parent;
 
     //itens 
     private List<Conexao> conexoes;
@@ -26,7 +33,9 @@ public class Controle extends Object implements Cloneable {
     private List<MapeamentoSA> mapeamentosSA;
     private List<MapeamentoDW> mapeamentosDW;
 
-    public Controle() {
+    public Controle(Component parentComponent) {
+        this.parent = parentComponent;
+
         this.Pendente = "S";
         this.conexoes = new ArrayList<Conexao>();
         this.consultas = new ArrayList<Consulta>();
@@ -36,37 +45,78 @@ public class Controle extends Object implements Cloneable {
         this.mapeamentosDW = new ArrayList<MapeamentoDW>();
     }
 
-    public void addConexao(Conexao conexaoAnterior, Conexao conexaoNova) {
+    public boolean addConexao(Conexao conexaoAnterior, Conexao conexaoNova) {
         this.Pendente = "S";
+        boolean resultado = true;
+
+        //verificando se a conexaoAnterio é uma Staging Area se for é excluido para adicionar uma nova
+        //Mas se não for e a nova for uma Staging Area não pode deixar incluir mais de uma Staging Area
         if (conexaoAnterior == null) {
-            this.conexoes.add(conexaoNova);
+            if ((conexaoNova.getObjetivo().equals("Staging Area") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("Data Warehouse") && (this.conexaoDW != null))) {
+                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com Staging Area/Data Warehouse.");
+                resultado = false;
+            } else {
+                if (conexaoNova.getObjetivo().equals("Staging Area")) {
+                    this.conexaoSA = conexaoNova;
+                }
+                if (conexaoNova.getObjetivo().equals("Data Warehouse")) {
+                    this.conexaoDW = conexaoNova;
+                }
+
+                this.conexoes.add(conexaoNova);
+            }
+
         } else {
-            this.conexoes.set(this.conexoes.indexOf(conexaoAnterior), conexaoNova);
-            // atualizando a conexões nas consultas
-            for (Consulta consulta : this.consultas) {
-                if (consulta.getConexao().equals(conexaoAnterior)) {
-                    consulta.setConexao(conexaoNova);
-                    int indice = this.consultas.indexOf(consulta);
-                    this.consultas.set(indice, consulta);
+            if (this.conexaoSA != null) {
+                if (this.conexaoSA.equals(conexaoAnterior)) {
+                    this.conexaoSA = null;
                 }
             }
-            // atualizando a conexões nas entidades Staging Area
-            for (Entidade entidade : this.entidadesSA) {
-                if (entidade.getConexao().equals(conexaoAnterior)) {
-                    entidade.setConexao(conexaoNova);
-                    int indice = this.entidadesSA.indexOf(entidade);
-                    this.entidadesSA.set(indice, entidade);
+            if (this.conexaoDW != null) {
+                if (this.conexaoDW.equals(conexaoAnterior)) {
+                    this.conexaoDW = null;
                 }
             }
-            // atualizando a conexões nas entidades Staging Area
-            for (Entidade entidade : this.entidadesDW) {
-                if (entidade.getConexao().equals(conexaoAnterior)) {
-                    entidade.setConexao(conexaoNova);
-                    int indice = this.entidadesDW.indexOf(entidade);
-                    this.entidadesSA.set(indice, entidade);
+            if ((conexaoNova.getObjetivo().equals("Staging Area") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("Data Warehouse") && (this.conexaoDW != null))) {
+                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com Staging Area/Data Warehouse.");
+                resultado = false;
+            } else {
+                if (conexaoNova.getObjetivo().equals("Staging Area")) {
+                    this.conexaoSA = conexaoNova;
+                }
+                if (conexaoNova.getObjetivo().equals("Data Warehouse")) {
+                    this.conexaoDW = conexaoNova;
+                }
+
+                this.conexoes.set(this.conexoes.indexOf(conexaoAnterior), conexaoNova);
+
+                // atualizando a conexões nas consultas
+                for (Consulta consulta : this.consultas) {
+                    if (consulta.getConexao().equals(conexaoAnterior)) {
+                        consulta.setConexao(conexaoNova);
+                        int indice = this.consultas.indexOf(consulta);
+                        this.consultas.set(indice, consulta);
+                    }
+                }
+                // atualizando a conexões nas entidades Staging Area
+                for (Entidade entidade : this.entidadesSA) {
+                    if (entidade.getConexao().equals(conexaoAnterior)) {
+                        entidade.setConexao(conexaoNova);
+                        int indice = this.entidadesSA.indexOf(entidade);
+                        this.entidadesSA.set(indice, entidade);
+                    }
+                }
+                // atualizando a conexões nas entidades Staging Area
+                for (Entidade entidade : this.entidadesDW) {
+                    if (entidade.getConexao().equals(conexaoAnterior)) {
+                        entidade.setConexao(conexaoNova);
+                        int indice = this.entidadesDW.indexOf(entidade);
+                        this.entidadesSA.set(indice, entidade);
+                    }
                 }
             }
         }
+        return resultado;
     }
 
     public void addConsulta(Consulta consultaAnterior, Consulta consultaNova) {
@@ -300,6 +350,22 @@ public class Controle extends Object implements Cloneable {
 
     public void setMapeamentosDW(List<MapeamentoDW> mapeamentoDW) {
         this.mapeamentosDW = mapeamentoDW;
+    }
+
+    public Conexao getConexaoSA() {
+        return conexaoSA;
+    }
+
+    public void setConexaoSA(Conexao conexaoSA) {
+        this.conexaoSA = conexaoSA;
+    }
+
+    public Conexao getConexaoDW() {
+        return conexaoDW;
+    }
+
+    public void setConexaoDW(Conexao conexaoDW) {
+        this.conexaoDW = conexaoDW;
     }
 
     public void NovoJson() {
@@ -628,8 +694,8 @@ public class Controle extends Object implements Cloneable {
                     JsonObjAtributoEntidadeConsulta.put("VALORSEQUENCIAL", atributoConsulta.getValorSequencial());
                     JsonObjAtributoEntidadeConsulta.put("OBSERVACAO", atributoConsulta.getObservacao());
                     JsonObjAtributoEntidadeConsulta.put("CHAVEESTRANGEIRA", atributoConsulta.getChaveEstrangeira());
-                    JsonObjAtributoEntidadeConsulta.put("REFERENCIAENTIDADE", (atributoConsulta.getReferenciaEntidade()==null?0:atributoConsulta.getReferenciaEntidade().hashCode()));
-                    JsonObjAtributoEntidadeConsulta.put("REFERENCIAATRIBUTO", (atributoConsulta.getReferenciaAtributo()==null?0:atributoConsulta.getReferenciaAtributo().hashCode()));
+                    JsonObjAtributoEntidadeConsulta.put("REFERENCIAENTIDADE", (atributoConsulta.getReferenciaEntidade() == null ? 0 : atributoConsulta.getReferenciaEntidade().hashCode()));
+                    JsonObjAtributoEntidadeConsulta.put("REFERENCIAATRIBUTO", (atributoConsulta.getReferenciaAtributo() == null ? 0 : atributoConsulta.getReferenciaAtributo().hashCode()));
                     JsonArrayAtributoEntidadeConsulta.put(JsonObjAtributoEntidadeConsulta);
                 }
 
@@ -668,8 +734,8 @@ public class Controle extends Object implements Cloneable {
                         JsonObjAtributoEntidadeSA.put("VALORSEQUENCIAL", atributoEntidadeSA.getValorSequencial());
                         JsonObjAtributoEntidadeSA.put("OBSERVACAO", atributoEntidadeSA.getObservacao());
                         JsonObjAtributoEntidadeSA.put("CHAVEESTRANGEIRA", atributoEntidadeSA.getChaveEstrangeira());
-                        JsonObjAtributoEntidadeSA.put("REFERENCIAENTIDADE", (atributoEntidadeSA.getReferenciaEntidade()==null?0:atributoEntidadeSA.getReferenciaEntidade().hashCode()));
-                        JsonObjAtributoEntidadeSA.put("REFERENCIAATRIBUTO", (atributoEntidadeSA.getReferenciaAtributo()==null?0:atributoEntidadeSA.getReferenciaAtributo().hashCode()));
+                        JsonObjAtributoEntidadeSA.put("REFERENCIAENTIDADE", (atributoEntidadeSA.getReferenciaEntidade() == null ? 0 : atributoEntidadeSA.getReferenciaEntidade().hashCode()));
+                        JsonObjAtributoEntidadeSA.put("REFERENCIAATRIBUTO", (atributoEntidadeSA.getReferenciaAtributo() == null ? 0 : atributoEntidadeSA.getReferenciaAtributo().hashCode()));
 
                         JsonArrayAtributoEntidadeSA.put(JsonObjAtributoEntidadeSA);
                     }
@@ -707,8 +773,8 @@ public class Controle extends Object implements Cloneable {
                         JsonObjAtributoEntidadeDW.put("VALORSEQUENCIAL", atributoEntidadeDW.getValorSequencial());
                         JsonObjAtributoEntidadeDW.put("OBSERVACAO", atributoEntidadeDW.getObservacao());
                         JsonObjAtributoEntidadeDW.put("CHAVEESTRANGEIRA", atributoEntidadeDW.getChaveEstrangeira());
-                        JsonObjAtributoEntidadeDW.put("REFERENCIAENTIDADE", (atributoEntidadeDW.getReferenciaEntidade()==null?0:atributoEntidadeDW.getReferenciaEntidade().hashCode()));
-                        JsonObjAtributoEntidadeDW.put("REFERENCIAATRIBUTO", (atributoEntidadeDW.getReferenciaAtributo()==null?0:atributoEntidadeDW.getReferenciaAtributo().hashCode()));
+                        JsonObjAtributoEntidadeDW.put("REFERENCIAENTIDADE", (atributoEntidadeDW.getReferenciaEntidade() == null ? 0 : atributoEntidadeDW.getReferenciaEntidade().hashCode()));
+                        JsonObjAtributoEntidadeDW.put("REFERENCIAATRIBUTO", (atributoEntidadeDW.getReferenciaAtributo() == null ? 0 : atributoEntidadeDW.getReferenciaAtributo().hashCode()));
 
                         JsonArrayAtributoEntidadeDW.put(JsonObjAtributoEntidadeDW);
                     }
@@ -745,11 +811,11 @@ public class Controle extends Object implements Cloneable {
                 JsonObjMapeamentoDW = new JSONObject();
                 JsonObjMapeamentoDW.put("ENTIDADESAORIGEM", mapemaMapeamentoDW.getEntidadeSAOrigem().hashCode());
                 JsonObjMapeamentoDW.put("ENTIDADEDWDESTINO", mapemaMapeamentoDW.getEntidadeDWDestino().hashCode());
-                
+
                 JsonArrayMapeamentoDW.put(JsonObjMapeamentoDW);
             }
             arquivoJson.put("MAPEAMENTO DW", JsonArrayMapeamentoDW);
-            
+
             try {
                 FileWriter arq;
                 arq = new FileWriter(nomearquivo);

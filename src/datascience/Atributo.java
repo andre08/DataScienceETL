@@ -18,8 +18,8 @@ public class Atributo extends Object implements Cloneable {
     private String observacao;
     //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
     private int hashReferenciaEntidade;
-    private int hashReferenciaAtributo;            
-    
+    private int hashReferenciaAtributo;
+
     public Atributo() {
         this.nome = "";
         this.descricao = "";
@@ -220,9 +220,9 @@ public class Atributo extends Object implements Cloneable {
     }
 
     public Atributo copia() {
-        
+
         Atributo copiaAtributo = new Atributo();
-        
+
         copiaAtributo.setNome(this.nome);
         copiaAtributo.setDescricao(this.descricao);
         copiaAtributo.setTipo(this.tipo);
@@ -233,11 +233,64 @@ public class Atributo extends Object implements Cloneable {
         copiaAtributo.setChaveEstrangeira(this.chaveEstrangeira);
         copiaAtributo.setValorSequencial(this.valorSequencial);
         copiaAtributo.setObservacao(this.observacao);
-        copiaAtributo.setReferenciaEntidade(this.referenciaEntidade==null?null:this.referenciaEntidade.copia());
-        copiaAtributo.setReferenciaAtributo(this.referenciaAtributo==null?null:this.referenciaAtributo.copia());
-        
+        copiaAtributo.setReferenciaEntidade(this.referenciaEntidade == null ? null : this.referenciaEntidade.copia());
+        copiaAtributo.setReferenciaAtributo(this.referenciaAtributo == null ? null : this.referenciaAtributo.copia());
+
         return copiaAtributo;
     }
 
+    public String getSQLCreateCode() {
 
+        String codeSQL = "  ";
+        codeSQL += this.nome + " ";
+        codeSQL += this.tipo;
+        switch (this.tipo) {
+            case "CHAR":
+                codeSQL += "(" + Integer.toString(this.tamanho) + ")";
+                break;
+            case "VARCHAR":
+                codeSQL += "(" + Integer.toString(this.tamanho) + ")";
+                break;
+            case "INT":
+                codeSQL += " ";
+                break;
+            case "FLOAT":
+                codeSQL += "(" + Integer.toString(this.tamanho) + "," + Integer.toString(this.precisao) + ")";
+                break;
+            case "NUMERIC":
+                codeSQL += "(" + Integer.toString(this.tamanho) + "," + Integer.toString(this.precisao) + ")";
+                break;
+            case "DECIMAL":
+                codeSQL += "(" + Integer.toString(this.tamanho) + "," + Integer.toString(this.precisao) + ")";
+                break;
+            case "NUMBER":
+                codeSQL += "(" + Integer.toString(this.tamanho) + "," + Integer.toString(this.precisao) + ")";
+                break;
+            case "DATE":
+                codeSQL += " ";
+                break;
+            case "TIME":
+                codeSQL += " ";
+                break;
+            case "DATETIME":
+                codeSQL += " ";
+                break;
+            case "TIMESTAMP":
+                codeSQL += " ";
+                break;
+            case "CLOB":
+                codeSQL += " ";
+                break;
+            case "BLOB":
+                codeSQL += " ";
+                break;
+            default:
+                codeSQL += " ";
+                break;
+        }
+        codeSQL += (this.obrigatorio.equals("S") ? "NOT NULL " : "");
+
+        return codeSQL;
+    }
+    
 }

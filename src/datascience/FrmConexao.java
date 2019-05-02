@@ -56,25 +56,25 @@ public class FrmConexao extends javax.swing.JDialog {
         }
 
     }
-    
+
     public void AtualizaAtual() {
-        
+
         this.conexaoAtual.setNome(txtNome.getText());
         this.conexaoAtual.setDescricao(txtDescricao.getText());
         this.conexaoAtual.setNomeBanco(txtNomeBase.getText());
         this.conexaoAtual.setUrl(txtURL.getText());
-        if (txtPorta.getText().trim().equals("")){
+        if (txtPorta.getText().trim().equals("")) {
             txtPorta.setText("0");
         }
         this.conexaoAtual.setPorta(Integer.parseInt(txtPorta.getText()));
         this.conexaoAtual.setUsename(txtUsuario.getText());
         this.conexaoAtual.setPassword(txtSenha.getText());
         this.conexaoAtual.setSID(txtSID.getText());
-        if(cbxSGDB.getSelectedIndex() != -1){
-        this.conexaoAtual.setSGDB(cbxSGDB.getSelectedItem().toString());
+        if (cbxSGDB.getSelectedIndex() != -1) {
+            this.conexaoAtual.setSGDB(cbxSGDB.getSelectedItem().toString());
         }
-        if(cbxObjetivo.getSelectedIndex() != -1){
-        this.conexaoAtual.setObjetivo(cbxObjetivo.getSelectedItem().toString());
+        if (cbxObjetivo.getSelectedIndex() != -1) {
+            this.conexaoAtual.setObjetivo(cbxObjetivo.getSelectedItem().toString());
         }
 
     }
@@ -344,9 +344,11 @@ public class FrmConexao extends javax.swing.JDialog {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
         AtualizaAtual();
-        controle.addConexao(this.conexaoSelecionada, this.conexaoAtual);
-        this.conexaoSelecionada = this.conexaoAtual;
-        JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");
+        if (controle.addConexao(this.conexaoSelecionada, this.conexaoAtual)) {
+            this.conexaoSelecionada = this.conexaoAtual;
+            JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");
+        }
+
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
@@ -362,7 +364,7 @@ public class FrmConexao extends javax.swing.JDialog {
             btnSalvarActionPerformed(evt);
         }
         dispose();
-        
+
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed

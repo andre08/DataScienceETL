@@ -16,7 +16,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     public FrmPrincipal() {
         initComponents();
-        controle = new Controle();
+        controle = new Controle(this);
         controle.NovoJson();
         AtualizarTela();
     }
@@ -477,7 +477,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         FrmGerarStagingArea frmGerarStagingArea = new FrmGerarStagingArea(this, true);
         frmGerarStagingArea.controle = this.controle;
-        frmGerarStagingArea.AtualizarConsultas();
+        frmGerarStagingArea.AtualizarEntidadesSA();
         frmGerarStagingArea.pack();
         frmGerarStagingArea.setLocationRelativeTo(null);
         frmGerarStagingArea.setVisible(true);
