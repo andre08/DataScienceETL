@@ -1,16 +1,20 @@
 package datascience;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MapeamentoSA {
     
     private Consulta consultaOrigem;
-    private Entidade entidadeDestino;
+    private Entidade entidadeSADestino;
+    private List<MapeamentoAtributo> mapeamentosAtributos;
     //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
     private int hashConsulta;
     private int hashEntidade;
 
     public MapeamentoSA() {
+        this.mapeamentosAtributos = new ArrayList<MapeamentoAtributo>();
     }
 
     public Consulta getConsultaOrigem() {
@@ -21,12 +25,12 @@ public class MapeamentoSA {
         this.consultaOrigem = consultaOrigem;
     }
 
-    public Entidade getEntidadeDestino() {
-        return entidadeDestino;
+    public Entidade getEntidadeSADestino() {
+        return entidadeSADestino;
     }
 
-    public void setEntidadeDestino(Entidade entidadeDestino) {
-        this.entidadeDestino = entidadeDestino;
+    public void setEntidadeSADestino(Entidade entidadeSADestino) {
+        this.entidadeSADestino = entidadeSADestino;
     }
 
     public int getHashConsulta() {
@@ -44,12 +48,21 @@ public class MapeamentoSA {
     public void setHashEntidade(int hashEntidade) {
         this.hashEntidade = hashEntidade;
     }
-    
+
+    public List<MapeamentoAtributo> getMapeamentosAtributos() {
+        return mapeamentosAtributos;
+    }
+
+    public void setMapeamentosAtributos(List<MapeamentoAtributo> mapeamentosAtributos) {
+        this.mapeamentosAtributos = mapeamentosAtributos;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.consultaOrigem);
-        hash = 73 * hash + Objects.hashCode(this.entidadeDestino);
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.consultaOrigem);
+        hash = 47 * hash + Objects.hashCode(this.entidadeSADestino);
+        hash = 47 * hash + Objects.hashCode(this.mapeamentosAtributos);
         return hash;
     }
 
@@ -68,22 +81,32 @@ public class MapeamentoSA {
         if (!Objects.equals(this.consultaOrigem, other.consultaOrigem)) {
             return false;
         }
-        if (!Objects.equals(this.entidadeDestino, other.entidadeDestino)) {
+        if (!Objects.equals(this.entidadeSADestino, other.entidadeSADestino)) {
+            return false;
+        }
+        if (!Objects.equals(this.mapeamentosAtributos, other.mapeamentosAtributos)) {
             return false;
         }
         return true;
     }
+    
 
     @Override
     public String toString() {
-        return consultaOrigem.getNome() + " -> " + entidadeDestino.getNome();
+        return consultaOrigem.getNome() + " -> " + entidadeSADestino.getNome();
     }
 
-    public MapeamentoSA copia(){        
+    public MapeamentoSA Copia(){        
 
         MapeamentoSA copiaMapeamentoSA = new MapeamentoSA();
         copiaMapeamentoSA.setConsultaOrigem(this.consultaOrigem==null?null:this.consultaOrigem.copia());
-        copiaMapeamentoSA.setEntidadeDestino(this.entidadeDestino==null?null:this.entidadeDestino.copia());
+        copiaMapeamentoSA.setEntidadeSADestino(this.entidadeSADestino==null?null:this.entidadeSADestino.copia());
+
+        List<MapeamentoAtributo> copiaMapas = new ArrayList<MapeamentoAtributo>();
+        for (MapeamentoAtributo mapa : this.getMapeamentosAtributos()) {
+            copiaMapas.add(mapa.copia());
+        }
+        copiaMapeamentoSA.setMapeamentosAtributos(copiaMapas);
 
         return copiaMapeamentoSA;
 

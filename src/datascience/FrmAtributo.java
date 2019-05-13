@@ -429,6 +429,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         this.entidadeSelecionada.addAtributo(this.atributoSelecionado, this.atributoAtual);
         this.atributoSelecionado = this.atributoAtual;
         JOptionPane.showMessageDialog(this, "Atributo salva com sucesso.");
+        dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed

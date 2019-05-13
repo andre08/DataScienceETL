@@ -25,6 +25,11 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
                     model.addElement(entidade);
                 }
             }
+            if (controle.getMapeamentosDW() != null) {
+                for (MapeamentoDW mapa : controle.getMapeamentosDW()) {
+                    model.addElement(mapa);
+                }
+            }
         }
         lstConsulta.setModel(model);
     }
@@ -193,20 +198,41 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
         txtSQL.setText("");
         //CRIANDO TABELAS
         for (Object objeto : lstConsulta.getSelectedValues()) {
-            Entidade entidadeSA = (Entidade) objeto;
-            if(this.controle.getConexaoSA() != null){
-                switch (this.controle.getConexaoSA().getSGDB()){
-                    case "ORACLE":
-                        txtSQL.append(entidadeSA.getSQLCreateCodeOracle());
-                        break;                           
-                    case "MySQL":
-                        txtSQL.append(entidadeSA.getSQLCreateCodeMySql());
-                        break;                           
-                    case "MS SQL Server":
-                        txtSQL.append(entidadeSA.getSQLCreateCodeMsSqlServer());
-                        break;                           
+            if (objeto instanceof Entidade) {
+
+                Entidade entidadeSA = (Entidade) objeto;
+                if (this.controle.getConexaoSA() != null) {
+                    switch (this.controle.getConexaoSA().getSGDB()) {
+                        case "ORACLE":
+                            txtSQL.append(entidadeSA.getSQLCreateCodeOracle());
+                            break;
+                        case "MySQL":
+                            txtSQL.append(entidadeSA.getSQLCreateCodeMySql());
+                            break;
+                        case "MS SQL Server":
+                            txtSQL.append(entidadeSA.getSQLCreateCodeMsSqlServer());
+                            break;
+                    }
                 }
             }
+            if (objeto instanceof MapeamentoDW) {
+
+                MapeamentoDW mapeamentoDW = (MapeamentoDW) objeto;
+                if (this.controle.getConexaoDW() != null) {
+                    switch (this.controle.getConexaoDW().getSGDB()) {
+                        case "ORACLE":
+                            txtSQL.append(mapeamentoDW.getSQLCreateCodeOracle());
+                            break;
+                        case "MySQL":
+                            txtSQL.append(mapeamentoDW.getSQLCreateCodeMySql());
+                            break;
+                        case "MS SQL Server":
+                            txtSQL.append(mapeamentoDW.getSQLCreateCodeMsSqlServer());
+                            break;
+                    }
+                }
+            }
+
         }
 
 

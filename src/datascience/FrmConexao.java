@@ -150,7 +150,7 @@ public class FrmConexao extends javax.swing.JDialog {
 
         jLabel10.setText("Objetivo:");
 
-        cbxObjetivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Origem dos dados", "Staging Area", "Data Warehouse" }));
+        cbxObjetivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Origem dos dados", "StagingArea", "DataMart" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -347,6 +347,7 @@ public class FrmConexao extends javax.swing.JDialog {
         if (controle.addConexao(this.conexaoSelecionada, this.conexaoAtual)) {
             this.conexaoSelecionada = this.conexaoAtual;
             JOptionPane.showMessageDialog(this, "Conexão salva com sucesso.");
+            dispose();
         }
 
     }//GEN-LAST:event_btnSalvarActionPerformed

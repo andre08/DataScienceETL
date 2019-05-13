@@ -34,10 +34,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         DefaultMutableTreeNode conexaoNode = new DefaultMutableTreeNode("Conexões");
         DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
-        DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades Staging Area");
-        DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades Data Warehouse");
-        DefaultMutableTreeNode mapeamentoSANode = new DefaultMutableTreeNode("Mapeamento Staging Area");
-        DefaultMutableTreeNode mapeamentoDWNode = new DefaultMutableTreeNode("Mapeamento Data Warehouse");
+        DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades StagingArea");
+        DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades DataMart");
+        DefaultMutableTreeNode mapeamentoSANode = new DefaultMutableTreeNode("Mapeamento StagingArea");
+        DefaultMutableTreeNode mapeamentoDWNode = new DefaultMutableTreeNode("Mapeamento DataMart");
 
         DefaultMutableTreeNode itensNode;
 
@@ -120,7 +120,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniGerenciarEntidadeSA = new javax.swing.JMenuItem();
         mniGerenciarEntidadeDW = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        mniMapeamentoSA = new javax.swing.JMenuItem();
+        mniMapeamentoDW = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Construtor de Staging Area para processo de ETL");
@@ -191,7 +192,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniDefinicaoProjeto.setText("Definição do Projeto");
         jMenu2.add(mniDefinicaoProjeto);
 
-        mniGerarSqlStage.setText("Gerar SQL Staging Area");
+        mniGerarSqlStage.setText("Gerar SQL StagingArea");
         mniGerarSqlStage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniGerarSqlStageActionPerformed(evt);
@@ -199,7 +200,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         jMenu2.add(mniGerarSqlStage);
 
-        mniGerarSqlDW.setText("Gerar SQL Data Warehouse");
+        mniGerarSqlDW.setText("Gerar SQL DataMart");
         mniGerarSqlDW.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniGerarSqlDWActionPerformed(evt);
@@ -255,13 +256,21 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenu9.setText("Mapeamento");
 
-        jMenuItem3.setText("Configurar Mapeamento");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        mniMapeamentoSA.setText("Configurar Mapeamento StagingArea");
+        mniMapeamentoSA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                mniMapeamentoSAActionPerformed(evt);
             }
         });
-        jMenu9.add(jMenuItem3);
+        jMenu9.add(mniMapeamentoSA);
+
+        mniMapeamentoDW.setText("Configurar Mapeamento DataMart");
+        mniMapeamentoDW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniMapeamentoDWActionPerformed(evt);
+            }
+        });
+        jMenu9.add(mniMapeamentoDW);
 
         jMenuBar1.add(jMenu9);
 
@@ -395,7 +404,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
 
             if (selecao.getUserObject() instanceof Entidade) {
-                if (selecao.getParent().toString().equals("Entidades Staging Area")) {
+                if (selecao.getParent().toString().equals("Entidades StagingArea")) {
                     this.conexaoSelecionado = null;
                     this.consultaSelecionada = null;
                     this.entidadeDWSelecionada = null;
@@ -413,7 +422,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     }
                 }
 
-                if (selecao.getParent().toString().equals("Entidades Data Warehouse")) {
+                if (selecao.getParent().toString().equals("Entidades DataMart")) {
                     this.conexaoSelecionado = null;
                     this.consultaSelecionada = null;
                     this.entidadeSASelecionada = null;
@@ -438,6 +447,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 this.entidadeSASelecionada = null;
                 this.entidadeDWSelecionada = null;
                 this.mapeamentoDWSelecionada = null;
+
+                if (this.mapeamentoSASelecionada != null) {
+                    if (this.mapeamentoSASelecionada.equals((MapeamentoSA) selecao.getUserObject())) {
+                        mniMapeamentoSAActionPerformed(null);
+                    } else {
+                        this.mapeamentoSASelecionada = (MapeamentoSA) selecao.getUserObject();
+                    }
+                } else {
+                    this.mapeamentoSASelecionada = (MapeamentoSA) selecao.getUserObject();
+                }
             }
 
             if (selecao.getUserObject() instanceof MapeamentoDW) {
@@ -445,9 +464,18 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 this.consultaSelecionada = null;
                 this.entidadeSASelecionada = null;
                 this.entidadeDWSelecionada = null;
-                this.mapeamentoDWSelecionada = null;
-            }
+                this.mapeamentoSASelecionada = null;
 
+                if (this.mapeamentoDWSelecionada != null) {
+                    if (this.mapeamentoDWSelecionada.equals((MapeamentoDW) selecao.getUserObject())) {
+                        mniMapeamentoDWActionPerformed(null);
+                    } else {
+                        this.mapeamentoDWSelecionada = (MapeamentoDW) selecao.getUserObject();
+                    }
+                } else {
+                    this.mapeamentoDWSelecionada = (MapeamentoDW) selecao.getUserObject();
+                }
+            }
         }
     }//GEN-LAST:event_lstProjetoMouseClicked
 
@@ -465,13 +493,19 @@ public class FrmPrincipal extends javax.swing.JFrame {
         AtualizarTela();
     }//GEN-LAST:event_mniGerenciarConsultaActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void mniMapeamentoSAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniMapeamentoSAActionPerformed
         // TODO add your handling code here:
-        FrmMapeamento frmMapeamento = new FrmMapeamento(this, true);
-        frmMapeamento.pack();
-        frmMapeamento.setLocationRelativeTo(null);
-        frmMapeamento.setVisible(true);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+        if (mapeamentoSASelecionada != null) {
+            FrmMapeamentoConsultatoSA frmMapeamentoConsultatoSA = new FrmMapeamentoConsultatoSA(this, true);
+            frmMapeamentoConsultatoSA.controle = this.controle;
+            frmMapeamentoConsultatoSA.LimparTela();
+            frmMapeamentoConsultatoSA.SetMapeamentoSelecionado(mapeamentoSASelecionada);
+            frmMapeamentoConsultatoSA.pack();
+            frmMapeamentoConsultatoSA.setLocationRelativeTo(null);
+            frmMapeamentoConsultatoSA.setVisible(true);
+            AtualizarTela();
+        }        
+    }//GEN-LAST:event_mniMapeamentoSAActionPerformed
 
     private void mniGerarSqlStageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerarSqlStageActionPerformed
         // TODO add your handling code here:
@@ -500,7 +534,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             frmEntidadeSA.controle = this.controle;
 
             for (MapeamentoSA mapaSA : this.controle.getMapeamentosSA()) {
-                if (mapaSA.getEntidadeDestino().equals(entidadeSASelecionada)) {
+                if (mapaSA.getEntidadeSADestino().equals(entidadeSASelecionada)) {
                     frmEntidadeSA.mapeamentoSelecionado = mapaSA;
                 }
             }
@@ -532,6 +566,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
             AtualizarTela();
         }
     }//GEN-LAST:event_mniGerenciarEntidadeDWActionPerformed
+
+    private void mniMapeamentoDWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniMapeamentoDWActionPerformed
+        // TODO add your handling code here:
+        if (mapeamentoDWSelecionada != null) {
+            FrmMapeamentoSAtoDW frmMapeamentoSAtoDW = new FrmMapeamentoSAtoDW(this, true);
+            frmMapeamentoSAtoDW.controle = this.controle;
+            frmMapeamentoSAtoDW.LimparTela();
+            frmMapeamentoSAtoDW.SetMapeamentoSelecionado(mapeamentoDWSelecionada);
+            frmMapeamentoSAtoDW.pack();
+            frmMapeamentoSAtoDW.setLocationRelativeTo(null);
+            frmMapeamentoSAtoDW.setVisible(true);
+            AtualizarTela();
+        }        
+    }//GEN-LAST:event_mniMapeamentoDWActionPerformed
 
     /**
      * @param args the command line arguments
@@ -581,7 +629,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -595,6 +642,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem mniGerenciarConsulta;
     private javax.swing.JMenuItem mniGerenciarEntidadeDW;
     private javax.swing.JMenuItem mniGerenciarEntidadeSA;
+    private javax.swing.JMenuItem mniMapeamentoDW;
+    private javax.swing.JMenuItem mniMapeamentoSA;
     private javax.swing.JMenuItem mniNovo;
     private javax.swing.JMenuItem mniSalvar;
     // End of variables declaration//GEN-END:variables

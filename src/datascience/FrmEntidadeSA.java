@@ -49,7 +49,7 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         if (controle != null) {
             if (controle.getConexoes() != null) {
                 for (Conexao conexao : controle.getConexoes()) {
-                    if (conexao.getObjetivo().equals("Staging Area")) {
+                    if (conexao.getObjetivo().equals("StagingArea")) {
                         model.addElement(conexao);
                     }
                 }
@@ -363,6 +363,7 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         controle.AddEntidadeSA(this.entidadeSelecionadaSA, this.entidadeAtualSA);
 
         JOptionPane.showMessageDialog(this, "Entidade salva com sucesso.");
+        dispose();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed

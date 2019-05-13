@@ -385,7 +385,7 @@ public class FrmConsulta extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-
+        AtualizaAtual();
         if (this.consultaSelecionada != null) {
             controle.getConsultas().remove(consultaSelecionada);
             this.consultaSelecionada = null;
@@ -405,8 +405,8 @@ public class FrmConsulta extends javax.swing.JDialog {
         AtualizaAtual();
         controle.addConsulta(this.consultaSelecionada, this.consultaAtual);
         this.consultaSelecionada = this.consultaAtual;
-
         JOptionPane.showMessageDialog(this, "Consulta salva com sucesso.");
+        dispose();
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -497,7 +497,7 @@ public class FrmConsulta extends javax.swing.JDialog {
 
                 mapeamentoSA = new MapeamentoSA();
                 mapeamentoSA.setConsultaOrigem(this.consultaSelecionada);
-                mapeamentoSA.setEntidadeDestino(novaEntidade);
+                mapeamentoSA.setEntidadeSADestino(novaEntidade);
                 this.controle.AddMapeamentoSA(null, mapeamentoSA);
 
                 JOptionPane.showMessageDialog(this, "Entidade copiada para Staging Area.");
@@ -507,7 +507,7 @@ public class FrmConsulta extends javax.swing.JDialog {
             frmEntidadeSA.controle = this.controle;
             frmEntidadeSA.mapeamentoSelecionado = mapeamentoSA;
             frmEntidadeSA.LimparTela();
-            frmEntidadeSA.SetEntidadeSelecionada(mapeamentoSA.getEntidadeDestino());
+            frmEntidadeSA.SetEntidadeSelecionada(mapeamentoSA.getEntidadeSADestino());
             frmEntidadeSA.pack();
             frmEntidadeSA.setLocationRelativeTo(null);
             frmEntidadeSA.setVisible(true);

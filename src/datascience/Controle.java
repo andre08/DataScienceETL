@@ -52,14 +52,14 @@ public class Controle extends Object implements Cloneable {
         //verificando se a conexaoAnterio é uma Staging Area se for é excluido para adicionar uma nova
         //Mas se não for e a nova for uma Staging Area não pode deixar incluir mais de uma Staging Area
         if (conexaoAnterior == null) {
-            if ((conexaoNova.getObjetivo().equals("Staging Area") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("Data Warehouse") && (this.conexaoDW != null))) {
-                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com Staging Area/Data Warehouse.");
+            if ((conexaoNova.getObjetivo().equals("StagingArea") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("DataMart") && (this.conexaoDW != null))) {
+                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com Staging Area/DataMart.");
                 resultado = false;
             } else {
-                if (conexaoNova.getObjetivo().equals("Staging Area")) {
+                if (conexaoNova.getObjetivo().equals("StagingArea")) {
                     this.conexaoSA = conexaoNova;
                 }
-                if (conexaoNova.getObjetivo().equals("Data Warehouse")) {
+                if (conexaoNova.getObjetivo().equals("DataMart")) {
                     this.conexaoDW = conexaoNova;
                 }
 
@@ -77,14 +77,14 @@ public class Controle extends Object implements Cloneable {
                     this.conexaoDW = null;
                 }
             }
-            if ((conexaoNova.getObjetivo().equals("Staging Area") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("Data Warehouse") && (this.conexaoDW != null))) {
-                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com Staging Area/Data Warehouse.");
+            if ((conexaoNova.getObjetivo().equals("StagingArea") && (this.conexaoSA != null)) || (conexaoNova.getObjetivo().equals("DataMart") && (this.conexaoDW != null))) {
+                JOptionPane.showMessageDialog(this.parent, "Não pode existir mais de uma conexão com StagingArea/DataMart.");
                 resultado = false;
             } else {
-                if (conexaoNova.getObjetivo().equals("Staging Area")) {
+                if (conexaoNova.getObjetivo().equals("StagingArea")) {
                     this.conexaoSA = conexaoNova;
                 }
-                if (conexaoNova.getObjetivo().equals("Data Warehouse")) {
+                if (conexaoNova.getObjetivo().equals("DataMart")) {
                     this.conexaoDW = conexaoNova;
                 }
 
@@ -143,8 +143,8 @@ public class Controle extends Object implements Cloneable {
         }
         //atualizando as entidade nos mapeamentos
         for (MapeamentoSA mapaMapeamentoSA : this.mapeamentosSA) {
-            if (mapaMapeamentoSA.getEntidadeDestino().equals(entidadeAnterior)) {
-                mapaMapeamentoSA.setEntidadeDestino(entidadeNova);
+            if (mapaMapeamentoSA.getEntidadeSADestino().equals(entidadeAnterior)) {
+                mapaMapeamentoSA.setEntidadeSADestino(entidadeNova);
             }
         }
         //atualizando as entidade nos mapeamentos
@@ -227,11 +227,11 @@ public class Controle extends Object implements Cloneable {
             }
         }
 
-        //Localizando e refazendo relacionamento das Entidades SA
+        //Localizando e refazendo relacionamento das Entidades SA e Entidade DW
         for (Entidade entidade : this.entidadesSA) {
             for (MapeamentoSA mapeamentoSA : this.mapeamentosSA) {
                 if (mapeamentoSA.getHashEntidade() == entidade.hashCode()) {
-                    mapeamentoSA.setEntidadeDestino(entidade);
+                    mapeamentoSA.setEntidadeSADestino(entidade);
                 }
             }
             for (MapeamentoDW mapeamentoDW : this.mapeamentosDW) {
@@ -263,6 +263,15 @@ public class Controle extends Object implements Cloneable {
                         }
                     }
                 }
+                for (MapeamentoSA mapeamentoSA : this.mapeamentosSA) {
+                    for (MapeamentoAtributo mapeamentoAtributo : mapeamentoSA.getMapeamentosAtributos()) {
+                        if (mapeamentoAtributo.getHashAtributoOrigem() == atributoOrigem.hashCode()) {
+                            mapeamentoAtributo.setAtributoOrigem(atributoOrigem);
+                        }
+
+                    }
+
+                }
             }
         }
 
@@ -279,6 +288,25 @@ public class Controle extends Object implements Cloneable {
                         }
                     }
                 }
+
+                for (MapeamentoSA mapeamentoSA : this.mapeamentosSA) {
+                    for (MapeamentoAtributo mapeamentoAtributo : mapeamentoSA.getMapeamentosAtributos()) {
+                        if (mapeamentoAtributo.getHashAtributoDestino() == atributoOrigem.hashCode()) {
+                            mapeamentoAtributo.setAtributoDestino(atributoOrigem);
+                        }
+
+                    }
+
+                }
+                for (MapeamentoDW mapeamentoDW : this.mapeamentosDW) {
+                    for (MapeamentoAtributo mapeamentoAtributo : mapeamentoDW.getMapeamentosAtributos()) {
+                        if (mapeamentoAtributo.getHashAtributoOrigem() == atributoOrigem.hashCode()) {
+                            mapeamentoAtributo.setAtributoOrigem(atributoOrigem);
+                        }
+
+                    }
+
+                }
             }
         }
 
@@ -294,6 +322,16 @@ public class Controle extends Object implements Cloneable {
                             }
                         }
                     }
+                }
+
+                for (MapeamentoDW mapeamentoDW : this.mapeamentosDW) {
+                    for (MapeamentoAtributo mapeamentoAtributo : mapeamentoDW.getMapeamentosAtributos()) {
+                        if (mapeamentoAtributo.getHashAtributoDestino() == atributoOrigem.hashCode()) {
+                            mapeamentoAtributo.setAtributoDestino(atributoOrigem);
+                        }
+
+                    }
+
                 }
             }
         }
@@ -581,6 +619,8 @@ public class Controle extends Object implements Cloneable {
              */
             JSONArray JsonArrayMapeamentoSA;
             JSONObject JsonObjMapeamentoSA;
+            JSONArray JsonArrayMapeamentoSAAtributos;
+            JSONObject JsonObjMapeamentoSAAtributo;
 
             JsonArrayMapeamentoSA = projetoJson.getJSONArray("MAPEAMENTO SA");
             for (int i = 0; i < JsonArrayMapeamentoSA.length(); i++) {
@@ -590,6 +630,16 @@ public class Controle extends Object implements Cloneable {
                 mapeamentoSA.setHashConsulta(JsonObjMapeamentoSA.getInt("CONSULTAORIGEM"));
                 mapeamentoSA.setHashEntidade(JsonObjMapeamentoSA.getInt("ENTIDADEDESTINO"));
 
+                JsonArrayMapeamentoSAAtributos = JsonObjMapeamentoSA.getJSONArray("MAPEAMENTO ATRIBUTOS");
+                for (int j = 0; j < JsonArrayMapeamentoSAAtributos.length(); j++) {
+                    JsonObjMapeamentoSAAtributo = (JSONObject) JsonArrayMapeamentoSAAtributos.get(j);
+                    MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
+                    mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO CONSULTA"));
+                    mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO SA"));
+
+                    mapeamentoSA.getMapeamentosAtributos().add(mapaAtributo);
+                }
+
                 this.AddMapeamentoSA(null, mapeamentoSA);
             }
 
@@ -598,6 +648,8 @@ public class Controle extends Object implements Cloneable {
              */
             JSONArray JsonArrayMapeamentoDW;
             JSONObject JsonObjMapeamentoDW;
+            JSONArray JsonArrayMapeamentoDWAtributos;
+            JSONObject JsonObjMapeamentoDWAtributo;
 
             JsonArrayMapeamentoDW = projetoJson.getJSONArray("MAPEAMENTO DW");
             for (int i = 0; i < JsonArrayMapeamentoDW.length(); i++) {
@@ -606,6 +658,16 @@ public class Controle extends Object implements Cloneable {
                 MapeamentoDW mapeamentoDW = new MapeamentoDW();
                 mapeamentoDW.setHashEntidadeSAOrigem(JsonObjMapeamentoDW.getInt("ENTIDADESAORIGEM"));
                 mapeamentoDW.setHashEntidadeDWDestino(JsonObjMapeamentoDW.getInt("ENTIDADEDWDESTINO"));
+
+                JsonArrayMapeamentoDWAtributos = JsonObjMapeamentoDW.getJSONArray("MAPEAMENTO ATRIBUTOS");
+                for (int j = 0; j < JsonArrayMapeamentoDWAtributos.length(); j++) {
+                    JsonObjMapeamentoDWAtributo = (JSONObject) JsonArrayMapeamentoDWAtributos.get(j);
+                    MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
+                    mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO SA"));
+                    mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO DW"));
+
+                    mapeamentoDW.getMapeamentosAtributos().add(mapaAtributo);
+                }
 
                 this.AddMapeamentoDW(null, mapeamentoDW);
             }
@@ -789,13 +851,23 @@ public class Controle extends Object implements Cloneable {
              */
             JSONArray JsonArrayMapeamentoSA = new JSONArray();
             JSONObject JsonObjMapeamentoSA;
+            JSONArray JsonArrayMapeamentoSAAtributo = new JSONArray();
+            JSONObject JsonObjMapeamentoSAAtributo;
 
             for (MapeamentoSA mapemaMapeamentoSA : this.mapeamentosSA) {
 
                 JsonObjMapeamentoSA = new JSONObject();
                 JsonObjMapeamentoSA.put("CONSULTAORIGEM", mapemaMapeamentoSA.getConsultaOrigem().hashCode());
-                JsonObjMapeamentoSA.put("ENTIDADEDESTINO", mapemaMapeamentoSA.getEntidadeDestino().hashCode());
+                JsonObjMapeamentoSA.put("ENTIDADEDESTINO", mapemaMapeamentoSA.getEntidadeSADestino().hashCode());
 
+                for (MapeamentoAtributo mapeamentoAtributo : mapemaMapeamentoSA.getMapeamentosAtributos()) {
+                    JsonObjMapeamentoSAAtributo = new JSONObject();
+                    JsonObjMapeamentoSAAtributo.put("ATRIBUTO CONSULTA", mapeamentoAtributo.getAtributoOrigem().hashCode());
+                    JsonObjMapeamentoSAAtributo.put("ATRIBUTO SA", mapeamentoAtributo.getAtributoDestino().hashCode());
+                    JsonArrayMapeamentoSAAtributo.put(JsonObjMapeamentoSAAtributo);
+
+                }
+                JsonObjMapeamentoSA.put("MAPEAMENTO ATRIBUTOS", JsonArrayMapeamentoSAAtributo);
                 JsonArrayMapeamentoSA.put(JsonObjMapeamentoSA);
             }
             arquivoJson.put("MAPEAMENTO SA", JsonArrayMapeamentoSA);
@@ -805,6 +877,8 @@ public class Controle extends Object implements Cloneable {
              */
             JSONArray JsonArrayMapeamentoDW = new JSONArray();
             JSONObject JsonObjMapeamentoDW;
+            JSONArray JsonArrayMapeamentoDWAtributo = new JSONArray();
+            JSONObject JsonObjMapeamentoDWAtributo;
 
             for (MapeamentoDW mapemaMapeamentoDW : this.mapeamentosDW) {
 
@@ -812,6 +886,14 @@ public class Controle extends Object implements Cloneable {
                 JsonObjMapeamentoDW.put("ENTIDADESAORIGEM", mapemaMapeamentoDW.getEntidadeSAOrigem().hashCode());
                 JsonObjMapeamentoDW.put("ENTIDADEDWDESTINO", mapemaMapeamentoDW.getEntidadeDWDestino().hashCode());
 
+                for (MapeamentoAtributo mapeamentoAtributo : mapemaMapeamentoDW.getMapeamentosAtributos()) {
+                    JsonObjMapeamentoDWAtributo = new JSONObject();
+                    JsonObjMapeamentoDWAtributo.put("ATRIBUTO SA", mapeamentoAtributo.getAtributoOrigem().hashCode());
+                    JsonObjMapeamentoDWAtributo.put("ATRIBUTO DW", mapeamentoAtributo.getAtributoDestino().hashCode());
+                    JsonArrayMapeamentoDWAtributo.put(JsonObjMapeamentoDWAtributo);
+
+                }
+                JsonObjMapeamentoDW.put("MAPEAMENTO ATRIBUTOS", JsonArrayMapeamentoDWAtributo);
                 JsonArrayMapeamentoDW.put(JsonObjMapeamentoDW);
             }
             arquivoJson.put("MAPEAMENTO DW", JsonArrayMapeamentoDW);

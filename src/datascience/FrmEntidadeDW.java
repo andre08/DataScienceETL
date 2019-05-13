@@ -48,7 +48,7 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
         if (controle != null) {
             if (controle.getConexoes() != null) {
                 for (Conexao conexao : controle.getConexoes()) {
-                    if (conexao.getObjetivo().equals("Data Warehouse")) {
+                    if (conexao.getObjetivo().equals("DataMart")) {
                         model.addElement(conexao);
                     }
                 }
@@ -350,6 +350,7 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
         controle.AddEntidadeDW(this.entidadeSelecionadaDW, this.entidadeAtualDW);
 
         JOptionPane.showMessageDialog(this, "Entidade salva com sucesso.");
+        dispose();
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -360,7 +361,7 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
 
         if (this.entidadeSelecionadaDW != null) {
-            this.controle.getEntidadesSA().remove(this.entidadeSelecionadaDW);
+            this.controle.getEntidadesDW().remove(this.entidadeSelecionadaDW);
             controle.getMapeamentosDW().remove(this.mapeamentoSelecionado);
             this.entidadeSelecionadaDW = null;
             dispose();

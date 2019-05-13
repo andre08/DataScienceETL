@@ -57,7 +57,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniGerarSqlStage">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Gerar SQL Staging Area"/>
+                <Property name="text" type="java.lang.String" value="Gerar SQL StagingArea"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniGerarSqlStageActionPerformed"/>
@@ -65,7 +65,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mniGerarSqlDW">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Gerar SQL Data Warehouse"/>
+                <Property name="text" type="java.lang.String" value="Gerar SQL DataMart"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniGerarSqlDWActionPerformed"/>
@@ -131,12 +131,20 @@
             <Property name="text" type="java.lang.String" value="Mapeamento"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
+            <MenuItem class="javax.swing.JMenuItem" name="mniMapeamentoSA">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Configurar Mapeamento"/>
+                <Property name="text" type="java.lang.String" value="Configurar Mapeamento StagingArea"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem3ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniMapeamentoSAActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mniMapeamentoDW">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Configurar Mapeamento DataMart"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniMapeamentoDWActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
