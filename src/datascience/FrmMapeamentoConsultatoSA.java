@@ -105,7 +105,7 @@ public class FrmMapeamentoConsultatoSA extends javax.swing.JDialog {
             if (controle.getConsultas() != null) {
                 for (Consulta consulta : controle.getConsultas()) {
                     if (consulta.getEntidade() != null) {
-                        model.addElement(consulta.getEntidade());
+                        model.addElement(consulta);
                     }
                 }
             }
@@ -135,8 +135,6 @@ public class FrmMapeamentoConsultatoSA extends javax.swing.JDialog {
         AtualizarComboEntidadesSA();
         cbxEntidadeConsulta.setSelectedItem(this.mapeamentoSAAtual.getConsultaOrigem());
         cbxEntidadeConsulta.setSelectedItem(this.mapeamentoSAAtual.getEntidadeSADestino());
-        atualizaAtributoConsulta();
-        atualizaAtributoSA();
         atualizaMapeamentos();
         atualizaAtributoConsulta();
         atualizaAtributoSA();
@@ -148,8 +146,13 @@ public class FrmMapeamentoConsultatoSA extends javax.swing.JDialog {
             }
         }
         cbxEntidadeConsulta.setEditable(podeEditar);
-        cbxEntidadeConsulta.setEditable(podeEditar);
+        cbxEntidadeSA.setEditable(podeEditar);
 
+    }
+
+    public void AtualizaAtual(){
+        this.mapeamentoSAAtual.setConsultaOrigem((Consulta) cbxEntidadeConsulta.getSelectedItem());
+        this.mapeamentoSAAtual.setEntidadeSADestino((Entidade) cbxEntidadeSA.getSelectedItem());
     }
 
     public FrmMapeamentoConsultatoSA(java.awt.Frame parent, boolean modal) {
@@ -437,7 +440,7 @@ public class FrmMapeamentoConsultatoSA extends javax.swing.JDialog {
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-
+        AtualizaAtual();        
         this.controle.AddMapeamentoSA(this.mapeamentoSASelecionada, this.mapeamentoSAAtual);
         this.mapeamentoSASelecionada = this.mapeamentoSAAtual;
         JOptionPane.showMessageDialog(this, "Mapemaneto salvo com sucesso.");
@@ -461,11 +464,13 @@ public class FrmMapeamentoConsultatoSA extends javax.swing.JDialog {
 
     private void cbxEntidadeConsultaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEntidadeConsultaItemStateChanged
         // TODO add your handling code here:
+        AtualizaAtual();
         atualizaAtributoConsulta();
     }//GEN-LAST:event_cbxEntidadeConsultaItemStateChanged
 
     private void cbxEntidadeSAItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEntidadeSAItemStateChanged
         // TODO add your handling code here:
+        AtualizaAtual();
         atualizaAtributoSA();
     }//GEN-LAST:event_cbxEntidadeSAItemStateChanged
 

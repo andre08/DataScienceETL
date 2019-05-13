@@ -86,9 +86,9 @@ public class FrmGerarDataWarehouse extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(425, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(btnGerar)
-                .addGap(69, 69, 69)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 484, Short.MAX_VALUE)
                 .addComponent(btnSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnFechar)
@@ -175,7 +175,6 @@ public class FrmGerarDataWarehouse extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
-
         dispose();
     }//GEN-LAST:event_btnFecharActionPerformed
 
@@ -185,6 +184,28 @@ public class FrmGerarDataWarehouse extends javax.swing.JDialog {
 
     private void btnGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarActionPerformed
 
+        txtSQL.setText("");
+        //CRIANDO TABELAS
+        for (Object objeto : lstEntidade.getSelectedValues()) {
+            if (objeto instanceof Entidade) {
+
+                Entidade entidadeDW = (Entidade) objeto;
+                if (this.controle.getConexaoSA() != null) {
+                    switch (this.controle.getConexaoSA().getSGDB()) {
+                        case "ORACLE":
+                            txtSQL.append(entidadeDW.getSQLCreateCodeOracle());
+                            break;
+                        case "MySQL":
+                            txtSQL.append(entidadeDW.getSQLCreateCodeMySql());
+                            break;
+                        case "MS SQL Server":
+                            txtSQL.append(entidadeDW.getSQLCreateCodeMsSqlServer());
+                            break;
+                    }
+                }
+            }
+            
+        }
     }//GEN-LAST:event_btnGerarActionPerformed
 
     /**

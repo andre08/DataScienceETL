@@ -204,13 +204,13 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
                 if (this.controle.getConexaoSA() != null) {
                     switch (this.controle.getConexaoSA().getSGDB()) {
                         case "ORACLE":
-                            txtSQL.append(entidadeSA.getSQLCreateCodeOracle());
+                            txtSQL.append(entidadeSA.getSQLCreateSACodeOracle());
                             break;
                         case "MySQL":
-                            txtSQL.append(entidadeSA.getSQLCreateCodeMySql());
+                            txtSQL.append(entidadeSA.getSQLCreateSACodeMySql());
                             break;
                         case "MS SQL Server":
-                            txtSQL.append(entidadeSA.getSQLCreateCodeMsSqlServer());
+                            txtSQL.append(entidadeSA.getSQLCreateSACodeMsSqlServer());
                             break;
                     }
                 }
@@ -234,8 +234,6 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
             }
 
         }
-
-
     }//GEN-LAST:event_btnGerarActionPerformed
 
     /**

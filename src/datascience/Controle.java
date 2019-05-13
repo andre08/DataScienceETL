@@ -461,24 +461,27 @@ public class Controle extends Object implements Cloneable {
             JSONArray JsonArrayConexao;
             JSONObject JsonObjConexao;
 
-            JsonArrayConexao = projetoJson.getJSONArray("CONEXAO");
-            for (int i = 0; i < JsonArrayConexao.length(); i++) {
+            if (!projetoJson.isNull("CONEXAO")) {
 
-                JsonObjConexao = (JSONObject) JsonArrayConexao.get(i);
-                Conexao conexao = new Conexao();
-                conexao.setNome(JsonObjConexao.getString("NOME"));
-                conexao.setDescricao(JsonObjConexao.getString("DESCRICAO"));
-                conexao.setUrl(JsonObjConexao.getString("URL"));
-                conexao.setPorta(JsonObjConexao.getInt("PORTA"));
-                conexao.setNomeBanco(JsonObjConexao.getString("NOMEBANCO"));
-                conexao.setSID(JsonObjConexao.getString("SID"));
-                conexao.setUsename(JsonObjConexao.getString("USUARIO"));
-                conexao.setPassword(JsonObjConexao.getString("SENHA"));
-                conexao.setSGDB(JsonObjConexao.getString("SGDB"));
-                conexao.setObjetivo(JsonObjConexao.getString("OBJETIVO"));
+                JsonArrayConexao = projetoJson.getJSONArray("CONEXAO");
+                for (int i = 0; i < JsonArrayConexao.length(); i++) {
 
-                this.addConexao(null, conexao);
+                    JsonObjConexao = (JSONObject) JsonArrayConexao.get(i);
+                    Conexao conexao = new Conexao();
+                    conexao.setNome(JsonObjConexao.getString("NOME"));
+                    conexao.setDescricao(JsonObjConexao.getString("DESCRICAO"));
+                    conexao.setUrl(JsonObjConexao.getString("URL"));
+                    conexao.setPorta(JsonObjConexao.getInt("PORTA"));
+                    conexao.setNomeBanco(JsonObjConexao.getString("NOMEBANCO"));
+                    conexao.setSID(JsonObjConexao.getString("SID"));
+                    conexao.setUsename(JsonObjConexao.getString("USUARIO"));
+                    conexao.setPassword(JsonObjConexao.getString("SENHA"));
+                    conexao.setSGDB(JsonObjConexao.getString("SGDB"));
+                    conexao.setObjetivo(JsonObjConexao.getString("OBJETIVO"));
 
+                    this.addConexao(null, conexao);
+
+                }
             }
 
             /**
@@ -488,48 +491,53 @@ public class Controle extends Object implements Cloneable {
             JSONObject JsonObjConsulta;
 
             JsonArrayConsulta = projetoJson.getJSONArray("CONSULTA");
-            for (int i = 0; i < JsonArrayConsulta.length(); i++) {
+            if (!projetoJson.isNull("CONSULTA")) {
+                for (int i = 0; i < JsonArrayConsulta.length(); i++) {
 
-                JsonObjConsulta = (JSONObject) JsonArrayConsulta.get(i);
-                Consulta consulta = new Consulta();
-                consulta.setNome(JsonObjConsulta.getString("NOME"));
-                consulta.setDescricao(JsonObjConsulta.getString("DESCRICAO"));
-                consulta.setSql(JsonObjConsulta.getString("SQL"));
+                    JsonObjConsulta = (JSONObject) JsonArrayConsulta.get(i);
+                    Consulta consulta = new Consulta();
+                    consulta.setNome(JsonObjConsulta.getString("NOME"));
+                    consulta.setDescricao(JsonObjConsulta.getString("DESCRICAO"));
+                    consulta.setSql(JsonObjConsulta.getString("SQL"));
 
-                //entidade gerada pela consulta
-                JSONObject JsonObjEntidadeConsulta = (JSONObject) JsonObjConsulta.getJSONObject("ENTIDADE");
-                Entidade entidadeConsulta = new Entidade();
-                entidadeConsulta.setNome(JsonObjEntidadeConsulta.getString("NOME"));
-                entidadeConsulta.setDescricao(JsonObjEntidadeConsulta.getString("DESCRICAO"));
-                entidadeConsulta.setHashConexao(JsonObjEntidadeConsulta.getInt("CONEXAO"));
+                    //entidade gerada pela consulta
+                    if (!JsonObjConsulta.isNull("ENTIDADE")) {
+                        JSONObject JsonObjEntidadeConsulta = (JSONObject) JsonObjConsulta.getJSONObject("ENTIDADE");
+                        Entidade entidadeConsulta = new Entidade();
+                        entidadeConsulta.setNome(JsonObjEntidadeConsulta.getString("NOME"));
+                        entidadeConsulta.setDescricao(JsonObjEntidadeConsulta.getString("DESCRICAO"));
+                        entidadeConsulta.setHashConexao(JsonObjEntidadeConsulta.getInt("CONEXAO"));
 
-                JSONArray JsonArrayAtributoConsulta = JsonObjEntidadeConsulta.getJSONArray("ATRIBUTOS");
-                List<Atributo> atributosConsulta = new ArrayList<Atributo>();
+                        if (!JsonObjEntidadeConsulta.isNull("ATRIBUTOS")) {
+                            JSONArray JsonArrayAtributoConsulta = JsonObjEntidadeConsulta.getJSONArray("ATRIBUTOS");
+                            List<Atributo> atributosConsulta = new ArrayList<Atributo>();
 
-                for (int j = 0; j < JsonArrayAtributoConsulta.length(); j++) {
-                    JSONObject JsonObjAtrinbutoConsulta = (JSONObject) JsonArrayAtributoConsulta.get(j);
-                    Atributo atributoConsulta = new Atributo();
-                    atributoConsulta.setNome(JsonObjAtrinbutoConsulta.getString("NOME"));
-                    atributoConsulta.setDescricao(JsonObjAtrinbutoConsulta.getString("DESCRICAO"));
-                    atributoConsulta.setTipo(JsonObjAtrinbutoConsulta.getString("TIPO"));
-                    atributoConsulta.setTamanho(JsonObjAtrinbutoConsulta.getInt("TAMANHO"));
-                    atributoConsulta.setPrecisao(JsonObjAtrinbutoConsulta.getInt("PRECISAO"));
-                    atributoConsulta.setObrigatorio(JsonObjAtrinbutoConsulta.getString("OBRIGATORIO"));
-                    atributoConsulta.setChavePrimaria(JsonObjAtrinbutoConsulta.getString("CHAVEPRIMARIA"));
-                    atributoConsulta.setValorSequencial(JsonObjAtrinbutoConsulta.getString("VALORSEQUENCIAL"));
-                    atributoConsulta.setObservacao(JsonObjAtrinbutoConsulta.getString("OBSERVACAO"));
-                    atributoConsulta.setChaveEstrangeira(JsonObjAtrinbutoConsulta.getString("CHAVEESTRANGEIRA"));
-                    atributoConsulta.setHashReferenciaEntidade(JsonObjAtrinbutoConsulta.getInt("REFERENCIAENTIDADE"));
-                    atributoConsulta.setHashReferenciaAtributo(JsonObjAtrinbutoConsulta.getInt("REFERENCIAATRIBUTO"));
-                    atributosConsulta.add(atributoConsulta);
+                            for (int j = 0; j < JsonArrayAtributoConsulta.length(); j++) {
+                                JSONObject JsonObjAtrinbutoConsulta = (JSONObject) JsonArrayAtributoConsulta.get(j);
+                                Atributo atributoConsulta = new Atributo();
+                                atributoConsulta.setNome(JsonObjAtrinbutoConsulta.getString("NOME"));
+                                atributoConsulta.setDescricao(JsonObjAtrinbutoConsulta.getString("DESCRICAO"));
+                                atributoConsulta.setTipo(JsonObjAtrinbutoConsulta.getString("TIPO"));
+                                atributoConsulta.setTamanho(JsonObjAtrinbutoConsulta.getInt("TAMANHO"));
+                                atributoConsulta.setPrecisao(JsonObjAtrinbutoConsulta.getInt("PRECISAO"));
+                                atributoConsulta.setObrigatorio(JsonObjAtrinbutoConsulta.getString("OBRIGATORIO"));
+                                atributoConsulta.setChavePrimaria(JsonObjAtrinbutoConsulta.getString("CHAVEPRIMARIA"));
+                                atributoConsulta.setValorSequencial(JsonObjAtrinbutoConsulta.getString("VALORSEQUENCIAL"));
+                                atributoConsulta.setObservacao(JsonObjAtrinbutoConsulta.getString("OBSERVACAO"));
+                                atributoConsulta.setChaveEstrangeira(JsonObjAtrinbutoConsulta.getString("CHAVEESTRANGEIRA"));
+                                atributoConsulta.setHashReferenciaEntidade(JsonObjAtrinbutoConsulta.getInt("REFERENCIAENTIDADE"));
+                                atributoConsulta.setHashReferenciaAtributo(JsonObjAtrinbutoConsulta.getInt("REFERENCIAATRIBUTO"));
+                                atributosConsulta.add(atributoConsulta);
+                            }
+                            entidadeConsulta.setAtributos(atributosConsulta);
+                        }
+                        consulta.setEntidade(entidadeConsulta);
+                    }
+                    //conexão com a consulta
+                    consulta.setHashConexao(JsonObjConsulta.getInt("CONEXAO"));
+
+                    this.addConsulta(null, consulta);
                 }
-                entidadeConsulta.setAtributos(atributosConsulta);
-                consulta.setEntidade(entidadeConsulta);
-                //conexão com a consulta
-                consulta.setHashConexao(JsonObjConsulta.getInt("CONEXAO"));
-
-                this.addConsulta(null, consulta);
-
             }
 
             /**
@@ -538,39 +546,41 @@ public class Controle extends Object implements Cloneable {
             JSONArray JsonArrayEntidadeSA;
             JSONObject JsonObjEntidadeSA;
 
-            JsonArrayEntidadeSA = projetoJson.getJSONArray("ENTIDADE SA");
-            for (int i = 0; i < JsonArrayEntidadeSA.length(); i++) {
-                JsonObjEntidadeSA = (JSONObject) JsonArrayEntidadeSA.get(i);
+            if (!projetoJson.isNull("ENTIDADE SA")) {
+                JsonArrayEntidadeSA = projetoJson.getJSONArray("ENTIDADE SA");
+                for (int i = 0; i < JsonArrayEntidadeSA.length(); i++) {
+                    JsonObjEntidadeSA = (JSONObject) JsonArrayEntidadeSA.get(i);
 
-                Entidade entidadeSA = new Entidade();
-                entidadeSA.setNome(JsonObjEntidadeSA.getString("NOME"));
-                entidadeSA.setDescricao(JsonObjEntidadeSA.getString("DESCRICAO"));
-                entidadeSA.setHashConexao(JsonObjEntidadeSA.getInt("CONEXAO"));
+                    Entidade entidadeSA = new Entidade();
+                    entidadeSA.setNome(JsonObjEntidadeSA.getString("NOME"));
+                    entidadeSA.setDescricao(JsonObjEntidadeSA.getString("DESCRICAO"));
+                    entidadeSA.setHashConexao(JsonObjEntidadeSA.getInt("CONEXAO"));
 
-                JSONArray JsonArrayAtributoEntidadeSA = JsonObjEntidadeSA.getJSONArray("ATRIBUTOS");
-                List<Atributo> atributosEntidadeSA = new ArrayList<Atributo>();
+                    if (!JsonObjEntidadeSA.isNull("ATRIBUTOS")) {
+                        JSONArray JsonArrayAtributoEntidadeSA = JsonObjEntidadeSA.getJSONArray("ATRIBUTOS");
+                        List<Atributo> atributosEntidadeSA = new ArrayList<Atributo>();
 
-                for (int j = 0; j < JsonArrayAtributoEntidadeSA.length(); j++) {
-                    JSONObject JsonObjAtributoEntidadeSA = (JSONObject) JsonArrayAtributoEntidadeSA.get(j);
-                    Atributo atributoEntidadeSA = new Atributo();
-                    atributoEntidadeSA.setNome(JsonObjAtributoEntidadeSA.getString("NOME"));
-                    atributoEntidadeSA.setDescricao(JsonObjAtributoEntidadeSA.getString("DESCRICAO"));
-                    atributoEntidadeSA.setTipo(JsonObjAtributoEntidadeSA.getString("TIPO"));
-                    atributoEntidadeSA.setTamanho(JsonObjAtributoEntidadeSA.getInt("TAMANHO"));
-                    atributoEntidadeSA.setPrecisao(JsonObjAtributoEntidadeSA.getInt("PRECISAO"));
-                    atributoEntidadeSA.setObrigatorio(JsonObjAtributoEntidadeSA.getString("OBRIGATORIO"));
-                    atributoEntidadeSA.setChavePrimaria(JsonObjAtributoEntidadeSA.getString("CHAVEPRIMARIA"));
-                    atributoEntidadeSA.setValorSequencial(JsonObjAtributoEntidadeSA.getString("VALORSEQUENCIAL"));
-                    atributoEntidadeSA.setObservacao(JsonObjAtributoEntidadeSA.getString("OBSERVACAO"));
-                    atributoEntidadeSA.setChaveEstrangeira(JsonObjAtributoEntidadeSA.getString("CHAVEESTRANGEIRA"));
-                    atributoEntidadeSA.setHashReferenciaEntidade(JsonObjAtributoEntidadeSA.getInt("REFERENCIAENTIDADE"));
-                    atributoEntidadeSA.setHashReferenciaAtributo(JsonObjAtributoEntidadeSA.getInt("REFERENCIAATRIBUTO"));
-                    atributosEntidadeSA.add(atributoEntidadeSA);
+                        for (int j = 0; j < JsonArrayAtributoEntidadeSA.length(); j++) {
+                            JSONObject JsonObjAtributoEntidadeSA = (JSONObject) JsonArrayAtributoEntidadeSA.get(j);
+                            Atributo atributoEntidadeSA = new Atributo();
+                            atributoEntidadeSA.setNome(JsonObjAtributoEntidadeSA.getString("NOME"));
+                            atributoEntidadeSA.setDescricao(JsonObjAtributoEntidadeSA.getString("DESCRICAO"));
+                            atributoEntidadeSA.setTipo(JsonObjAtributoEntidadeSA.getString("TIPO"));
+                            atributoEntidadeSA.setTamanho(JsonObjAtributoEntidadeSA.getInt("TAMANHO"));
+                            atributoEntidadeSA.setPrecisao(JsonObjAtributoEntidadeSA.getInt("PRECISAO"));
+                            atributoEntidadeSA.setObrigatorio(JsonObjAtributoEntidadeSA.getString("OBRIGATORIO"));
+                            atributoEntidadeSA.setChavePrimaria(JsonObjAtributoEntidadeSA.getString("CHAVEPRIMARIA"));
+                            atributoEntidadeSA.setValorSequencial(JsonObjAtributoEntidadeSA.getString("VALORSEQUENCIAL"));
+                            atributoEntidadeSA.setObservacao(JsonObjAtributoEntidadeSA.getString("OBSERVACAO"));
+                            atributoEntidadeSA.setChaveEstrangeira(JsonObjAtributoEntidadeSA.getString("CHAVEESTRANGEIRA"));
+                            atributoEntidadeSA.setHashReferenciaEntidade(JsonObjAtributoEntidadeSA.getInt("REFERENCIAENTIDADE"));
+                            atributoEntidadeSA.setHashReferenciaAtributo(JsonObjAtributoEntidadeSA.getInt("REFERENCIAATRIBUTO"));
+                            atributosEntidadeSA.add(atributoEntidadeSA);
+                        }
+                        entidadeSA.setAtributos(atributosEntidadeSA);
+                    }
+                    this.AddEntidadeSA(null, entidadeSA);
                 }
-                entidadeSA.setAtributos(atributosEntidadeSA);
-
-                this.AddEntidadeSA(null, entidadeSA);
-
             }
 
             /**
@@ -579,39 +589,40 @@ public class Controle extends Object implements Cloneable {
             JSONArray JsonArrayEntidadeDW;
             JSONObject JsonObjEntidadeDW;
 
-            JsonArrayEntidadeDW = projetoJson.getJSONArray("ENTIDADE DW");
-            for (int i = 0; i < JsonArrayEntidadeDW.length(); i++) {
-                JsonObjEntidadeDW = (JSONObject) JsonArrayEntidadeDW.get(i);
+            if (!projetoJson.isNull("ENTIDADE DW")) {
+                JsonArrayEntidadeDW = projetoJson.getJSONArray("ENTIDADE DW");
+                for (int i = 0; i < JsonArrayEntidadeDW.length(); i++) {
+                    JsonObjEntidadeDW = (JSONObject) JsonArrayEntidadeDW.get(i);
 
-                Entidade entidadeDW = new Entidade();
-                entidadeDW.setNome(JsonObjEntidadeDW.getString("NOME"));
-                entidadeDW.setDescricao(JsonObjEntidadeDW.getString("DESCRICAO"));
-                entidadeDW.setHashConexao(JsonObjEntidadeDW.getInt("CONEXAO"));
+                    Entidade entidadeDW = new Entidade();
+                    entidadeDW.setNome(JsonObjEntidadeDW.getString("NOME"));
+                    entidadeDW.setDescricao(JsonObjEntidadeDW.getString("DESCRICAO"));
+                    entidadeDW.setHashConexao(JsonObjEntidadeDW.getInt("CONEXAO"));
+                    if (!JsonObjEntidadeDW.isNull("ATRIBUTOS")) {
+                        JSONArray JsonArrayAtributoEntidadeDW = JsonObjEntidadeDW.getJSONArray("ATRIBUTOS");
+                        List<Atributo> atributosEntidadeDW = new ArrayList<Atributo>();
 
-                JSONArray JsonArrayAtributoEntidadeDW = JsonObjEntidadeDW.getJSONArray("ATRIBUTOS");
-                List<Atributo> atributosEntidadeDW = new ArrayList<Atributo>();
-
-                for (int j = 0; j < JsonArrayAtributoEntidadeDW.length(); j++) {
-                    JSONObject JsonObjAtributoEntidadeDW = (JSONObject) JsonArrayAtributoEntidadeDW.get(j);
-                    Atributo atributoEntidadeDW = new Atributo();
-                    atributoEntidadeDW.setNome(JsonObjAtributoEntidadeDW.getString("NOME"));
-                    atributoEntidadeDW.setDescricao(JsonObjAtributoEntidadeDW.getString("DESCRICAO"));
-                    atributoEntidadeDW.setTipo(JsonObjAtributoEntidadeDW.getString("TIPO"));
-                    atributoEntidadeDW.setTamanho(JsonObjAtributoEntidadeDW.getInt("TAMANHO"));
-                    atributoEntidadeDW.setPrecisao(JsonObjAtributoEntidadeDW.getInt("PRECISAO"));
-                    atributoEntidadeDW.setObrigatorio(JsonObjAtributoEntidadeDW.getString("OBRIGATORIO"));
-                    atributoEntidadeDW.setChavePrimaria(JsonObjAtributoEntidadeDW.getString("CHAVEPRIMARIA"));
-                    atributoEntidadeDW.setValorSequencial(JsonObjAtributoEntidadeDW.getString("VALORSEQUENCIAL"));
-                    atributoEntidadeDW.setObservacao(JsonObjAtributoEntidadeDW.getString("OBSERVACAO"));
-                    atributoEntidadeDW.setChaveEstrangeira(JsonObjAtributoEntidadeDW.getString("CHAVEESTRANGEIRA"));
-                    atributoEntidadeDW.setHashReferenciaEntidade(JsonObjAtributoEntidadeDW.getInt("REFERENCIAENTIDADE"));
-                    atributoEntidadeDW.setHashReferenciaAtributo(JsonObjAtributoEntidadeDW.getInt("REFERENCIAATRIBUTO"));
-                    atributosEntidadeDW.add(atributoEntidadeDW);
+                        for (int j = 0; j < JsonArrayAtributoEntidadeDW.length(); j++) {
+                            JSONObject JsonObjAtributoEntidadeDW = (JSONObject) JsonArrayAtributoEntidadeDW.get(j);
+                            Atributo atributoEntidadeDW = new Atributo();
+                            atributoEntidadeDW.setNome(JsonObjAtributoEntidadeDW.getString("NOME"));
+                            atributoEntidadeDW.setDescricao(JsonObjAtributoEntidadeDW.getString("DESCRICAO"));
+                            atributoEntidadeDW.setTipo(JsonObjAtributoEntidadeDW.getString("TIPO"));
+                            atributoEntidadeDW.setTamanho(JsonObjAtributoEntidadeDW.getInt("TAMANHO"));
+                            atributoEntidadeDW.setPrecisao(JsonObjAtributoEntidadeDW.getInt("PRECISAO"));
+                            atributoEntidadeDW.setObrigatorio(JsonObjAtributoEntidadeDW.getString("OBRIGATORIO"));
+                            atributoEntidadeDW.setChavePrimaria(JsonObjAtributoEntidadeDW.getString("CHAVEPRIMARIA"));
+                            atributoEntidadeDW.setValorSequencial(JsonObjAtributoEntidadeDW.getString("VALORSEQUENCIAL"));
+                            atributoEntidadeDW.setObservacao(JsonObjAtributoEntidadeDW.getString("OBSERVACAO"));
+                            atributoEntidadeDW.setChaveEstrangeira(JsonObjAtributoEntidadeDW.getString("CHAVEESTRANGEIRA"));
+                            atributoEntidadeDW.setHashReferenciaEntidade(JsonObjAtributoEntidadeDW.getInt("REFERENCIAENTIDADE"));
+                            atributoEntidadeDW.setHashReferenciaAtributo(JsonObjAtributoEntidadeDW.getInt("REFERENCIAATRIBUTO"));
+                            atributosEntidadeDW.add(atributoEntidadeDW);
+                        }
+                        entidadeDW.setAtributos(atributosEntidadeDW);
+                    }
+                    this.AddEntidadeDW(null, entidadeDW);
                 }
-                entidadeDW.setAtributos(atributosEntidadeDW);
-
-                this.AddEntidadeDW(null, entidadeDW);
-
             }
 
             /**
@@ -621,28 +632,29 @@ public class Controle extends Object implements Cloneable {
             JSONObject JsonObjMapeamentoSA;
             JSONArray JsonArrayMapeamentoSAAtributos;
             JSONObject JsonObjMapeamentoSAAtributo;
+            if (!projetoJson.isNull("MAPEAMENTO SA")) {
+                JsonArrayMapeamentoSA = projetoJson.getJSONArray("MAPEAMENTO SA");
+                for (int i = 0; i < JsonArrayMapeamentoSA.length(); i++) {
+                    JsonObjMapeamentoSA = (JSONObject) JsonArrayMapeamentoSA.get(i);
 
-            JsonArrayMapeamentoSA = projetoJson.getJSONArray("MAPEAMENTO SA");
-            for (int i = 0; i < JsonArrayMapeamentoSA.length(); i++) {
-                JsonObjMapeamentoSA = (JSONObject) JsonArrayMapeamentoSA.get(i);
+                    MapeamentoSA mapeamentoSA = new MapeamentoSA();
+                    mapeamentoSA.setHashConsulta(JsonObjMapeamentoSA.getInt("CONSULTAORIGEM"));
+                    mapeamentoSA.setHashEntidade(JsonObjMapeamentoSA.getInt("ENTIDADEDESTINO"));
 
-                MapeamentoSA mapeamentoSA = new MapeamentoSA();
-                mapeamentoSA.setHashConsulta(JsonObjMapeamentoSA.getInt("CONSULTAORIGEM"));
-                mapeamentoSA.setHashEntidade(JsonObjMapeamentoSA.getInt("ENTIDADEDESTINO"));
+                    if (!JsonObjMapeamentoSA.isNull("MAPEAMENTO ATRIBUTOS")) {
+                        JsonArrayMapeamentoSAAtributos = JsonObjMapeamentoSA.getJSONArray("MAPEAMENTO ATRIBUTOS");
+                        for (int j = 0; j < JsonArrayMapeamentoSAAtributos.length(); j++) {
+                            JsonObjMapeamentoSAAtributo = (JSONObject) JsonArrayMapeamentoSAAtributos.get(j);
+                            MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
+                            mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO CONSULTA"));
+                            mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO SA"));
 
-                JsonArrayMapeamentoSAAtributos = JsonObjMapeamentoSA.getJSONArray("MAPEAMENTO ATRIBUTOS");
-                for (int j = 0; j < JsonArrayMapeamentoSAAtributos.length(); j++) {
-                    JsonObjMapeamentoSAAtributo = (JSONObject) JsonArrayMapeamentoSAAtributos.get(j);
-                    MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
-                    mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO CONSULTA"));
-                    mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoSAAtributo.getInt("ATRIBUTO SA"));
-
-                    mapeamentoSA.getMapeamentosAtributos().add(mapaAtributo);
+                            mapeamentoSA.getMapeamentosAtributos().add(mapaAtributo);
+                        }
+                    }
+                    this.AddMapeamentoSA(null, mapeamentoSA);
                 }
-
-                this.AddMapeamentoSA(null, mapeamentoSA);
             }
-
             /**
              * Carregando MapeamentoDW
              */
@@ -651,25 +663,28 @@ public class Controle extends Object implements Cloneable {
             JSONArray JsonArrayMapeamentoDWAtributos;
             JSONObject JsonObjMapeamentoDWAtributo;
 
-            JsonArrayMapeamentoDW = projetoJson.getJSONArray("MAPEAMENTO DW");
-            for (int i = 0; i < JsonArrayMapeamentoDW.length(); i++) {
-                JsonObjMapeamentoDW = (JSONObject) JsonArrayMapeamentoDW.get(i);
+            if (!projetoJson.isNull("MAPEAMENTO DW")) {
+                JsonArrayMapeamentoDW = projetoJson.getJSONArray("MAPEAMENTO DW");
+                for (int i = 0; i < JsonArrayMapeamentoDW.length(); i++) {
+                    JsonObjMapeamentoDW = (JSONObject) JsonArrayMapeamentoDW.get(i);
 
-                MapeamentoDW mapeamentoDW = new MapeamentoDW();
-                mapeamentoDW.setHashEntidadeSAOrigem(JsonObjMapeamentoDW.getInt("ENTIDADESAORIGEM"));
-                mapeamentoDW.setHashEntidadeDWDestino(JsonObjMapeamentoDW.getInt("ENTIDADEDWDESTINO"));
+                    MapeamentoDW mapeamentoDW = new MapeamentoDW();
+                    mapeamentoDW.setHashEntidadeSAOrigem(JsonObjMapeamentoDW.getInt("ENTIDADESAORIGEM"));
+                    mapeamentoDW.setHashEntidadeDWDestino(JsonObjMapeamentoDW.getInt("ENTIDADEDWDESTINO"));
 
-                JsonArrayMapeamentoDWAtributos = JsonObjMapeamentoDW.getJSONArray("MAPEAMENTO ATRIBUTOS");
-                for (int j = 0; j < JsonArrayMapeamentoDWAtributos.length(); j++) {
-                    JsonObjMapeamentoDWAtributo = (JSONObject) JsonArrayMapeamentoDWAtributos.get(j);
-                    MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
-                    mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO SA"));
-                    mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO DW"));
+                    if (!JsonObjMapeamentoDW.isNull("MAPEAMENTO ATRIBUTOS")) {
+                        JsonArrayMapeamentoDWAtributos = JsonObjMapeamentoDW.getJSONArray("MAPEAMENTO ATRIBUTOS");
+                        for (int j = 0; j < JsonArrayMapeamentoDWAtributos.length(); j++) {
+                            JsonObjMapeamentoDWAtributo = (JSONObject) JsonArrayMapeamentoDWAtributos.get(j);
+                            MapeamentoAtributo mapaAtributo = new MapeamentoAtributo();
+                            mapaAtributo.setHashAtributoOrigem(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO SA"));
+                            mapaAtributo.setHashAtributoDestino(JsonObjMapeamentoDWAtributo.getInt("ATRIBUTO DW"));
 
-                    mapeamentoDW.getMapeamentosAtributos().add(mapaAtributo);
+                            mapeamentoDW.getMapeamentosAtributos().add(mapaAtributo);
+                        }
+                    }
+                    this.AddMapeamentoDW(null, mapeamentoDW);
                 }
-
-                this.AddMapeamentoDW(null, mapeamentoDW);
             }
             this.RefazerRelacionamento();
             this.Pendente = "N";

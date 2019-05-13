@@ -14,6 +14,8 @@ public class MapeamentoDW{
     private int hashEntidadeDWDestino;
 
     public MapeamentoDW() {
+        this.entidadeSAOrigem = new Entidade();
+        this.entidadeDWDestino = new Entidade();
         this.mapeamentosAtributos = new ArrayList<MapeamentoAtributo>();
     }
 

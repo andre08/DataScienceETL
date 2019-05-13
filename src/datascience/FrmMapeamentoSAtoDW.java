@@ -147,6 +147,11 @@ public class FrmMapeamentoSAtoDW extends javax.swing.JDialog {
         cbxEntidadeSA.setEditable(podeEditar);
 
     }
+    
+    public void AtualizaAtual(){
+        this.mapeamentoDWAtual.setEntidadeSAOrigem((Entidade) cbxEntidadeSA.getSelectedItem());
+        this.mapeamentoDWAtual.setEntidadeDWDestino((Entidade) cbxEntidadeDW.getSelectedItem());
+    }
 
     public FrmMapeamentoSAtoDW(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -433,7 +438,7 @@ public class FrmMapeamentoSAtoDW extends javax.swing.JDialog {
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-
+        AtualizaAtual();
         this.controle.AddMapeamentoDW(this.mapeamentoDWSelecionada, this.mapeamentoDWAtual);
         this.mapeamentoDWSelecionada = this.mapeamentoDWAtual;
         JOptionPane.showMessageDialog(this, "Mapemaneto salvo com sucesso.");
@@ -457,11 +462,13 @@ public class FrmMapeamentoSAtoDW extends javax.swing.JDialog {
 
     private void cbxEntidadeSAItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEntidadeSAItemStateChanged
         // TODO add your handling code here:
+        AtualizaAtual();
         atualizaAtributoSA();
     }//GEN-LAST:event_cbxEntidadeSAItemStateChanged
 
     private void cbxEntidadeDWItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEntidadeDWItemStateChanged
         // TODO add your handling code here:
+        AtualizaAtual();
         atualizaAtributoDW();
     }//GEN-LAST:event_cbxEntidadeDWItemStateChanged
 

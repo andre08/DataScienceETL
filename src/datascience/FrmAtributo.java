@@ -21,10 +21,10 @@ public class FrmAtributo extends javax.swing.JDialog {
         this.usado = "";
 
         //desativando controles
-        btnNovo.setEnabled(false);
         btnSalvar.setEnabled(false);
         btnExcluir.setEnabled(false);
         btnFechar.setEnabled(true);
+        btnNovo.setEnabled(true);
 
     }
 
@@ -48,9 +48,9 @@ public class FrmAtributo extends javax.swing.JDialog {
         chkSequencia.setSelected(false);
 
         //ativando controles
-        btnNovo.setEnabled(false);
         btnSalvar.setEnabled(true);
         btnExcluir.setEnabled(false);
+        btnNovo.setEnabled(true);
 
         AtualizarEntidade();
     }
@@ -140,7 +140,6 @@ public class FrmAtributo extends javax.swing.JDialog {
         btnSalvar.setEnabled(true);
         btnExcluir.setEnabled(true);
 
-        
     }
 
     public void AtualizaAtual() {
@@ -153,14 +152,19 @@ public class FrmAtributo extends javax.swing.JDialog {
         if (cbxTipo.getSelectedIndex() != -1) {
             this.atributoAtual.setTipo(cbxTipo.getSelectedItem().toString());
         }
-        
-        this.atributoAtual.setObrigatorio(chkObrigatorio.isSelected()?"S":"N");
-        this.atributoAtual.setChavePrimaria(chkPK.isSelected()?"S":"N");
-        this.atributoAtual.setChaveEstrangeira(chkFK.isSelected()?"S":"N");
-        this.atributoAtual.setValorSequencial(chkSequencia.isSelected()?"S":"N");
 
-//        cbxEntidade.setSelectedItem(atributo.getReferenciaEntidade());
-//        cbxAtributo.setSelectedItem(atributo.getReferenciaAtributo());
+        this.atributoAtual.setObrigatorio(chkObrigatorio.isSelected() ? "S" : "N");
+        this.atributoAtual.setChavePrimaria(chkPK.isSelected() ? "S" : "N");
+        this.atributoAtual.setChaveEstrangeira(chkFK.isSelected() ? "S" : "N");
+        this.atributoAtual.setValorSequencial(chkSequencia.isSelected() ? "S" : "N");
+
+        if (cbxEntidade.getSelectedIndex() != -1) {
+            atributoAtual.setReferenciaEntidade((Entidade) cbxEntidade.getSelectedItem());
+        }
+
+        if (cbxAtributo.getSelectedIndex() != -1) {
+            atributoAtual.setReferenciaAtributo((Atributo) cbxAtributo.getSelectedItem());
+        }
 
     }
 

@@ -98,6 +98,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        mniExcluir = new javax.swing.JMenuItem();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstProjeto = new javax.swing.JTree();
@@ -123,11 +125,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mniMapeamentoSA = new javax.swing.JMenuItem();
         mniMapeamentoDW = new javax.swing.JMenuItem();
 
+        mniExcluir.setText("Excluir");
+        mniExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniExcluirActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(mniExcluir);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Construtor de Staging Area para processo de ETL");
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(800, 600));
 
+        lstProjeto.setComponentPopupMenu(jPopupMenu1);
         lstProjeto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lstProjetoMouseClicked(evt);
@@ -504,7 +515,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             frmMapeamentoConsultatoSA.setLocationRelativeTo(null);
             frmMapeamentoConsultatoSA.setVisible(true);
             AtualizarTela();
-        }        
+        }
     }//GEN-LAST:event_mniMapeamentoSAActionPerformed
 
     private void mniGerarSqlStageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGerarSqlStageActionPerformed
@@ -578,8 +589,33 @@ public class FrmPrincipal extends javax.swing.JFrame {
             frmMapeamentoSAtoDW.setLocationRelativeTo(null);
             frmMapeamentoSAtoDW.setVisible(true);
             AtualizarTela();
-        }        
+        }
     }//GEN-LAST:event_mniMapeamentoDWActionPerformed
+
+    private void mniExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExcluirActionPerformed
+        // TODO add your handling code here:
+        if (this.conexaoSelecionado != null) {
+            controle.getConexoes().remove(conexaoSelecionado);
+        }
+        if (this.consultaSelecionada != null) {
+            controle.getConsultas().remove(consultaSelecionada);
+        }
+        if (this.entidadeSASelecionada != null) {
+            controle.getEntidadesSA().remove(entidadeSASelecionada);
+        }
+        if (this.entidadeDWSelecionada != null) {
+            controle.getEntidadesDW().remove(entidadeDWSelecionada);
+        }
+        if (this.mapeamentoSASelecionada != null) {
+            controle.getMapeamentosSA().remove(mapeamentoSASelecionada);
+        }
+
+        if (this.mapeamentoDWSelecionada != null) {
+            controle.getMapeamentosDW().remove(mapeamentoDWSelecionada);
+        }
+
+        AtualizarTela();        
+    }//GEN-LAST:event_mniExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -630,11 +666,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTree lstProjeto;
     private javax.swing.JMenuItem mniAbrir;
     private javax.swing.JMenuItem mniDefinicaoProjeto;
+    private javax.swing.JMenuItem mniExcluir;
     private javax.swing.JMenuItem mniFechar;
     private javax.swing.JMenuItem mniGerarSqlDW;
     private javax.swing.JMenuItem mniGerarSqlStage;

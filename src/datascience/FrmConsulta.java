@@ -481,12 +481,6 @@ public class FrmConsulta extends javax.swing.JDialog {
         if (this.consultaSelecionada.equals(this.consultaAtual)) {
 
             MapeamentoSA mapeamentoSA = null;
-            for (MapeamentoSA mapa : this.controle.getMapeamentosSA()) {
-                if (mapa.getConsultaOrigem().equals(this.consultaSelecionada)) {
-                    mapeamentoSA = mapa;
-                }
-            }
-
             if (mapeamentoSA == null) {
 
                 Entidade novaEntidade = new Entidade();

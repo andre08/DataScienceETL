@@ -6,6 +6,7 @@ public class MapeamentoAtributo {
     
     private Atributo atributoOrigem;
     private Atributo atributoDestino;
+    private String usaComoRelationamento;
     //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
     private int hashAtributoOrigem;
     private int hashAtributoDestino;
@@ -45,11 +46,20 @@ public class MapeamentoAtributo {
         this.hashAtributoDestino = hashAtributoDestino;
     }
 
+    public String getUsaComoRelationamento() {
+        return usaComoRelationamento;
+    }
+
+    public void setUsaComoRelationamento(String usaComoRelationamento) {
+        this.usaComoRelationamento = usaComoRelationamento;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.atributoOrigem);
         hash = 97 * hash + Objects.hashCode(this.atributoDestino);
+        hash = 97 * hash + Objects.hashCode(this.usaComoRelationamento);
         return hash;
     }
 
@@ -71,6 +81,9 @@ public class MapeamentoAtributo {
         if (!Objects.equals(this.atributoDestino, other.atributoDestino)) {
             return false;
         }
+        if (!Objects.equals(this.usaComoRelationamento, other.usaComoRelationamento)) {
+            return false;
+        }
         return true;
     }
 
@@ -84,7 +97,7 @@ public class MapeamentoAtributo {
         MapeamentoAtributo copiaMapeamentoAtributo = new MapeamentoAtributo();
         copiaMapeamentoAtributo.setAtributoOrigem(this.atributoOrigem==null?null:this.atributoOrigem.copia());
         copiaMapeamentoAtributo.setAtributoDestino(this.atributoDestino==null?null:this.atributoDestino.copia());
-
+        copiaMapeamentoAtributo.setUsaComoRelationamento(this.usaComoRelationamento);
         return copiaMapeamentoAtributo;
 
     }

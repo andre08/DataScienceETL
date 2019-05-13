@@ -264,7 +264,7 @@ public class Entidade extends Object implements Cloneable {
         }
         //Lendo Chaves Estrangeiras
         if (!codeSQLFK.equals("")) {
-            codeSQL += "    , " + codeSQLFK + ")\n";
+            codeSQL += "    , " + codeSQLFK + " ";
         }
         codeSQL += ");\n";
 
@@ -272,6 +272,24 @@ public class Entidade extends Object implements Cloneable {
     }
 
     public String getSQLCreateCodeMySql() {
+        String codeSQL = this.getSQLCreateCode();
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateCodeOracle() {
+        String codeSQL = this.getSQLCreateCode();
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateCodeMsSqlServer() {
+        String codeSQL = this.getSQLCreateCode();
+
+        return codeSQL;
+    }
+
+    public String getSQLCreateSACodeMySql() {
         String codeSQL = this.getSQLCreateCode();
 
         codeSQL += " \n";
@@ -311,19 +329,93 @@ public class Entidade extends Object implements Cloneable {
         codeSQL += "	END IF; \n";
         codeSQL += "END $$ \n";
         codeSQL += "DELIMITER ; \n";
-
+        
         return codeSQL;
     }
 
-    public String getSQLCreateCodeOracle() {
+    public String getSQLCreateSACodeMsSqlServer() {
         String codeSQL = this.getSQLCreateCode();
 
+        codeSQL += " \n";
+        codeSQL += "DELIMITER $$ \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += "	SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	-- ATUALIZANDO CAMPO DE CONTROLE DE ALTERACAO \n";
+        codeSQL += "	SET NEW.DTINCLUSAO = NOW(); \n";
+        codeSQL += "	SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "	SET NEW.VERSAO = 1; \n";
+        codeSQL += "	SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "	SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += "END $$ \n";
+        codeSQL += " \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += " \n";
+        codeSQL += "SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	IF (IFNULL(NEW.CONTROLE, '') IN ('INTERNO', 'ERRO')) THEN \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.CONTROLE = OLD.CONTROLE; \n";
+        codeSQL += " \n";
+        codeSQL += "	ELSE \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "		SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += " 		SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "		SET NEW.VERSAO = IFNULL(NEW.VERSAO, 0) + 1; \n";
+        codeSQL += " \n";
+        codeSQL += "	END IF; \n";
+        codeSQL += "END $$ \n";
+        codeSQL += "DELIMITER ; \n";
+        
         return codeSQL;
     }
 
-    public String getSQLCreateCodeMsSqlServer() {
+    public String getSQLCreateSACodeOracle() {
         String codeSQL = this.getSQLCreateCode();
 
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += "	SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	-- ATUALIZANDO CAMPO DE CONTROLE DE ALTERACAO \n";
+        codeSQL += "	SET NEW.DTINCLUSAO = NOW(); \n";
+        codeSQL += "	SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "	SET NEW.VERSAO = 1; \n";
+        codeSQL += "	SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "	SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += "END $$ \n";
+        codeSQL += " \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += " \n";
+        codeSQL += "SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += " \n";
+        codeSQL += "	IF (IFNULL(NEW.CONTROLE, '') IN ('INTERNO', 'ERRO')) THEN \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.CONTROLE = OLD.CONTROLE; \n";
+        codeSQL += " \n";
+        codeSQL += "	ELSE \n";
+        codeSQL += " \n";
+        codeSQL += "		SET NEW.PROCESSADO = 'N'; \n";
+        codeSQL += "		SET NEW.MENSAGEM = ''; \n";
+        codeSQL += " \n";
+        codeSQL += " 		SET NEW.DTATUALIZACAO = NOW(); \n";
+        codeSQL += "		SET NEW.VERSAO = IFNULL(NEW.VERSAO, 0) + 1; \n";
+        codeSQL += " \n";
+        codeSQL += "	END IF; \n";
+        codeSQL += "END $$ \n";
+        codeSQL += "DELIMITER ; \n";
+        
         return codeSQL;
     }
 

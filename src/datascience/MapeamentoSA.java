@@ -14,6 +14,8 @@ public class MapeamentoSA {
     private int hashEntidade;
 
     public MapeamentoSA() {
+        this.consultaOrigem = new Consulta(); 
+        this.entidadeSADestino = new Entidade();
         this.mapeamentosAtributos = new ArrayList<MapeamentoAtributo>();
     }
 

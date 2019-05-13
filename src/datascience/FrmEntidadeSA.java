@@ -424,12 +424,6 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         if (this.entidadeSelecionadaSA.equals(this.entidadeAtualSA)) {
 
             MapeamentoDW mapeamentoDW = null;
-            for (MapeamentoDW mapa : this.controle.getMapeamentosDW()) {
-                if (mapa.getEntidadeSAOrigem().equals(this.entidadeSelecionadaSA)) {
-                    mapeamentoDW = mapa;
-                }
-            }
-
             if (mapeamentoDW == null) {
 
                 Entidade novaEntidade = new Entidade();

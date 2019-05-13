@@ -1,18 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datascience;
 
-import java.awt.LayoutManager;
-import java.awt.LayoutManager2;
-import javax.swing.UIManager;
-
-/**
- *
- * @author Pessoal
- */
 public class DataScienceETL {
 
     /**
@@ -26,13 +13,12 @@ public class DataScienceETL {
             frmPrincipal.setLocationRelativeTo(null);      
             frmPrincipal.setVisible(true);
             
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
+            
             FrmMensagem frmMensagem = new FrmMensagem(null, true);
-            frmMensagem.Mostrar(ex.toString());
+            frmMensagem.Mostrar(ex.getMessage());
             frmMensagem.setVisible(true);
             
         }
-        
     }
-    
 }

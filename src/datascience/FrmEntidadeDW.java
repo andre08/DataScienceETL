@@ -36,7 +36,7 @@ public class FrmEntidadeDW extends javax.swing.JDialog {
         btnNovo.setEnabled(false);
         btnSalvar.setEnabled(false);
         btnExcluir.setEnabled(false);
-        btnAtributo.setEnabled(false);
+        btnAtributo.setEnabled(true);
         btnFechar.setEnabled(true);
 
         this.atributoSelecionado = null;
