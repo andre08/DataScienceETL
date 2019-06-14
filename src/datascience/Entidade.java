@@ -273,6 +273,16 @@ public class Entidade extends Object implements Cloneable {
 
     public String getSQLCreateCodeMySql() {
         String codeSQL = this.getSQLCreateCode();
+        
+        for (Atributo atributo : atributos) {
+
+            if (atributo.getValorSequencial().equals("S")){
+                
+                String vAtributo = atributo.getSQLCreateCode() + " AUTO_INCREMENT ";
+                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(), vAtributo);
+            }
+
+        } 
 
         return codeSQL;
     }
@@ -286,11 +296,21 @@ public class Entidade extends Object implements Cloneable {
     public String getSQLCreateCodeMsSqlServer() {
         String codeSQL = this.getSQLCreateCode();
 
+        for (Atributo atributo : atributos) {
+
+            if (atributo.getValorSequencial().equals("S")){
+                
+                String vAtributo = atributo.getSQLCreateCode() + " IDENTITY(1,1) ";
+                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(), vAtributo);
+            }
+
+        } 
+
         return codeSQL;
     }
 
     public String getSQLCreateSACodeMySql() {
-        String codeSQL = this.getSQLCreateCode();
+        String codeSQL = this.getSQLCreateCodeMySql();
 
         codeSQL += " \n";
         codeSQL += "DELIMITER $$ \n";
@@ -334,7 +354,7 @@ public class Entidade extends Object implements Cloneable {
     }
 
     public String getSQLCreateSACodeMsSqlServer() {
-        String codeSQL = this.getSQLCreateCode();
+        String codeSQL = this.getSQLCreateCodeMsSqlServer();
 
         codeSQL += " \n";
         codeSQL += "DELIMITER $$ \n";
@@ -378,7 +398,7 @@ public class Entidade extends Object implements Cloneable {
     }
 
     public String getSQLCreateSACodeOracle() {
-        String codeSQL = this.getSQLCreateCode();
+        String codeSQL = this.getSQLCreateCodeOracle();
 
         codeSQL += " \n";
         codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";

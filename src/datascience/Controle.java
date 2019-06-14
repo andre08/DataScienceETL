@@ -957,46 +957,5 @@ public class Controle extends Object implements Cloneable {
         }
 
     }
-
-    public void CarregarExcel(Frame parent) {
-
-        FileDialog localizarArquivo = new FileDialog(parent, "Localizar arquivo do projeto", FileDialog.LOAD);
-        localizarArquivo.setDirectory("C:\\Users\\Pessoal\\Documents\\NetBeansProjects\\DataScienceETL\\");
-        localizarArquivo.setFile("*.xlsx");
-        localizarArquivo.pack();
-        localizarArquivo.setLocationRelativeTo(null);
-        localizarArquivo.setVisible(true);
-        String nomearquivo = localizarArquivo.getDirectory() + "\\" + localizarArquivo.getFile();
-        System.out.println(localizarArquivo.getDirectory());
-
-        if ((localizarArquivo.getDirectory() != null) && (localizarArquivo.getFile() != null)) {
-
-            Workbook workbook = null;
-            Row row = null;
-            Cell cell = null;
-            String path = "/home/daniel/Desktop/OOP/AGENDA TELEFÔNICA/AGENDA TELEFÔNICA.xls";
-
-            InputStream inputStream = null;
-            try {
-                inputStream = new FileInputStream(nomearquivo);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Controle.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                workbook = WorkbookFactory.create(inputStream);
-            } catch (IOException ex) {
-                Logger.getLogger(Controle.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (EncryptedDocumentException ex) {
-                Logger.getLogger(Controle.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            for (int i = 0; i <  workbook.getNumberOfSheets(); i++) {
-             
-                Sheet sheet = workbook.getSheetAt(i);
-                System.out.println(sheet.getSheetName());
-                System.out.println("Quantidade de linhas : " + sheet.getLastRowNum());
-                
-            }
-        }
-    }
     
 }

@@ -20,7 +20,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
         controle.NovoJson();
         AtualizarTela();
         
-        controle.CarregarExcel(this);
     }
 
     private void AtualizarTela() {
