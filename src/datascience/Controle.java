@@ -3,8 +3,11 @@ package datascience;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,9 +15,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.poi.EncryptedDocumentException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.apache.poi.ss.usermodel.*;
+        
 public class Controle extends Object implements Cloneable {
 
     //arquivos de controles
@@ -952,5 +957,5 @@ public class Controle extends Object implements Cloneable {
         }
 
     }
-
+    
 }

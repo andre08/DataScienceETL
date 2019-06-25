@@ -19,6 +19,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         controle = new Controle(this);
         controle.NovoJson();
         AtualizarTela();
+        
     }
 
     private void AtualizarTela() {
