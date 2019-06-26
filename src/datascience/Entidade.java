@@ -104,7 +104,7 @@ public class Entidade extends Object implements Cloneable {
         //criando MENSAGEM
         atributo = new Atributo();
         atributo.setNome("MENSAGEM");
-        atributo.setDescricao("ATRIBUTO PARA MENSAGEM DE PROCESSAMENTO");
+        atributo.setDescricao("ATRIBUTO PARA CONTROLE DE PROCESSAMENTO");
         atributo.setTipo("VARCHAR");
         atributo.setTamanho(300);
         atributo.setPrecisao(0);
@@ -236,7 +236,7 @@ public class Entidade extends Object implements Cloneable {
         //Lendo atributos
         qtdeAtributo = 0;
         for (Atributo atributo : atributos) {
-            codeSQL += "    ";
+            codeSQL += "	";
             if (qtdeAtributo > 0) {
                 codeSQL += ", ";
             }
@@ -244,14 +244,14 @@ public class Entidade extends Object implements Cloneable {
             //VERIFICANDO PK
             if (atributo.getChavePrimaria().equals("S")) {
                 if (!codeSQLPK.equals("")) {
-                    codeSQLPK += "  , ";
+                    codeSQLPK += "	, ";
                 }
                 codeSQLPK += atributo.getNome();
             }
             //VERIFICANDO FK
             if ((atributo.getChaveEstrangeira().equals("S")) && (atributo.getReferenciaEntidade() != null) && (atributo.getReferenciaAtributo() != null)) {
                 if (!codeSQLFK.equals("")) {
-                    codeSQLFK += "  , ";
+                    codeSQLFK += "	, ";
                 }
                 codeSQLFK += "FOREIN KEY (" + atributo.getNome() + ") REFERENCES " + atributo.getReferenciaEntidade().getNome() + "(" + atributo.getReferenciaAtributo().getNome() + ")\n";
             }
@@ -260,11 +260,11 @@ public class Entidade extends Object implements Cloneable {
 
         //Lendo Chaves Primarias
         if (!codeSQLPK.equals("")) {
-            codeSQL += "    , PRIMARY KEY(" + codeSQLPK + ")\n";
+            codeSQL += "	, PRIMARY KEY(" + codeSQLPK + ")\n";
         }
         //Lendo Chaves Estrangeiras
         if (!codeSQLFK.equals("")) {
-            codeSQL += "    , " + codeSQLFK + " ";
+            codeSQL += "	, " + codeSQLFK + " ";
         }
         codeSQL += ");\n";
 
@@ -289,6 +289,14 @@ public class Entidade extends Object implements Cloneable {
 
     public String getSQLCreateCodeOracle() {
         String codeSQL = this.getSQLCreateCode();
+
+        codeSQL += " \n";
+        for (Atributo atributo : atributos) {
+            if (atributo.getValorSequencial().equals("S")){
+                codeSQL += "CREATE SEQUENCE SEQ_" + this.nome + "_" + atributo.getNome() + " START WITH 1 INCREMENT BY 1 NOMAXVALUE; \n";
+            }
+        } 
+        codeSQL += " \n";
 
         return codeSQL;
     }
@@ -401,40 +409,38 @@ public class Entidade extends Object implements Cloneable {
         String codeSQL = this.getSQLCreateCodeOracle();
 
         codeSQL += " \n";
-        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "CREATE OR REPLACE TRIGGER TR_" + this.nome + "_BI BEFORE INSERT ON " + this.nome + " FOR EACH ROW \n";
         codeSQL += "BEGIN \n";
-        codeSQL += "	SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        for (Atributo atributo : atributos) {
+            if (atributo.getValorSequencial().equals("S")){
+                codeSQL += "	:NEW." + atributo.getNome() + " := SEQ_" + this.nome + "_" + atributo.getNome() + ".NEXTVAL; \n";
+            }
+        } 
+        codeSQL += "	:NEW.ACAO := UPPER(:NEW.ACAO); \n";
         codeSQL += " \n";
         codeSQL += "	-- ATUALIZANDO CAMPO DE CONTROLE DE ALTERACAO \n";
-        codeSQL += "	SET NEW.DTINCLUSAO = NOW(); \n";
-        codeSQL += "	SET NEW.DTATUALIZACAO = NOW(); \n";
-        codeSQL += "	SET NEW.VERSAO = 1; \n";
-        codeSQL += "	SET NEW.PROCESSADO = 'N'; \n";
-        codeSQL += "	SET NEW.MENSAGEM = ''; \n";
-        codeSQL += " \n";
-        codeSQL += "END $$ \n";
-        codeSQL += " \n";
-        codeSQL += " \n";
-        codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
+        codeSQL += "	:NEW.DTINCLUSAO := SYSDATE; \n";
+        codeSQL += "	:NEW.DTATUALIZACAO := SYSDATE; \n";
+        codeSQL += "	:NEW.VERSAO := 1; \n";
+        codeSQL += "	:NEW.PROCESSADO := 'N'; \n";
+        codeSQL += "	:NEW.MENSAGEM := ''; \n";
+        codeSQL += "\n";
+        codeSQL += "END;\n";
+        codeSQL += "/\n";
+        codeSQL += "\n";
+        codeSQL += "CREATE OR REPLACE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
         codeSQL += "BEGIN \n";
-        codeSQL += " \n";
-        codeSQL += "SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
-        codeSQL += " \n";
-        codeSQL += "	IF (IFNULL(NEW.CONTROLE, '') IN ('INTERNO', 'ERRO')) THEN \n";
-        codeSQL += " \n";
-        codeSQL += "		SET NEW.CONTROLE = OLD.CONTROLE; \n";
-        codeSQL += " \n";
+        codeSQL += "	:NEW.ACAO := UPPER(:NEW.ACAO); \n";
+        codeSQL += "	IF (NVL(:NEW.ACAO, '') IN ('INTERNO', 'ERRO')) THEN \n";
+        codeSQL += "		:NEW.ACAO := :OLD.ACAO; \n";
         codeSQL += "	ELSE \n";
-        codeSQL += " \n";
-        codeSQL += "		SET NEW.PROCESSADO = 'N'; \n";
-        codeSQL += "		SET NEW.MENSAGEM = ''; \n";
-        codeSQL += " \n";
-        codeSQL += " 		SET NEW.DTATUALIZACAO = NOW(); \n";
-        codeSQL += "		SET NEW.VERSAO = IFNULL(NEW.VERSAO, 0) + 1; \n";
-        codeSQL += " \n";
+        codeSQL += "		:NEW.PROCESSADO := 'N'; \n";
+        codeSQL += "		:NEW.MENSAGEM := ''; \n";
+        codeSQL += "		:NEW.DTATUALIZACAO := SYSDATE; \n";
+        codeSQL += "		:NEW.VERSAO := NVL(:NEW.VERSAO, 0) + 1; \n";
         codeSQL += "	END IF; \n";
-        codeSQL += "END $$ \n";
-        codeSQL += "DELIMITER ; \n";
+        codeSQL += "END; \n";
+        codeSQL += "/\n";
         
         return codeSQL;
     }
