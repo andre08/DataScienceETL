@@ -169,6 +169,7 @@ public class FrmConsulta extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestão de Consultas");
+        setResizable(false);
 
         jLabel1.setText("Nome:");
 

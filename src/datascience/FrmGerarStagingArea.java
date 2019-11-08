@@ -113,6 +113,7 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
         );
 
         txtSQL.setColumns(20);
+        txtSQL.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
         txtSQL.setRows(5);
         jScrollPane1.setViewportView(txtSQL);
 
@@ -201,8 +202,8 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
             if (objeto instanceof Entidade) {
 
                 Entidade entidadeSA = (Entidade) objeto;
-                if (this.controle.getConexaoSA() != null) {
-                    switch (this.controle.getConexaoSA().getSGDB()) {
+                if (entidadeSA.getConexao() != null) {
+                    switch (entidadeSA.getConexao().getSGDB()) {
                         case "ORACLE":
                             txtSQL.append(entidadeSA.getSQLCreateSACodeOracle());
                             break;
@@ -218,8 +219,8 @@ public class FrmGerarStagingArea extends javax.swing.JDialog {
             if (objeto instanceof MapeamentoDW) {
 
                 MapeamentoDW mapeamentoDW = (MapeamentoDW) objeto;
-                if (this.controle.getConexaoDW() != null) {
-                    switch (this.controle.getConexaoDW().getSGDB()) {
+                if (mapeamentoDW.getEntidadeDWDestino().getConexao() != null) {
+                    switch (mapeamentoDW.getEntidadeDWDestino().getConexao().getSGDB()) {
                         case "ORACLE":
                             txtSQL.append(mapeamentoDW.getSQLCreateCodeOracle());
                             break;

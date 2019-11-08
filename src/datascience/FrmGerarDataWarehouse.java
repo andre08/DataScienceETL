@@ -190,8 +190,9 @@ public class FrmGerarDataWarehouse extends javax.swing.JDialog {
             if (objeto instanceof Entidade) {
 
                 Entidade entidadeDW = (Entidade) objeto;
-                if (this.controle.getConexaoSA() != null) {
-                    switch (this.controle.getConexaoSA().getSGDB()) {
+                
+                if (entidadeDW.getConexao() != null) {
+                    switch (entidadeDW.getConexao().getSGDB()) {
                         case "ORACLE":
                             txtSQL.append(entidadeDW.getSQLCreateCodeOracle());
                             break;

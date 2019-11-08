@@ -49,7 +49,7 @@ public class FrmEntidadeSA extends javax.swing.JDialog {
         if (controle != null) {
             if (controle.getConexoes() != null) {
                 for (Conexao conexao : controle.getConexoes()) {
-                    if (conexao.getObjetivo().equals("StagingArea")) {
+                    if (conexao.getObjetivo().equals("Staging Area")) {
                         model.addElement(conexao);
                     }
                 }

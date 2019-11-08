@@ -12,6 +12,8 @@ public class Entidade extends Object implements Cloneable {
     private List<Atributo> atributos;
     //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
     private int hashConexao;
+    //campos para estatistica da tabela
+    private int numRegistros;
 
     public Entidade() {
         this.nome = "";
@@ -47,6 +49,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
 
         //criando DATA DE INCLUÇÃO
@@ -60,6 +63,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
 
         //criando DATA DE ATUALIZAÇÃO
@@ -73,6 +77,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
 
         //criando VERSÃO
@@ -86,6 +91,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
 
         //criando PROCESSADO
@@ -99,6 +105,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
 
         //criando MENSAGEM
@@ -112,6 +119,7 @@ public class Entidade extends Object implements Cloneable {
         atributo.setChavePrimaria("N");
         atributo.setChaveEstrangeira("N");
         atributo.setValorSequencial("N");
+        atributo.setControle(true);
         this.getAtributos().add(atributo);
     }
 
@@ -155,6 +163,14 @@ public class Entidade extends Object implements Cloneable {
         this.hashConexao = hashConexao;
     }
 
+    public int getNumRegistros(){
+        return this.numRegistros;
+    }
+    
+    public void setNumRegistros(int numRegistros){
+        this.numRegistros = numRegistros;
+    }
+    
     public void addAtributo(Atributo atributoAnterior, Atributo atributoNovo) {
 
         if (atributoAnterior == null) {
@@ -172,6 +188,7 @@ public class Entidade extends Object implements Cloneable {
         hash = 37 * hash + Objects.hashCode(this.descricao);
         hash = 37 * hash + Objects.hashCode(this.conexao);
         hash = 37 * hash + Objects.hashCode(this.atributos);
+        hash = 37 * hash + Objects.hashCode(this.numRegistros);
         return hash;
     }
 
@@ -199,6 +216,9 @@ public class Entidade extends Object implements Cloneable {
         if (!Objects.equals(this.atributos, other.atributos)) {
             return false;
         }
+        if (!Objects.equals(this.numRegistros, other.numRegistros)) {
+            return false;
+        }
         return true;
     }
 
@@ -221,6 +241,7 @@ public class Entidade extends Object implements Cloneable {
         }
         copiaEntidade.setAtributos(copiaAtributos);
 
+        copiaEntidade.setNumRegistros(this.numRegistros);
         return copiaEntidade;
 
     }
@@ -240,7 +261,7 @@ public class Entidade extends Object implements Cloneable {
             if (qtdeAtributo > 0) {
                 codeSQL += ", ";
             }
-            codeSQL += atributo.getSQLCreateCode() + "\n";
+            codeSQL += atributo.getSQLCreateCode(true) + "\n";
             //VERIFICANDO PK
             if (atributo.getChavePrimaria().equals("S")) {
                 if (!codeSQLPK.equals("")) {
@@ -253,14 +274,14 @@ public class Entidade extends Object implements Cloneable {
                 if (!codeSQLFK.equals("")) {
                     codeSQLFK += "  , ";
                 }
-                codeSQLFK += "FOREIN KEY (" + atributo.getNome() + ") REFERENCES " + atributo.getReferenciaEntidade().getNome() + "(" + atributo.getReferenciaAtributo().getNome() + ")\n";
+                codeSQLFK += "CONSTRAINT FK_" + this.nome + "_" + atributo.getReferenciaEntidade().getNome() + " FOREIN KEY (" + atributo.getNome() + ") REFERENCES " + atributo.getReferenciaEntidade().getNome() + " (" + atributo.getReferenciaAtributo().getNome() + ")\n";
             }
             qtdeAtributo++;
         }
 
         //Lendo Chaves Primarias
         if (!codeSQLPK.equals("")) {
-            codeSQL += "    , PRIMARY KEY(" + codeSQLPK + ")\n";
+            codeSQL += "    , CONSTRAINT PK_" + this.nome + " PRIMARY KEY (" + codeSQLPK + ")\n";
         }
         //Lendo Chaves Estrangeiras
         if (!codeSQLFK.equals("")) {
@@ -278,8 +299,8 @@ public class Entidade extends Object implements Cloneable {
 
             if (atributo.getValorSequencial().equals("S")){
                 
-                String vAtributo = atributo.getSQLCreateCode() + " AUTO_INCREMENT ";
-                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(), vAtributo);
+                String vAtributo = atributo.getSQLCreateCode(true) + " AUTO_INCREMENT ";
+                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(true), vAtributo);
             }
 
         } 
@@ -300,8 +321,8 @@ public class Entidade extends Object implements Cloneable {
 
             if (atributo.getValorSequencial().equals("S")){
                 
-                String vAtributo = atributo.getSQLCreateCode() + " IDENTITY(1,1) ";
-                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(), vAtributo);
+                String vAtributo = atributo.getSQLCreateCode(true) + " IDENTITY(1,1) ";
+                codeSQL = codeSQL.replace(atributo.getSQLCreateCode(true), vAtributo);
             }
 
         } 
@@ -332,7 +353,7 @@ public class Entidade extends Object implements Cloneable {
         codeSQL += "CREATE TRIGGER TR_" + this.nome + "_BU BEFORE UPDATE ON " + this.nome + " FOR EACH ROW \n";
         codeSQL += "BEGIN \n";
         codeSQL += " \n";
-        codeSQL += "SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
+        codeSQL += "	SET NEW.CONTROLE = UPPER(NEW.CONTROLE); \n";
         codeSQL += " \n";
         codeSQL += "	IF (IFNULL(NEW.CONTROLE, '') IN ('INTERNO', 'ERRO')) THEN \n";
         codeSQL += " \n";
@@ -348,6 +369,121 @@ public class Entidade extends Object implements Cloneable {
         codeSQL += " \n";
         codeSQL += "	END IF; \n";
         codeSQL += "END $$ \n";
+        codeSQL += " \n";
+        codeSQL += " \n";
+        codeSQL += "CREATE PROCEDURE STP_" + this.nome + "() \n";
+        codeSQL += "BEGIN \n";
+        codeSQL += "	-- CAMPOS PK E FK DA TABELA \n";
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (atributo.getChavePrimaria().equals("S") || atributo.getChaveEstrangeira().equals("S") ) {
+                    codeSQL += "	DECLARE V" + atributo.getSQLCreateCode(false).trim() + ";\n";
+                }
+            }
+        }                   
+        codeSQL += " \n";
+        codeSQL += "	-- CAMPO PARA QUANTIDADE DE REGISTRO \n";
+        codeSQL += "	DECLARE VQTDE INT DEFAULT 0; \n";
+        codeSQL += "	-- CAMPO DE MENSAGEM DE RETORNO \n";
+        codeSQL += "	DECLARE VMENSAGEM VARCHAR(255); \n";
+        codeSQL += "	DECLARE VCONTROLE VARCHAR(10); \n";
+        codeSQL += " \n";
+
+        codeSQL += "	-- TODOS OS CAMPOS DA TABELA \n";
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (atributo.getChavePrimaria().equals("N") && atributo.getChaveEstrangeira().equals("N") ) {
+                    codeSQL += "	DECLARE V" + atributo.getSQLCreateCode(false).trim() + ";\n";
+                }
+            }                   
+        }                   
+        codeSQL += " \n";
+        
+        codeSQL += "	-- CURSOR \n";
+        codeSQL += "	DECLARE VFIMCURSOR INTEGER DEFAULT 0; \n";
+        codeSQL += "	DECLARE VCURSOR CURSOR FOR	SELECT \n";
+        int qtdeAtributo;
+        qtdeAtributo = 0;
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (qtdeAtributo > 0) {
+                    codeSQL += "	                          	, "+ atributo.getNome() + " \n";
+                }else{
+                    codeSQL += "	                          	" + atributo.getNome() + " \n";
+                }
+                qtdeAtributo++;
+            }
+        }                   
+        codeSQL += "	                          FROM " + this.nome + " \n";
+        codeSQL += "	                          WHERE PROCESSADO = 'N'; \n";
+        codeSQL += " \n";
+
+        codeSQL += "	DECLARE CONTINUE HANDLER FOR NOT FOUND SET VFIMCURSOR = 1; \n";
+        codeSQL += " \n";
+
+        codeSQL += "	OPEN VCURSOR; \n";
+        codeSQL += " \n";
+
+        codeSQL += "	FETCH VCURSOR INTO ";
+        qtdeAtributo = 0;
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (qtdeAtributo > 0) {
+                    codeSQL += ", V"+ atributo.getNome();
+                }else{
+                    codeSQL += "V" + atributo.getNome();
+                }
+                qtdeAtributo++;
+            }                   
+        }                   
+        codeSQL += "; \n";
+        
+        
+        codeSQL += "	WHILE (VFIMCURSOR <> 1) DO \n";
+
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (atributo.getChaveEstrangeira().equals("S") ) {
+                    codeSQL += "	DECLARE V" + atributo.getSQLCreateCode(false).trim() + ";\n";
+                    codeSQL += " \n";
+                }
+            }
+        }                   
+        codeSQL += " \n";
+
+       
+        codeSQL += "		UPDATE " + this.nome + " SET PROCESSADO = 'S', MENSAGEM = VMENSAGEM, CONTROLE = VCONTROLE WHERE";
+        qtdeAtributo = 0;
+        for (Atributo atributo : atributos) {            
+            if(!atributo.getControle()){
+                if (atributo.getChavePrimaria().equals("S")) {
+                    if (qtdeAtributo > 0) {
+                        codeSQL += " and";
+                    }
+                    codeSQL += " " + atributo.getNome() + " = V" + atributo.getNome();
+                }
+            }  
+        }  
+        codeSQL += " \n";
+        
+        codeSQL += "		FETCH VCURSOR INTO ";
+        for (Atributo atributo : atributos) {
+            if(!atributo.getControle()){
+                if (qtdeAtributo > 0) {
+                    codeSQL += ", V"+ atributo.getNome();
+                }else{
+                    codeSQL += "V" + atributo.getNome();
+                }
+                qtdeAtributo++;
+            }                   
+        }                   
+        codeSQL += "; \n";        
+        codeSQL += "	END WHILE; \n";
+        codeSQL += "	CLOSE VCURSOR; \n";
+        codeSQL += " \n";
+        
+        codeSQL += "END $$ \n";
+        
         codeSQL += "DELIMITER ; \n";
         
         return codeSQL;

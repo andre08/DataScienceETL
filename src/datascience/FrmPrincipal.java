@@ -19,7 +19,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         controle = new Controle(this);
         controle.NovoJson();
         AtualizarTela();
-        
+
     }
 
     private void AtualizarTela() {
@@ -35,10 +35,19 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         DefaultMutableTreeNode conexaoNode = new DefaultMutableTreeNode("Conexões");
         DefaultMutableTreeNode consultaNode = new DefaultMutableTreeNode("Consultas");
-        DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades StagingArea");
-        DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades DataMart");
-        DefaultMutableTreeNode mapeamentoSANode = new DefaultMutableTreeNode("Mapeamento StagingArea");
-        DefaultMutableTreeNode mapeamentoDWNode = new DefaultMutableTreeNode("Mapeamento DataMart");
+        DefaultMutableTreeNode entidadeSANode = new DefaultMutableTreeNode("Entidades Staging Area");
+        DefaultMutableTreeNode entidadeDMNode = new DefaultMutableTreeNode("Entidades Data Mart");
+        DefaultMutableTreeNode entidadeDLNode = new DefaultMutableTreeNode("Entidades Data Lake");
+        DefaultMutableTreeNode entidadeDWNode = new DefaultMutableTreeNode("Entidades Data Warehouse");
+        DefaultMutableTreeNode mapeamentoORtoSANode = new DefaultMutableTreeNode("Mapeamento Origem -> Staging Area");
+        DefaultMutableTreeNode mapeamentoORtoDMNode = new DefaultMutableTreeNode("Mapeamento Origem -> Data Mart");
+        DefaultMutableTreeNode mapeamentoORtoDLNode = new DefaultMutableTreeNode("Mapeamento Origem -> Data Lake");
+        DefaultMutableTreeNode mapeamentoORtoDWNode = new DefaultMutableTreeNode("Mapeamento Origem -> Data Warehouse");
+        DefaultMutableTreeNode mapeamentoSAtoDMNode = new DefaultMutableTreeNode("Mapeamento Staging Area -> Data Mart");
+        DefaultMutableTreeNode mapeamentoSAtoDLNode = new DefaultMutableTreeNode("Mapeamento Staging Area -> Data Lake");
+        DefaultMutableTreeNode mapeamentoSAtoDWNode = new DefaultMutableTreeNode("Mapeamento Staging Area -> Data Warehouse");
+        DefaultMutableTreeNode mapeamentoDWtoDMNode = new DefaultMutableTreeNode("Mapeamento Data Warehouse -> Data Mart");
+        DefaultMutableTreeNode mapeamentoDWtoDLNode = new DefaultMutableTreeNode("Mapeamento Data Warehouse -> Data Lake");
 
         DefaultMutableTreeNode itensNode;
 
@@ -65,7 +74,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             itensNode.setUserObject(entidade);
             entidadeDWNode.add(itensNode);
         }
-
+        /*
         for (MapeamentoSA mapeamentoSA : controle.getMapeamentosSA()) {
             itensNode = new DefaultMutableTreeNode(mapeamentoSA.toString());
             itensNode.setUserObject(mapeamentoSA);
@@ -77,13 +86,22 @@ public class FrmPrincipal extends javax.swing.JFrame {
             itensNode.setUserObject(mapeamentoDW);
             mapeamentoDWNode.add(itensNode);
         }
-
+         */
         rootNode.add(conexaoNode);
         rootNode.add(consultaNode);
         rootNode.add(entidadeSANode);
+        rootNode.add(entidadeDMNode);
+        rootNode.add(entidadeDLNode);
         rootNode.add(entidadeDWNode);
-        rootNode.add(mapeamentoSANode);
-        rootNode.add(mapeamentoDWNode);
+        rootNode.add(mapeamentoORtoSANode);
+        rootNode.add(mapeamentoORtoDMNode);
+        rootNode.add(mapeamentoORtoDLNode);
+        rootNode.add(mapeamentoORtoDWNode);
+        rootNode.add(mapeamentoSAtoDMNode);
+        rootNode.add(mapeamentoSAtoDLNode);
+        rootNode.add(mapeamentoSAtoDWNode);
+        rootNode.add(mapeamentoDWtoDMNode);
+        rootNode.add(mapeamentoDWtoDLNode);
 
         DefaultTreeModel modelo = new DefaultTreeModel(rootNode);
         modelo.reload(rootNode);
@@ -164,7 +182,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenu1.setText("Arquivo");
 
-        mniNovo.setText("Novo");
+        mniNovo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        mniNovo.setText("Novo Projeto");
         mniNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniNovoActionPerformed(evt);
@@ -172,7 +191,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         jMenu1.add(mniNovo);
 
-        mniAbrir.setText("Abrir");
+        mniAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        mniAbrir.setText("Abrir Projeto");
         mniAbrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniAbrirActionPerformed(evt);
@@ -180,7 +200,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         jMenu1.add(mniAbrir);
 
-        mniSalvar.setText("Salvar");
+        mniSalvar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        mniSalvar.setText("Salvar Projeto");
         mniSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniSalvarActionPerformed(evt);
@@ -615,7 +636,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
             controle.getMapeamentosDW().remove(mapeamentoDWSelecionada);
         }
 
-        AtualizarTela();        
+        AtualizarTela();
     }//GEN-LAST:event_mniExcluirActionPerformed
 
     /**

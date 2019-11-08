@@ -15,7 +15,7 @@ public class ConnectionManager {
         String PASSWORD = conexao.getPassword();
 
         switch (conexao.getSGDB()) {
-            case "ORACLE":
+            case "Oracle":
                 STR_DRIVER = "oracle.jdbc.driver.OracleDriver";
                 STR_CONEX = "jdbc:oracle:thin:@" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + ":" + conexao.getSID();
                 break;
@@ -27,7 +27,7 @@ public class ConnectionManager {
                 STR_DRIVER = "net.sourceforge.jtds.jdbc.Driver";
                 STR_CONEX = "jdbc:jtds:sqlserver://" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + "/" + conexao.getNomeBanco();
                 break;
-            case "POSTGRESQL":
+            case "Postgre SQL":
                 STR_DRIVER = "org.postgresql.Driver";
                 STR_CONEX = "jdbc:postgresql://" + conexao.getUrl() + ":" + Integer.toString(conexao.getPorta()) + "/" + conexao.getNomeBanco();
                 break;

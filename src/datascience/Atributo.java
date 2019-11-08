@@ -16,10 +16,14 @@ public class Atributo extends Object implements Cloneable {
     private Entidade referenciaEntidade;
     private Atributo referenciaAtributo;
     private String observacao;
+    private boolean controle;
     //campos para armazenar o hash de relacionamentos e relacionar apos a importação dos dados
     private int hashReferenciaEntidade;
     private int hashReferenciaAtributo;
-
+    //campos para estatistica
+    private int comprimentoMaximo;
+    private int qtdeElementosDiferentes;
+    
     public Atributo() {
         this.nome = "";
         this.descricao = "";
@@ -31,6 +35,7 @@ public class Atributo extends Object implements Cloneable {
         this.chaveEstrangeira = "N";
         this.valorSequencial = "N";
         this.observacao = "";
+        this.controle = false;
     }
 
     public String getNome() {
@@ -129,6 +134,14 @@ public class Atributo extends Object implements Cloneable {
         this.observacao = observacao;
     }
 
+    public boolean getControle() {
+        return controle;
+    }
+
+    public void setControle(boolean controle) {
+        this.controle = controle;
+    }
+
     public int getHashReferenciaEntidade() {
         return hashReferenciaEntidade;
     }
@@ -160,6 +173,7 @@ public class Atributo extends Object implements Cloneable {
         hash = 97 * hash + Objects.hashCode(this.referenciaEntidade);
         hash = 97 * hash + Objects.hashCode(this.referenciaAtributo);
         hash = 97 * hash + Objects.hashCode(this.observacao);
+        hash = 97 * hash + Objects.hashCode(this.controle);
         return hash;
     }
 
@@ -205,6 +219,9 @@ public class Atributo extends Object implements Cloneable {
         if (!Objects.equals(this.observacao, other.observacao)) {
             return false;
         }
+        if (!Objects.equals(this.controle, other.controle)) {
+            return false;
+        }
         if (!Objects.equals(this.referenciaEntidade, other.referenciaEntidade)) {
             return false;
         }
@@ -217,6 +234,10 @@ public class Atributo extends Object implements Cloneable {
     @Override
     public String toString() {
         return nome;
+    }
+    
+    public String toJson(){
+        return "";
     }
 
     public Atributo copia() {
@@ -233,13 +254,14 @@ public class Atributo extends Object implements Cloneable {
         copiaAtributo.setChaveEstrangeira(this.chaveEstrangeira);
         copiaAtributo.setValorSequencial(this.valorSequencial);
         copiaAtributo.setObservacao(this.observacao);
+        copiaAtributo.setControle(this.controle);
         copiaAtributo.setReferenciaEntidade(this.referenciaEntidade == null ? null : this.referenciaEntidade.copia());
         copiaAtributo.setReferenciaAtributo(this.referenciaAtributo == null ? null : this.referenciaAtributo.copia());
 
         return copiaAtributo;
     }
 
-    public String getSQLCreateCode() {
+    public String getSQLCreateCode(boolean pOpcoes) {
 
         String codeSQL = "  ";
         codeSQL += this.nome + " ";
@@ -288,8 +310,10 @@ public class Atributo extends Object implements Cloneable {
                 codeSQL += " ";
                 break;
         }
-        codeSQL += (this.obrigatorio.equals("S") ? "NOT NULL " : "");
-
+        
+        if(pOpcoes){
+            codeSQL += (this.obrigatorio.equals("S") ? "NOT NULL " : "");
+        }
         return codeSQL;
     }
     

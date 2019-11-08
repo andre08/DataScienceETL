@@ -46,6 +46,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         chkPK.setSelected(false);
         chkFK.setSelected(false);
         chkSequencia.setSelected(false);
+        chkControle.setSelected(false);
 
         //ativando controles
         btnSalvar.setEnabled(true);
@@ -134,6 +135,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         chkPK.setSelected(atributoAtual.getChavePrimaria().equals("S"));
         chkFK.setSelected(atributoAtual.getChaveEstrangeira().equals("S"));
         chkSequencia.setSelected(atributoAtual.getValorSequencial().equals("S"));
+        chkControle.setSelected(atributoAtual.getControle());
 
         //ativando controles
         btnNovo.setVisible(!this.usado.equals("CO"));
@@ -157,6 +159,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         this.atributoAtual.setChavePrimaria(chkPK.isSelected() ? "S" : "N");
         this.atributoAtual.setChaveEstrangeira(chkFK.isSelected() ? "S" : "N");
         this.atributoAtual.setValorSequencial(chkSequencia.isSelected() ? "S" : "N");
+        this.atributoAtual.setControle(chkControle.isSelected());
 
         if (cbxEntidade.getSelectedIndex() != -1) {
             atributoAtual.setReferenciaEntidade((Entidade) cbxEntidade.getSelectedItem());
@@ -201,6 +204,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         jLabel12 = new javax.swing.JLabel();
         txtTamanho = new javax.swing.JFormattedTextField();
         txtPrecisao = new javax.swing.JFormattedTextField();
+        chkControle = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -239,7 +243,7 @@ public class FrmAtributo extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(434, Short.MAX_VALUE)
+                .addContainerGap(455, Short.MAX_VALUE)
                 .addComponent(btnExcluir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo)
@@ -309,6 +313,13 @@ public class FrmAtributo extends javax.swing.JDialog {
 
         txtPrecisao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#"))));
 
+        chkControle.setText("Campo Controle");
+        chkControle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkControleActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -323,7 +334,7 @@ public class FrmAtributo extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(jLabel11)
                     .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cbxAtributo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbxEntidade, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -334,24 +345,24 @@ public class FrmAtributo extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(chkObrigatorio))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel3)
                                 .addGap(1, 1, 1)
                                 .addComponent(txtTamanho, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPrecisao, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtPrecisao, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(37, 37, 37)
                                 .addComponent(chkPK)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(chkFK)
-                                .addGap(40, 40, 40)))
-                        .addComponent(chkSequencia)))
+                                .addGap(18, 18, 18)
+                                .addComponent(chkSequencia)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(chkControle)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -379,7 +390,8 @@ public class FrmAtributo extends javax.swing.JDialog {
                     .addComponent(chkPK)
                     .addComponent(jLabel10)
                     .addComponent(chkFK)
-                    .addComponent(chkSequencia))
+                    .addComponent(chkSequencia)
+                    .addComponent(chkControle))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbxEntidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -451,6 +463,10 @@ public class FrmAtributo extends javax.swing.JDialog {
         AtualizarAtributos();
     }//GEN-LAST:event_cbxEntidadeItemStateChanged
 
+    private void chkControleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkControleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkControleActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -501,6 +517,7 @@ public class FrmAtributo extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbxAtributo;
     private javax.swing.JComboBox<String> cbxEntidade;
     private javax.swing.JComboBox<String> cbxTipo;
+    private javax.swing.JCheckBox chkControle;
     private javax.swing.JCheckBox chkFK;
     private javax.swing.JCheckBox chkObrigatorio;
     private javax.swing.JCheckBox chkPK;

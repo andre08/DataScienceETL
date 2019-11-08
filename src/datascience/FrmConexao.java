@@ -120,6 +120,7 @@ public class FrmConexao extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gestão de Conexões");
+        setResizable(false);
 
         jLabel1.setText("Nome:");
 
@@ -144,13 +145,13 @@ public class FrmConexao extends javax.swing.JDialog {
 
         jLabel9.setText("SGDB:");
 
-        cbxSGDB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ORACLE", "MySQL", "MS SQL Server" }));
+        cbxSGDB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Oracle", "MySQL", "MS SQL Server", "Postgre SQL", "Mongo DB (Previsto)" }));
 
         txtPorta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#"))));
 
         jLabel10.setText("Objetivo:");
 
-        cbxObjetivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Origem dos dados", "StagingArea", "DataMart" }));
+        cbxObjetivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Origem dos dados", "Staging Area", "Data Mart", "Data Lake", "Data Warehouse" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -194,7 +195,7 @@ public class FrmConexao extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbxObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbxObjetivo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -207,7 +208,7 @@ public class FrmConexao extends javax.swing.JDialog {
                         .addComponent(cbxSGDB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel10)
                         .addComponent(cbxObjetivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
