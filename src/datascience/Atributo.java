@@ -263,7 +263,7 @@ public class Atributo extends Object implements Cloneable {
 
     public String getSQLCreateCode(boolean pOpcoes) {
 
-        String codeSQL = "  ";
+        String codeSQL = "";
         codeSQL += this.nome + " ";
         codeSQL += this.tipo;
         switch (this.tipo) {
